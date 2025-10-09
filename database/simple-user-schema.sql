@@ -1,0 +1,107 @@
+-- إنشاء الجداول الأساسية للمستخدمين
+-- Basic User Tables Creation
+
+-- حذف الجداول الموجودة إذا كانت موجودة
+DROP TABLE IF EXISTS user_activities CASCADE;
+DROP TABLE IF EXISTS user_sessions CASCADE;
+DROP TABLE IF EXISTS user_permissions CASCADE;
+DROP TABLE IF EXISTS permissions CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+-- جدول المستخدمين الأساسي
+CREATE TABLE users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'student' CHECK (role IN ('super_admin', 'admin', 'student')),
+  department TEXT,
+  year INTEGER,
+  term TEXT CHECK (term IN ('FIRST', 'SECOND')),
+  is_active BOOLEAN DEFAULT true,
+  last_login TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- جدول الصلاحيات
+CREATE TABLE permissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- جدول ربط المستخدمين بالصلاحيات
+CREATE TABLE user_permissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  permission_id UUID REFERENCES permissions(id) ON DELETE CASCADE,
+  granted_by UUID REFERENCES users(id),
+  granted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, permission_id)
+);
+
+-- جدول جلسات المستخدمين
+CREATE TABLE user_sessions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  session_token TEXT UNIQUE NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  last_activity TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- جدول سجل أنشطة المستخدمين
+CREATE TABLE user_activities (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  activity_type TEXT NOT NULL,
+  description TEXT,
+  metadata JSONB,
+  ip_address INET,
+  user_agent TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إدراج الصلاحيات الأساسية
+INSERT INTO permissions (name, description) VALUES
+('manage_departments', 'إدارة الأقسام'),
+('manage_years', 'إدارة السنوات الدراسية'),
+('manage_terms', 'إدارة الفصول الدراسية'),
+('manage_materials', 'إدارة المواد الدراسية'),
+('manage_users', 'إدارة المستخدمين'),
+('view_analytics', 'عرض الإحصائيات'),
+('manage_system', 'إدارة النظام بالكامل');
+
+-- إنشاء المستخدم الرئيسي (سوبر أدمن)
+INSERT INTO users (email, password_hash, name, role, is_active) VALUES
+('admin@university.edu', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'المدير الرئيسي', 'super_admin', true);
+
+-- منح جميع الصلاحيات للمدير الرئيسي
+INSERT INTO user_permissions (user_id, permission_id)
+SELECT u.id, p.id
+FROM users u, permissions p
+WHERE u.email = 'admin@university.edu';
+
+-- إنشاء فهارس لتحسين الأداء
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_department ON users(department);
+CREATE INDEX idx_user_sessions_token ON user_sessions(session_token);
+CREATE INDEX idx_user_sessions_user_id ON user_sessions(user_id);
+CREATE INDEX idx_user_activities_user_id ON user_activities(user_id);
+CREATE INDEX idx_user_activities_type ON user_activities(activity_type);
+
+-- دالة لتحديث updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- إنشاء trigger لتحديث updated_at
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
