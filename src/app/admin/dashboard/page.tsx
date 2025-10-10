@@ -220,8 +220,9 @@ export default function AdminDashboardPage() {
         if (admin.role === 'admin' && admin.id) {
           try {
             console.log('🔐 Loading admin scopes for:', admin.id, admin.email);
-            const { AdminService } = await import('@/lib/adminService');
-            const scopes = await AdminService.getAdminScopes(admin.id);
+            // const { AdminService } = await import('@/lib/adminService');
+            // const scopes = await AdminService.getAdminScopes(admin.id);
+            const scopes = []; // Temporary fix - return empty scopes
             console.log('🔐 Loaded scopes:', scopes);
             console.log('🔐 Scopes with canManageSchedules:', scopes.filter(s => s.canManageSchedules && s.isActive));
             
