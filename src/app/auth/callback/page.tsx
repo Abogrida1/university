@@ -128,14 +128,25 @@ export default function AuthCallbackPage() {
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
           setSuccess(true);
           
-          // التحقق من أن المستخدم جديد (لا يوجد اسم محدد)
-          const isNewUser = !userProfile.name || userProfile.name === userProfile.email?.split('@')[0];
+          // التحقق من أن المستخدم جديد (لا يوجد اسم محدد أو اسم افتراضي)
+          const emailPrefix = userProfile.email?.split('@')[0] || '';
+          const isNewUser = !userProfile.name || 
+                           userProfile.name === emailPrefix || 
+                           userProfile.name === userProfile.email ||
+                           userProfile.name.length < 3;
+          
+          console.log('User profile:', userProfile);
+          console.log('Is new user:', isNewUser);
+          console.log('User name:', userProfile.name);
+          console.log('Email prefix:', emailPrefix);
           
           // استخدام window.location للتأكد من التوجيه
           setTimeout(() => {
             if (isNewUser) {
+              console.log('Redirecting to welcome page...');
               window.location.href = '/welcome';
             } else {
+              console.log('Redirecting to home page...');
               window.location.href = '/';
             }
           }, 2000);

@@ -20,6 +20,22 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [scheduleRefreshTrigger, setScheduleRefreshTrigger] = useState(0);
 
+  // Check if user needs to go to welcome page
+  useEffect(() => {
+    if (user) {
+      const emailPrefix = user.email?.split('@')[0] || '';
+      const isNewUser = !user.name || 
+                       user.name === emailPrefix || 
+                       user.name === user.email ||
+                       user.name.length < 3;
+      
+      if (isNewUser) {
+        console.log('New user detected, redirecting to welcome page...');
+        window.location.href = '/welcome';
+      }
+    }
+  }, [user]);
+
   // Get unique departments from materials
   const getUniqueDepartments = () => {
     const departments = materials.map(material => material.department);

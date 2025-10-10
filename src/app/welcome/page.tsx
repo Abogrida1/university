@@ -23,7 +23,15 @@ export default function WelcomePage() {
   // إعادة توجيه المستخدمين غير المسجلين
   useEffect(() => {
     if (!user) {
+      console.log('No user found, redirecting to login...');
       router.push('/login');
+    } else {
+      console.log('User found in welcome page:', user);
+      // إذا كان المستخدم لديه اسم مخصص، أعد توجيهه للصفحة الرئيسية
+      if (user.name && user.name !== user.email?.split('@')[0] && user.name.length >= 3) {
+        console.log('User has custom name, redirecting to home...');
+        router.push('/');
+      }
     }
   }, [user, router]);
 
