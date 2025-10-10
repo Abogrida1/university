@@ -63,7 +63,7 @@ export default function HomePage() {
       const gradients = [
         'from-slate-600 via-slate-700 to-slate-800',
         'from-blue-600 via-blue-700 to-blue-800', 
-        'from-purple-600 via-purple-700 to-purple-800',
+        'from-indigo-600 via-indigo-700 to-indigo-800',
         'from-green-600 via-green-700 to-green-800',
         'from-red-600 via-red-700 to-red-800',
         'from-yellow-600 via-yellow-700 to-yellow-800'
@@ -71,7 +71,7 @@ export default function HomePage() {
       const bgColors = [
         'bg-slate-800/30',
         'bg-blue-900/30',
-        'bg-purple-900/30',
+        'bg-indigo-900/30',
         'bg-green-900/30',
         'bg-red-900/30',
         'bg-yellow-900/30'
@@ -79,7 +79,7 @@ export default function HomePage() {
       const borderColors = [
         'border-slate-600/50',
         'border-blue-600/50',
-        'border-purple-600/50',
+        'border-indigo-600/50',
         'border-green-600/50',
         'border-red-600/50',
         'border-yellow-600/50'
@@ -329,10 +329,10 @@ export default function HomePage() {
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-10">
         {/* Hero Section */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-cyan-500/25">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-cyan-500/25">
             <span className="text-2xl sm:text-3xl md:text-4xl">📚</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-2 sm:mb-4 px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-2 sm:mb-4 px-2">
             University Materials
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2">

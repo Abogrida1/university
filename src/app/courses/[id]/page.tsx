@@ -170,14 +170,14 @@ export default async function CoursePage({ params }: { params: { id: string } })
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group bg-gradient-to-r from-purple-600/20 to-purple-700/20 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-105"
+                      className="group bg-gradient-to-r from-indigo-600/20 to-indigo-700/20 backdrop-blur-sm rounded-2xl p-6 border border-indigo-500/30 hover:border-indigo-400/50 transition-all duration-300 hover:scale-105"
                     >
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                          <span className="text-purple-400 text-2xl">🔗</span>
+                        <div className="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center">
+                          <span className="text-indigo-400 text-2xl">🔗</span>
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">{link.name}</h3>
+                          <h3 className="text-xl font-bold text-white group-hover:text-indigo-300 transition-colors">{link.name}</h3>
                           <p className="text-sm text-gray-400">رابط إضافي</p>
                         </div>
                       </div>

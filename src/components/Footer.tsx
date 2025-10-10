@@ -26,7 +26,12 @@ export default function Footer() {
             <a href="/about" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm font-medium">
               من نحن
             </a>
-            <a href="/contact" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm font-medium">
+            <a href="/contact" className="inline-flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm font-medium">
+              <img 
+                src="/assets/icons/chat.png" 
+                alt="تواصل معنا" 
+                className="w-3 h-3"
+              />
               تواصل معنا
             </a>
             <a href="/auth/register" className="text-gray-400 hover:text-emerald-400 transition-colors text-xs sm:text-sm font-medium">

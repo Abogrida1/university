@@ -14,7 +14,10 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // الحصول على الجلسة من URL hash
+        // انتظار قصير للتأكد من تحميل الجلسة
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // الحصول على الجلسة
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -24,6 +27,7 @@ export default function AuthCallbackPage() {
         }
 
         if (!session?.user) {
+          console.error('لم يتم العثور على بيانات المستخدم');
           setError('لم يتم العثور على بيانات المستخدم');
           return;
         }
@@ -118,11 +122,12 @@ export default function AuthCallbackPage() {
         }
 
         // إنشاء جلسة جديدة
-        const sessionResult = await UserService.createSession(userProfile.id);
-        
-        if (sessionResult) {
-          // حفظ الجلسة في localStorage
-          localStorage.setItem('session_token', sessionResult.sessionToken);
+        try {
+          const sessionResult = await UserService.createSession(userProfile.id);
+          
+          if (sessionResult) {
+            // حفظ الجلسة في localStorage
+            localStorage.setItem('session_token', sessionResult.sessionToken);
           
           // إعادة توجيه إلى الصفحة الرئيسية أو صفحة الترحيب
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
@@ -151,8 +156,12 @@ export default function AuthCallbackPage() {
             console.log('🏠 Existing user - redirecting to home page...');
             window.location.href = '/';
           }
-        } else {
-          console.error('فشل في إنشاء الجلسة');
+          } else {
+            console.error('فشل في إنشاء الجلسة');
+            setError('خطأ في إنشاء الجلسة');
+          }
+        } catch (sessionError) {
+          console.error('خطأ في إنشاء الجلسة:', sessionError);
           setError('خطأ في إنشاء الجلسة');
         }
 

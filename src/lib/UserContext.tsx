@@ -120,7 +120,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://university-3-cuxd.onrender.com/auth/callback',
+          redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

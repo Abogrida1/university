@@ -108,10 +108,10 @@ export default function ProfilePage() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
               <span className="text-2xl sm:text-3xl lg:text-4xl">👤</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               الملف الشخصي
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>

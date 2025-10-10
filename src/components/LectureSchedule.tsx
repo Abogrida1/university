@@ -73,7 +73,7 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-3xl p-8 max-w-6xl mx-auto border border-blue-500/30 shadow-2xl shadow-blue-500/20 mb-8">
+      <div className="bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-indigo-900/30 backdrop-blur-sm rounded-3xl p-8 max-w-6xl mx-auto border border-blue-500/30 shadow-2xl shadow-blue-500/20 mb-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
           <p className="text-blue-300 text-lg">جاري تحميل جدول المحاضرات...</p>
@@ -123,7 +123,7 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
     });
     
     return (
-      <div className="bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto border border-blue-500/30 shadow-2xl shadow-blue-500/20 mb-6 sm:mb-8">
+      <div className="bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-indigo-900/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto border border-blue-500/30 shadow-2xl shadow-blue-500/20 mb-6 sm:mb-8">
         <div className="text-center mb-4 sm:mb-6">
           <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📅</div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">جدول المحاضرات (PDF)</h2>

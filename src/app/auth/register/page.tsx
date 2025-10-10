@@ -38,7 +38,7 @@ export default function RegisterPage() {
 
   const departments = [
     { value: 'Cyber Security', label: 'الأمن السيبراني', icon: '🛡️', color: 'from-red-500 to-pink-600' },
-    { value: 'Artificial Intelligence', label: 'الذكاء الاصطناعي', icon: '🤖', color: 'from-blue-500 to-purple-600' },
+    { value: 'Artificial Intelligence', label: 'الذكاء الاصطناعي', icon: '🤖', color: 'from-blue-500 to-indigo-600' },
     { value: 'General Program', label: 'البرنامج العام', icon: '🎓', color: 'from-green-500 to-teal-600' }
   ];
 
@@ -50,7 +50,7 @@ export default function RegisterPage() {
   ];
 
   const terms = [
-    { value: 'FIRST', label: 'الترم الأول', icon: '1️⃣', color: 'from-purple-500 to-pink-600' },
+    { value: 'FIRST', label: 'الترم الأول', icon: '1️⃣', color: 'from-indigo-500 to-pink-600' },
     { value: 'SECOND', label: 'الترم الثاني', icon: '2️⃣', color: 'from-cyan-500 to-blue-600' }
   ];
 
@@ -158,10 +158,10 @@ export default function RegisterPage() {
       <div className="container mx-auto px-3 sm:px-4 lg:px-6">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 lg:mb-12">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl sm:rounded-2xl lg:rounded-3xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl lg:rounded-3xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
             <span className="text-xl sm:text-2xl lg:text-3xl">👤</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-2 sm:mb-3 lg:mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-2 sm:mb-3 lg:mb-4">
             إنشاء حساب جديد
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2 sm:px-4">

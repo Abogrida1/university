@@ -69,7 +69,7 @@ export default function LoginPage() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[10%] -left-[10%] w-[300px] h-[300px] bg-gradient-radial from-cyan-500/8 to-transparent rounded-full animate-float"></div>
         <div className="absolute top-[60%] -right-[5%] w-[200px] h-[200px] bg-gradient-radial from-blue-500/6 to-transparent rounded-full animate-float" style={{animationDelay: '-2s'}}></div>
-        <div className="absolute bottom-[20%] left-[10%] w-[150px] h-[150px] bg-gradient-radial from-purple-500/4 to-transparent rounded-full animate-float" style={{animationDelay: '-4s'}}></div>
+        <div className="absolute bottom-[20%] left-[10%] w-[150px] h-[150px] bg-gradient-radial from-indigo-500/4 to-transparent rounded-full animate-float" style={{animationDelay: '-4s'}}></div>
       </div>
 
       {/* Login Container */}
