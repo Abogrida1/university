@@ -13,6 +13,7 @@ export default function WelcomePage() {
   const [error, setError] = useState('');
   const [showAnimation, setShowAnimation] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     // تشغيل الرسوم المتحركة بعد تحميل الصفحة
@@ -28,7 +29,13 @@ export default function WelcomePage() {
     } else {
       console.log('User found in welcome page:', user);
       // إذا كان المستخدم لديه اسم مخصص، أعد توجيهه للصفحة الرئيسية
-      if (user.name && user.name !== user.email?.split('@')[0] && user.name.length >= 3) {
+      const emailPrefix = user.email?.split('@')[0] || '';
+      const hasCustomName = user.name && 
+                           user.name !== emailPrefix && 
+                           user.name !== user.email &&
+                           user.name.length >= 3;
+      
+      if (hasCustomName) {
         console.log('User has custom name, redirecting to home...');
         router.push('/');
       }
@@ -40,6 +47,10 @@ export default function WelcomePage() {
     if (!displayName.trim()) {
       setError('يرجى إدخال اسمك المفضل');
       return;
+    }
+
+    if (success) {
+      return; // منع إرسال النموذج مرة أخرى إذا كان في حالة نجاح
     }
 
     setIsSubmitting(true);
@@ -59,8 +70,14 @@ export default function WelcomePage() {
       // تحديث البيانات في السياق المحلي
       await updateProfile({ name: displayName.trim() });
 
+      // إظهار رسالة النجاح
+      setSuccess(true);
+      console.log('Name updated successfully, redirecting to home...');
+      
       // إعادة التوجيه إلى الصفحة الرئيسية
-      router.push('/');
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 2000);
     } catch (err) {
       console.error('خطأ في حفظ الاسم:', err);
       setError('حدث خطأ في حفظ الاسم. يرجى المحاولة مرة أخرى.');
@@ -195,6 +212,17 @@ export default function WelcomePage() {
                 {error && (
                   <div className="bg-red-900/30 border border-red-500/50 rounded-xl p-4 text-red-300 text-center max-w-md mx-auto" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                     {error}
+                  </div>
+                )}
+
+                {success && (
+                  <div className="bg-green-900/30 border border-green-500/50 rounded-xl p-4 text-green-300 text-center max-w-md mx-auto" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <span className="text-2xl">✅</span>
+                      <span className="text-lg font-bold">تم حفظ اسمك بنجاح!</span>
+                    </div>
+                    <p className="text-sm">جاري توجيهك إلى الصفحة الرئيسية...</p>
+                    <div className="w-6 h-6 border-2 border-green-300 border-t-transparent rounded-full animate-spin mx-auto mt-2"></div>
                   </div>
                 )}
 
