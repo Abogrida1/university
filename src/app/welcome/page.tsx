@@ -28,12 +28,12 @@ export default function WelcomePage() {
       if (!user && !hasRedirected) {
         console.log('No user found after timeout, redirecting to login...');
         setHasRedirected(true);
-        router.push('/login');
+        window.location.href = '/login';
       }
-    }, 2000);
+    }, 3000);
 
     return () => clearTimeout(timer);
-  }, [user, router, hasRedirected]);
+  }, [user, hasRedirected]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,21 +102,28 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4">
-      <div className={`max-w-md w-full bg-gray-800/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-gray-700/50 transition-all duration-1000 ${
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+      
+      <div className={`max-w-md w-full bg-gray-800/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-gray-700/50 transition-all duration-1000 relative z-10 ${
         showAnimation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}>
         
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-cyan-500/30">
-            <span className="text-4xl">🎉</span>
+            <span className="text-4xl">🎓</span>
           </div>
           <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-            مرحباً بك في Our Goal
+            مرحباً بك في University Planner
           </h1>
           <p className="text-gray-300" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-            منصة تعليمية متطورة لاختبار القدرات
+            منصة المواد الدراسية لطلاب كلية الحاسبات والمعلومات
           </p>
         </div>
 
@@ -124,10 +131,10 @@ export default function WelcomePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <h2 className="text-xl font-bold text-white mb-4 text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-              أخبرنا عن نفسك
+              دعنا نتعرف عليك! 👋
             </h2>
             <p className="text-gray-300 text-center mb-6 text-sm" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-              ما الاسم الذي تود أن نناديك به؟
+              ما الاسم الذي تود أن نناديك به في منصتنا؟
             </p>
             
             <div>
@@ -189,24 +196,24 @@ export default function WelcomePage() {
         {/* Features */}
         <div className="mt-8 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 rounded-xl p-4 border border-cyan-500/30">
           <h3 className="text-sm font-bold text-white mb-3 text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-            ما ينتظرك:
+            ما ينتظرك في منصتنا:
           </h3>
           <div className="grid grid-cols-2 gap-3 text-xs text-gray-300" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             <div className="flex items-center gap-2">
               <span>📚</span>
-              <span>مواد دراسية</span>
+              <span>مواد جامعية</span>
             </div>
             <div className="flex items-center gap-2">
-              <span>📊</span>
-              <span>تتبع التقدم</span>
+              <span>📋</span>
+              <span>جداول المحاضرات</span>
             </div>
             <div className="flex items-center gap-2">
-              <span>👥</span>
-              <span>مجتمع متعاون</span>
+              <span>📄</span>
+              <span>ملفات PDF</span>
             </div>
             <div className="flex items-center gap-2">
               <span>🎯</span>
-              <span>أدوات ذكية</span>
+              <span>تتبع التقدم</span>
             </div>
           </div>
         </div>
