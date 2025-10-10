@@ -24,7 +24,7 @@ const nextConfig = {
   },
   
   // Output configuration for Render
-  output: 'standalone',
+  // output: 'standalone', // Commented out for Render compatibility
   
   // Asset prefix for Render
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
