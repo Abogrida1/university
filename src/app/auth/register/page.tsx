@@ -394,20 +394,6 @@ export default function RegisterPage() {
                   <span className="bg-gray-900 text-gray-400 px-4 text-xs sm:text-sm uppercase tracking-wider relative z-10" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>أو</span>
                 </div>
 
-                {/* Saved Selections Info */}
-                <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-3 mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="text-cyan-400 text-lg">ℹ️</div>
-                    <h4 className="text-cyan-300 text-sm font-medium" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                      سيتم حفظ اختياراتك
-                    </h4>
-                  </div>
-                  <div className="text-xs text-cyan-200 space-y-1" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                    <p>القسم: <span className="font-medium">{selectedData.department}</span></p>
-                    <p>السنة: <span className="font-medium">{selectedData.year}</span></p>
-                    <p>الترم: <span className="font-medium">{selectedData.term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}</span></p>
-                  </div>
-                </div>
 
                 {/* Google Login */}
                 <button
