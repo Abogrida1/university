@@ -87,7 +87,7 @@ export class UserService {
         .insert({
           email: userData.email,
           password_hash: passwordHash,
-          name: userData.firstName || userData.name,
+          name: userData.name || userData.email?.split('@')[0] || 'User',
           role: 'student',
           department: userData.department,
           year: userData.year,

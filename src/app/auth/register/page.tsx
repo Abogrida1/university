@@ -19,7 +19,6 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState<RegisterData>({
     email: '',
     password: '',
-    firstName: '',
     department: '',
     year: 1,
     term: 'FIRST'
@@ -83,7 +82,7 @@ export default function RegisterPage() {
     setError('');
     setEmailError('');
 
-    if (!formData.email || !formData.password || !formData.firstName) {
+    if (!formData.email || !formData.password) {
       setError('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
@@ -286,22 +285,6 @@ export default function RegisterPage() {
                     </div>
                   </div>
                 )}
-
-                {/* Name */}
-                <div>
-                  <label className="block text-gray-300 text-xs sm:text-sm font-bold mb-1 sm:mb-2 lg:mb-3">
-                    الاسم الأول *
-                  </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 lg:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-lg sm:rounded-xl lg:rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-sm sm:text-base lg:text-lg"
-                    placeholder="أدخل اسمك الأول"
-                    required
-                  />
-                </div>
 
                 {/* Email */}
                 <div>

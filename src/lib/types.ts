@@ -88,8 +88,7 @@ export interface LoginCredentials {
 export interface RegisterData {
   email: string;
   password: string;
-  firstName: string;
-  name?: string; // للحفاظ على التوافق مع الكود القديم
+  name?: string; // سيتم تعيينه في صفحة الترحيب
   department: string;
   year: number;
   term: 'FIRST' | 'SECOND';
