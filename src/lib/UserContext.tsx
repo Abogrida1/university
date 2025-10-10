@@ -114,6 +114,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       
       // تسجيل الدخول بجوجل عبر Supabase
+      console.log('🚀 Starting Google OAuth...');
+      console.log('📍 Redirect URL: https://university-3-cuxd.onrender.com/auth/callback');
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -121,10 +124,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
-          },
-          skipBrowserRedirect: false
+          }
         }
       });
+
+      console.log('📊 OAuth Response:', { data, error });
 
       if (error) {
         console.error('خطأ في تسجيل الدخول بجوجل:', error);
