@@ -128,13 +128,12 @@ export default function AuthCallbackPage() {
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
           setSuccess(true);
           
-          // التحقق من أن المستخدم جديد
+          // التحقق من أن المستخدم جديد - تبسيط المنطق
           const emailPrefix = userProfile.email?.split('@')[0] || '';
           const isNewUser = !userProfile.name || 
                            userProfile.name === emailPrefix || 
                            userProfile.name === userProfile.email ||
-                           userProfile.name.length < 3 ||
-                           userProfile.name.includes('@');
+                           userProfile.name.length < 3;
           
           console.log('=== USER PROFILE DEBUG ===');
           console.log('User profile:', userProfile);
@@ -144,16 +143,14 @@ export default function AuthCallbackPage() {
           console.log('Is new user:', isNewUser);
           console.log('========================');
           
-          // استخدام window.location للتأكد من التوجيه
-          setTimeout(() => {
-            if (isNewUser) {
-              console.log('🔄 Redirecting to welcome page...');
-              window.location.href = '/welcome';
-            } else {
-              console.log('🏠 Redirecting to home page...');
-              window.location.href = '/';
-            }
-          }, 2000);
+          // توجيه فوري بدون انتظار
+          if (isNewUser) {
+            console.log('🔄 New user - redirecting to welcome page...');
+            window.location.href = '/welcome';
+          } else {
+            console.log('🏠 Existing user - redirecting to home page...');
+            window.location.href = '/';
+          }
         } else {
           console.error('فشل في إنشاء الجلسة');
           setError('خطأ في إنشاء الجلسة');

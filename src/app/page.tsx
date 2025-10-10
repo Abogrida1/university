@@ -20,15 +20,14 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [scheduleRefreshTrigger, setScheduleRefreshTrigger] = useState(0);
 
-  // Check if user needs to go to welcome page
+  // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود
   useEffect(() => {
     if (user) {
       const emailPrefix = user.email?.split('@')[0] || '';
       const isNewUser = !user.name || 
                        user.name === emailPrefix || 
                        user.name === user.email ||
-                       user.name.length < 3 ||
-                       user.name.includes('@');
+                       user.name.length < 3;
       
       console.log('=== HOME PAGE USER CHECK ===');
       console.log('User:', user);
@@ -39,7 +38,10 @@ export default function HomePage() {
       
       if (isNewUser) {
         console.log('New user detected, redirecting to welcome page...');
-        window.location.href = '/welcome';
+        // تأخير قليل لتجنب التوجيه السريع
+        setTimeout(() => {
+          window.location.href = '/welcome';
+        }, 500);
       }
     }
   }, [user]);

@@ -13,6 +13,7 @@ export default function WelcomePage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [hasRedirected, setHasRedirected] = useState(false);
 
   useEffect(() => {
     // تشغيل الرسوم المتحركة بعد تحميل الصفحة
@@ -22,11 +23,17 @@ export default function WelcomePage() {
 
   // إعادة توجيه المستخدمين غير المسجلين فقط
   useEffect(() => {
-    if (!user) {
-      console.log('No user found, redirecting to login...');
-      router.push('/login');
-    }
-  }, [user, router]);
+    // انتظار قليل للتأكد من تحميل بيانات المستخدم
+    const timer = setTimeout(() => {
+      if (!user && !hasRedirected) {
+        console.log('No user found after timeout, redirecting to login...');
+        setHasRedirected(true);
+        router.push('/login');
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [user, router, hasRedirected]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
