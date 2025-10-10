@@ -27,7 +27,15 @@ export default function HomePage() {
       const isNewUser = !user.name || 
                        user.name === emailPrefix || 
                        user.name === user.email ||
-                       user.name.length < 3;
+                       user.name.length < 3 ||
+                       user.name.includes('@');
+      
+      console.log('=== HOME PAGE USER CHECK ===');
+      console.log('User:', user);
+      console.log('User name:', user.name);
+      console.log('Email prefix:', emailPrefix);
+      console.log('Is new user:', isNewUser);
+      console.log('============================');
       
       if (isNewUser) {
         console.log('New user detected, redirecting to welcome page...');

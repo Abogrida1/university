@@ -27,13 +27,22 @@ export default function WelcomePage() {
       console.log('No user found, redirecting to login...');
       router.push('/login');
     } else {
+      console.log('=== WELCOME PAGE USER DEBUG ===');
       console.log('User found in welcome page:', user);
+      console.log('User name:', user.name);
+      console.log('User email:', user.email);
+      
       // إذا كان المستخدم لديه اسم مخصص، أعد توجيهه للصفحة الرئيسية
       const emailPrefix = user.email?.split('@')[0] || '';
       const hasCustomName = user.name && 
                            user.name !== emailPrefix && 
                            user.name !== user.email &&
-                           user.name.length >= 3;
+                           user.name.length >= 3 &&
+                           !user.name.includes('@');
+      
+      console.log('Email prefix:', emailPrefix);
+      console.log('Has custom name:', hasCustomName);
+      console.log('===============================');
       
       if (hasCustomName) {
         console.log('User has custom name, redirecting to home...');
