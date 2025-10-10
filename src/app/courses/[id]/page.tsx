@@ -1,17 +1,14 @@
 import Link from 'next/link';
 import { materialsService } from '@/lib/supabaseServiceFixed';
 
-// Generate static params from database
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Generate static params (return empty to avoid build-time Supabase calls)
 export async function generateStaticParams() {
-  try {
-    const materials = await materialsService.getAll();
-    return materials.map((material) => ({
-      id: material.id,
-    }));
-  } catch (error) {
-    console.error('Error generating static params:', error);
-    return [];
-  }
+  // Return empty array to avoid Supabase connection during build
+  // Dynamic routes will be generated on-demand
+  return [];
 }
 
 export default async function CoursePage({ params }: { params: { id: string } }) {

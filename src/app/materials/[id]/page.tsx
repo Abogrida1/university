@@ -8,20 +8,9 @@ export const dynamic = 'force-dynamic';
 
 // Generate static params (required for Next.js)
 export async function generateStaticParams() {
-  try {
-    // Try to get materials from Supabase
-    const materials = await materialsService.getAll();
-    console.log('📚 Generating static params for materials:', materials.length);
-    
-    // Return materials with their IDs
-    return materials.map((material) => ({
-      id: material.id,
-    }));
-  } catch (error) {
-    console.error('❌ Error generating static params:', error);
-    // Return empty array if there's an error
-    return [];
-  }
+  // Return empty array to avoid Supabase connection during build
+  // Dynamic routes will be generated on-demand
+  return [];
 }
 
 export default async function MaterialPage({ 
