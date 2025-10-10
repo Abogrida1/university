@@ -13,7 +13,7 @@ const nextConfig = {
   // Disable static optimization for dynamic routes
   trailingSlash: false,
   
-  // Disable ESLint during build for Vercel deployment
+  // Disable ESLint during build
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -22,6 +22,12 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  
+  // Output configuration for Render
+  output: 'standalone',
+  
+  // Asset prefix for Render
+  assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
   
   // Enable dynamic imports
   webpack: (config) => {

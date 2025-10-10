@@ -5,10 +5,7 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
+    healthCheckPath: /
     envVars:
-      - key: NEXT_PUBLIC_SUPABASE_URL
-        value: https://cuhztjuphamulkgfhchcp.supabase.co
-      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1aHp0anVwaGFtdWxrZ2ZoaGNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3ODM1MTgsImV4cCI6MjA3NTM1OTUxOH0.SCSNk7jvn13sBkv5458m52z4f1962dbl85eUFFylTaE
       - key: NODE_ENV
         value: production
