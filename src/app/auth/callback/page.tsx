@@ -124,13 +124,20 @@ export default function AuthCallbackPage() {
           // حفظ الجلسة في localStorage
           localStorage.setItem('session_token', sessionResult.sessionToken);
           
-          // إعادة توجيه إلى الصفحة الرئيسية
+          // إعادة توجيه إلى الصفحة الرئيسية أو صفحة الترحيب
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
           setSuccess(true);
           
+          // التحقق من أن المستخدم جديد (لا يوجد اسم محدد)
+          const isNewUser = !userProfile.name || userProfile.name === userProfile.email?.split('@')[0];
+          
           // استخدام window.location للتأكد من التوجيه
           setTimeout(() => {
-            window.location.href = '/';
+            if (isNewUser) {
+              window.location.href = '/welcome';
+            } else {
+              window.location.href = '/';
+            }
           }, 2000);
         } else {
           console.error('فشل في إنشاء الجلسة');
