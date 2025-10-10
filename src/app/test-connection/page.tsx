@@ -12,9 +12,10 @@ export default function TestConnectionPage() {
       try {
         // Test 1: Check environment variables
         const envVars = {
-          NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Present' : 'Missing',
+          NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'Hardcoded',
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Present' : 'Hardcoded',
           NODE_ENV: process.env.NODE_ENV,
+          SUPABASE_URL_USED: 'https://cuhztjuphamulkgfhchcp.supabase.co',
         };
 
         setDetails(prev => ({ ...prev, envVars }));
