@@ -343,7 +343,6 @@ export default function HomePage() {
           {/* User Welcome */}
           {user && (
             <div className="bg-gradient-to-r from-green-900/30 via-emerald-900/30 to-teal-900/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto border border-green-500/30 shadow-2xl shadow-green-500/20 mb-4 sm:mb-6">
-              <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">👋</div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4">مرحباً {user.name}</h2>
               <p className="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg">
                 {user.department && user.year && user.term 
