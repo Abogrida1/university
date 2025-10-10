@@ -1,4 +1,4 @@
-# 🚀 دليل النشر على Vercel - خطوة بخطوة
+# 🚀 دليل النشر على Render - خطوة بخطوة
 
 ## 📋 المتطلبات المسبقة
 
@@ -6,8 +6,8 @@
 - ✅ حساب GitHub نشط
 - ✅ المشروع محفوظ في repository
 
-### 2. حساب Vercel
-- ✅ حساب Vercel (يمكن التسجيل بـ GitHub)
+### 2. حساب Render
+- ✅ حساب Render (يمكن التسجيل بـ GitHub)
 
 ### 3. إعداد Supabase
 - ✅ مشروع Supabase نشط
@@ -22,7 +22,7 @@
 ```
 ✅ package.json
 ✅ next.config.js
-✅ vercel.json
+✅ render.yaml
 ✅ .gitignore
 ✅ src/ (مجلد الكود)
 ```
@@ -38,14 +38,11 @@ npm start
 
 ## 🌐 الخطوة 2: رفع المشروع على GitHub
 
-### 2.1 إنشاء Repository جديد
+### 2.1 إنشاء Repository جديد (إذا لم يكن موجود)
 ```bash
-git init
 git add .
-git commit -m "Initial commit - Ready for Vercel"
-git branch -M main
-git remote add origin https://github.com/yourusername/your-repo-name.git
-git push -u origin main
+git commit -m "Ready for Render deployment"
+git push origin main
 ```
 
 ### 2.2 التأكد من الرفع
@@ -55,34 +52,45 @@ git push -u origin main
 
 ---
 
-## 🚀 الخطوة 3: النشر على Vercel
+## 🚀 الخطوة 3: النشر على Render
 
-### 3.1 تسجيل الدخول لـ Vercel
-1. اذهب لـ [vercel.com](https://vercel.com)
+### 3.1 تسجيل الدخول لـ Render
+1. اذهب لـ [render.com](https://render.com)
 2. اضغط "Sign Up"
 3. اختر "Continue with GitHub"
 4. امنح الصلاحيات المطلوبة
 
 ### 3.2 إنشاء مشروع جديد
-1. اضغط "New Project"
-2. اختر repository الخاص بك
-3. اضغط "Import"
+1. اضغط "New +"
+2. اختر "Web Service"
+3. اضغط "Connect GitHub repository"
+4. اختر repository الخاص بك: `Abogrida1/university`
 
-### 3.3 إعداد Environment Variables
-في صفحة الإعداد، أضف:
+### 3.3 إعداد المشروع
+1. **Name**: `university-materials`
+2. **Environment**: `Node`
+3. **Build Command**: `npm install && npm run build`
+4. **Start Command**: `npm start`
+5. **Plan**: `Free`
+
+### 3.4 إعداد Environment Variables
+في قسم "Environment Variables"، أضف:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL
-https://your-project-id.supabase.co
+https://cuhztjuphamulkgfhchcp.supabase.co
 
 NEXT_PUBLIC_SUPABASE_ANON_KEY
-your-supabase-anon-key
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1aHp0anVwaGFtdWxrZ2ZoaGNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3ODM1MTgsImV4cCI6MjA3NTM1OTUxOH0.SCSNk7jvn13sBkv5458m52z4f1962dbl85eUFFylTaE
+
+NODE_ENV
+production
 ```
 
-### 3.4 النشر
-1. اضغط "Deploy"
-2. انتظر انتهاء البناء (2-5 دقائق)
-3. ستحصل على رابط مثل: `your-site.vercel.app`
+### 3.5 النشر
+1. اضغط "Create Web Service"
+2. انتظر انتهاء البناء (5-10 دقائق)
+3. ستحصل على رابط مثل: `your-app-name.onrender.com`
 
 ---
 
@@ -107,13 +115,13 @@ your-supabase-anon-key
 ## 🔧 الخطوة 5: إعدادات إضافية
 
 ### 5.1 Domain مخصص (اختياري)
-1. اذهب لـ Project Settings
-2. اضغط "Domains"
+1. اذهب لـ Service Settings
+2. اضغط "Custom Domains"
 3. أضف domain الخاص بك
 4. اتبع التعليمات لإعداد DNS
 
 ### 5.2 إعدادات الأداء
-- ✅ Vercel يحسن الأداء تلقائياً
+- ✅ Render يحسن الأداء تلقائياً
 - ✅ CDN عالمي مفعل
 - ✅ ضغط Gzip مفعل
 - ✅ SSL مفعل
@@ -126,7 +134,7 @@ your-supabase-anon-key
 **الحل:**
 1. تحقق من Environment Variables
 2. تأكد من صحة مفاتيح Supabase
-3. راجع Build Logs في Vercel
+3. راجع Build Logs في Render
 
 ### مشكلة: البيانات لا تظهر
 **الحل:**
@@ -144,7 +152,7 @@ your-supabase-anon-key
 
 ## 📊 مراقبة الموقع
 
-### Vercel Analytics
+### Render Dashboard
 - ✅ مراقبة الزوار
 - ✅ مراقبة الأداء
 - ✅ مراقبة الأخطاء
@@ -160,11 +168,11 @@ your-supabase-anon-key
 
 موقعك الآن متاح على الإنترنت! 
 
-**الرابط:** `https://your-site.vercel.app`
+**الرابط:** `https://your-app-name.onrender.com`
 
 ### نصائح للمستقبل:
 - ✅ كل push للـ GitHub سيحدث الموقع تلقائياً
-- ✅ استخدم Vercel Analytics لمراقبة الأداء
+- ✅ استخدم Render Dashboard لمراقبة الأداء
 - ✅ احتفظ بنسخ احتياطية من Supabase
 - ✅ راقب استخدام Bandwidth
 
@@ -173,7 +181,7 @@ your-supabase-anon-key
 ## 📞 الدعم
 
 إذا واجهت أي مشاكل:
-1. راجع Build Logs في Vercel
+1. راجع Build Logs في Render
 2. تحقق من Supabase Dashboard
 3. راجع هذا الدليل مرة أخرى
 

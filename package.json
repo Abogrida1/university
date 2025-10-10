@@ -8,11 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:e2e": "playwright test",
-    "postbuild": "next-sitemap",
-    "vercel-build": "next build",
-    "pre-deploy": "node pre-deploy-check.js",
-    "deploy-check": "npm run pre-deploy"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.74.0",
