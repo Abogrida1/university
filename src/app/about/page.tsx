@@ -30,52 +30,49 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-16">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-2xl mb-8 shadow-2xl shadow-cyan-500/25">
-            <span className="text-4xl">🎓</span>
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
+            <span className="text-2xl sm:text-3xl lg:text-4xl">🎓</span>
           </div>
-          <h1 className="text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4 sm:mb-6" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             من نحن
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             منصة المواد الدراسية الرائدة لطلاب كلية الحاسبات والمعلومات - جامعة الزقازيق
           </p>
         </div>
 
         {/* About Content */}
-        <div className="mb-16">
+        <div className="mb-8 sm:mb-12 lg:mb-16">
           <style jsx>{`
             @keyframes blink {
               50% { border-color: transparent; }
             }
           `}</style>
-          <section style={{fontFamily: 'Cairo, sans-serif', direction: 'rtl', textAlign: 'right', background: 'linear-gradient(135deg, #1e293b, #334155)', padding: '60px 20px'}}>
-            <div style={{maxWidth: '900px', margin: '0 auto', background: 'rgba(30, 41, 59, 0.8)', backdropFilter: 'blur(10px)', borderRadius: '25px', boxShadow: '0 8px 25px rgba(0,0,0,0.3)', border: '1px solid rgba(148, 163, 184, 0.2)', padding: '50px 40px'}}>
+          <section className="bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-gray-600/30">
+            <div className="max-w-4xl mx-auto">
               
-              <h2 style={{textAlign: 'center', fontSize: '2.5rem', color: '#06b6d4', marginBottom: '30px', background: 'linear-gradient(45deg, #06b6d4, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+              <h2 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-cyan-400 mb-6 sm:mb-8" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                 من نحن
               </h2>
 
               <div 
                 id="typing" 
+                className="text-base sm:text-lg lg:text-xl leading-relaxed sm:leading-loose whitespace-pre-wrap border-r-2 border-cyan-400 pr-2 text-gray-200"
                 style={{
-                  fontSize: '1.2rem',
-                  lineHeight: '2',
-                  whiteSpace: 'pre-wrap',
-                  borderRight: '3px solid #06b6d4',
-                  paddingRight: '5px',
-                  animation: 'blink 0.7s infinite',
-                  color: '#e2e8f0'
+                  fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif',
+                  direction: 'rtl',
+                  textAlign: 'right'
                 }}
               >
                 {displayedText}
               </div>
 
-              <div style={{textAlign: 'center', marginTop: '40px'}}>
-                <hr style={{width: '60px', border: '2px solid #06b6d4', borderRadius: '5px', marginBottom: '15px'}}/>
-                <p style={{fontSize: '1rem', color: '#94a3b8'}}>
+              <div className="text-center mt-6 sm:mt-8 lg:mt-10">
+                <hr className="w-12 sm:w-16 border-2 border-cyan-400 rounded mx-auto mb-3 sm:mb-4"/>
+                <p className="text-sm sm:text-base text-gray-400" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                   ❤️ صُنع بحب من طلاب الأمن السيبراني – جامعة الزقازيق
                 </p>
               </div>
@@ -87,20 +84,24 @@ export default function AboutPage() {
 
         {/* CTA */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">انضم إلينا اليوم</h2>
-          <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            انضم إلينا اليوم
+          </h2>
+          <p className="text-gray-300 text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             ابدأ رحلتك التعليمية معنا واحصل على أفضل تجربة في الوصول للمواد الدراسية
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md sm:max-w-none mx-auto">
             <Link
               href="/auth/register"
-              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30 w-full sm:w-auto"
+              style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
             >
               إنشاء حساب جديد
             </Link>
             <Link
               href="/contact"
-              className="px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-2xl font-bold text-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg w-full sm:w-auto"
+              style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
             >
               تواصل معنا
             </Link>

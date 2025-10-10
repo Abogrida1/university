@@ -78,15 +78,23 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold text-white mb-4">غير مصرح لك بالوصول</h1>
-          <p className="text-gray-400 mb-6">يرجى تسجيل الدخول أولاً</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4">
+        <div className="text-center max-w-md mx-auto">
+          <div className="text-4xl sm:text-6xl mb-4">🔒</div>
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            غير مصرح لك بالوصول
+          </h1>
+          <p className="text-gray-400 mb-6 text-sm sm:text-base" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            يرجى تسجيل الدخول أولاً
+          </p>
           <button
             onClick={() => router.push('/')}
-            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base"
+            style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
           >
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+            </svg>
             العودة للصفحة الرئيسية
           </button>
         </div>
@@ -96,40 +104,45 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-      <div className="container mx-auto px-4 py-10">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-10">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-2xl mb-8 shadow-2xl shadow-cyan-500/25">
-              <span className="text-4xl">👤</span>
+          <div className="text-center mb-8 sm:mb-10 lg:mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
+              <span className="text-2xl sm:text-3xl lg:text-4xl">👤</span>
             </div>
-            <h1 className="text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               الملف الشخصي
             </h1>
-            <p className="text-xl text-gray-300">إدارة حسابك ومعلوماتك الشخصية</p>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+              إدارة حسابك ومعلوماتك الشخصية
+            </p>
           </div>
 
           {/* Message */}
           {message && (
-            <div className={`mb-8 p-4 rounded-xl text-center ${
+            <div className={`mb-6 sm:mb-8 p-3 sm:p-4 rounded-xl text-center text-sm sm:text-base ${
               message.includes('نجاح') 
                 ? 'bg-green-900/30 border border-green-500/50 text-green-300' 
                 : 'bg-red-900/30 border border-red-500/50 text-red-300'
-            }`}>
+            }`} style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               {message}
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Profile Info */}
             <div className="lg:col-span-2">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-gray-700/50">
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-3xl font-bold text-white">معلومات الحساب</h2>
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-gray-700/50">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                    معلومات الحساب
+                  </h2>
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base w-full sm:w-auto"
+                      style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                     >
                       تعديل
                     </button>
@@ -137,27 +150,29 @@ export default function ProfilePage() {
                 </div>
 
                 {isEditing ? (
-                  <form onSubmit={handleUpdateProfile} className="space-y-6">
+                  <form onSubmit={handleUpdateProfile} className="space-y-4 sm:space-y-6">
                     <div>
-                      <label className="block text-gray-300 text-sm font-bold mb-2">
+                      <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         الاسم الكامل
                       </label>
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 text-sm font-bold mb-2">
+                      <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         القسم
                       </label>
                       <select
                         value={formData.department}
                         onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         {departments.map(dept => (
                           <option key={dept.value} value={dept.value}>
@@ -167,15 +182,16 @@ export default function ProfilePage() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-gray-300 text-sm font-bold mb-2">
+                        <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                           السنة الدراسية
                         </label>
                         <select
                           value={formData.year}
                           onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                          className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                          className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                          style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                         >
                           {[1,2,3,4].map(year => (
                             <option key={year} value={year}>
@@ -186,13 +202,14 @@ export default function ProfilePage() {
                       </div>
 
                       <div>
-                        <label className="block text-gray-300 text-sm font-bold mb-2">
+                        <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                           الفصل الدراسي
                         </label>
                         <select
                           value={formData.term}
                           onChange={(e) => setFormData({ ...formData, term: e.target.value as 'FIRST' | 'SECOND' })}
-                          className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                          className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                          style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                         >
                           {terms.map(term => (
                             <option key={term.value} value={term.value}>
@@ -203,11 +220,12 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <button
                         type="submit"
                         disabled={loading}
-                        className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 disabled:opacity-50"
+                        className="px-4 sm:px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         {loading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
                       </button>
@@ -222,42 +240,61 @@ export default function ProfilePage() {
                             term: user.term || 'FIRST'
                           });
                         }}
-                        className="px-6 py-3 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-colors"
+                        className="px-4 sm:px-6 py-3 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-colors text-sm sm:text-base w-full sm:w-auto"
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         إلغاء
                       </button>
                     </div>
                   </form>
                 ) : (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div>
-                        <label className="block text-gray-400 text-sm font-bold mb-2">الاسم الكامل</label>
-                        <p className="text-white text-lg">{user.name}</p>
+                        <label className="block text-gray-400 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          الاسم الكامل
+                        </label>
+                        <p className="text-white text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          {user.name}
+                        </p>
                       </div>
                       <div>
-                        <label className="block text-gray-400 text-sm font-bold mb-2">البريد الإلكتروني</label>
-                        <p className="text-white text-lg">{user.email}</p>
+                        <label className="block text-gray-400 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          البريد الإلكتروني
+                        </label>
+                        <p className="text-white text-base sm:text-lg break-all" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          {user.email}
+                        </p>
                       </div>
                       <div>
-                        <label className="block text-gray-400 text-sm font-bold mb-2">القسم</label>
-                        <p className="text-white text-lg">
+                        <label className="block text-gray-400 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          القسم
+                        </label>
+                        <p className="text-white text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                           {departments.find(d => d.value === user.department)?.label || user.department}
                         </p>
                       </div>
                       <div>
-                        <label className="block text-gray-400 text-sm font-bold mb-2">السنة الدراسية</label>
-                        <p className="text-white text-lg">السنة {user.year}</p>
+                        <label className="block text-gray-400 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          السنة الدراسية
+                        </label>
+                        <p className="text-white text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          السنة {user.year}
+                        </p>
                       </div>
                       <div>
-                        <label className="block text-gray-400 text-sm font-bold mb-2">الفصل الدراسي</label>
-                        <p className="text-white text-lg">
+                        <label className="block text-gray-400 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          الفصل الدراسي
+                        </label>
+                        <p className="text-white text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                           {terms.find(t => t.value === user.term)?.label || user.term}
                         </p>
                       </div>
                       <div>
-                        <label className="block text-gray-400 text-sm font-bold mb-2">نوع الحساب</label>
-                        <p className="text-white text-lg">
+                        <label className="block text-gray-400 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                          نوع الحساب
+                        </label>
+                        <p className="text-white text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                           {user.role === 'student' ? 'طالب' : user.role === 'admin' ? 'مدير' : 'مدير رئيسي'}
                         </p>
                       </div>
@@ -268,53 +305,59 @@ export default function ProfilePage() {
             </div>
 
             {/* Actions */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Change Password */}
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-gray-700/50">
-                <h3 className="text-xl font-bold text-white mb-4">كلمة المرور</h3>
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl border border-gray-700/50">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                  كلمة المرور
+                </h3>
                 {isChangingPassword ? (
-                  <form onSubmit={handleChangePassword} className="space-y-4">
+                  <form onSubmit={handleChangePassword} className="space-y-3 sm:space-y-4">
                     <div>
-                      <label className="block text-gray-300 text-sm font-bold mb-2">
+                      <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         كلمة المرور الحالية
                       </label>
                       <input
                         type="password"
                         value={passwordData.currentPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
                         required
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 text-sm font-bold mb-2">
+                      <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         كلمة المرور الجديدة
                       </label>
                       <input
                         type="password"
                         value={passwordData.newPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
                         required
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 text-sm font-bold mb-2">
+                      <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         تأكيد كلمة المرور الجديدة
                       </label>
                       <input
                         type="password"
                         value={passwordData.confirmPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
                         required
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                       <button
                         type="submit"
                         disabled={loading}
-                        className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 disabled:opacity-50 text-sm"
+                        className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         تغيير
                       </button>
@@ -324,7 +367,8 @@ export default function ProfilePage() {
                           setIsChangingPassword(false);
                           setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
                         }}
-                        className="px-4 py-2 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-colors text-sm"
+                        className="px-4 py-2 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-colors text-sm sm:text-base w-full sm:w-auto"
+                        style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         إلغاء
                       </button>
@@ -333,7 +377,8 @@ export default function ProfilePage() {
                 ) : (
                   <button
                     onClick={() => setIsChangingPassword(true)}
-                    className="w-full px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl font-bold hover:from-orange-600 hover:to-red-700 transition-all duration-300"
+                    className="w-full px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl font-bold hover:from-orange-600 hover:to-red-700 transition-all duration-300 text-sm sm:text-base"
+                    style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                   >
                     تغيير كلمة المرور
                   </button>
@@ -341,11 +386,14 @@ export default function ProfilePage() {
               </div>
 
               {/* Logout */}
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-gray-700/50">
-                <h3 className="text-xl font-bold text-white mb-4">الحساب</h3>
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl border border-gray-700/50">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                  الحساب
+                </h3>
                 <button
                   onClick={handleLogout}
-                  className="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl font-bold hover:from-red-600 hover:to-pink-700 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl font-bold hover:from-red-600 hover:to-pink-700 transition-all duration-300 text-sm sm:text-base"
+                  style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                 >
                   تسجيل الخروج
                 </button>

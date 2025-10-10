@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,6 +102,108 @@ a {
   margin-left: 0;
 }
 
+/* Neon Login Form Animations */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px); 
+  }
+  33% { 
+    transform: translateY(-20px) translateX(10px); 
+  }
+  66% { 
+    transform: translateY(10px) translateX(-10px); 
+  }
+}
+
+@keyframes neonPulse {
+  from { 
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3)); 
+  }
+  to { 
+    filter: drop-shadow(0 0 30px rgba(0, 255, 136, 0.6)); 
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes successPulse {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-neon-pulse {
+  animation: neonPulse 2s ease-in-out infinite alternate;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-success-pulse {
+  animation: successPulse 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Floating Label Effect */
+.floating-label {
+  position: relative;
+}
+
+.floating-label input:focus + label,
+.floating-label input:valid + label {
+  transform: translateY(-32px) translateX(4px) scale(0.85);
+  color: #00ff88;
+  font-weight: 500;
+}
+
+.floating-label input:focus ~ .input-line {
+  width: 100%;
+}
+
+/* Neon Button Glow Effect */
+.neon-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neon-button:hover::before {
+  left: 100%;
+}
+
+/* Arabic Font Improvements */
+body {
+  font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Better Arabic text rendering */
+h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, select, label {
+  font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+}
+
 /* Mobile-specific improvements */
 @media (max-width: 640px) {
   /* Improve touch targets */
@@ -138,5 +242,30 @@ a {
   /* Improve card spacing */
   .grid.gap-4 > * {
     margin: 0 2px;
+  }
+  
+  /* Improve form inputs on mobile */
+  input[type="email"], input[type="password"], input[type="text"] {
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+  
+  /* Improve form labels */
+  label {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  /* Improve form spacing */
+  .space-y-4 > * + * {
+    margin-top: 16px;
+  }
+  
+  /* Improve button sizing */
+  button {
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 12px;
   }
 }

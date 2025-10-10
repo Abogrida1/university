@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { LoginCredentials } from '@/lib/types';
 
 export default function LoginPage() {
-  const { user, login, loading } = useUser();
+  const { user, login, loginWithGoogle, loading } = useUser();
   const router = useRouter();
   const [formData, setFormData] = useState<LoginCredentials>({
     email: '',
@@ -15,8 +15,9 @@ export default function LoginPage() {
   });
   const [error, setError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // إعادة توجيه المستخدمين المسجلين
+  // Redirect logged-in users
   useEffect(() => {
     if (user) {
       router.push('/');
@@ -26,9 +27,11 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsSubmitting(true);
 
     if (!formData.email || !formData.password) {
       setError('يرجى ملء جميع الحقول');
+      setIsSubmitting(false);
       return;
     }
 
@@ -38,6 +41,7 @@ export default function LoginPage() {
     } else {
       setError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
     }
+    setIsSubmitting(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,319 +51,207 @@ export default function LoginPage() {
     });
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const success = await loginWithGoogle();
+      if (!success) {
+        setError('خطأ في تسجيل الدخول بجوجل');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setError('خطأ في تسجيل الدخول بجوجل');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center overflow-hidden p-4">
-      <style jsx>{`
-        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500&display=swap");
-        
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: "Tajawal", sans-serif;
-        }
-        
-        .ring {
-          position: relative;
-          width: 100%;
-          max-width: 500px;
-          height: 500px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        
-        .ring i {
-          position: absolute;
-          inset: 0;
-          border: 2px solid transparent;
-          transition: 0.5s;
-        }
-        
-        .ring i:nth-child(1) {
-          border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-          animation: animate 6s linear infinite;
-          border-color: rgba(0, 255, 10, 0.3);
-        }
-        
-        .ring i:nth-child(2) {
-          border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
-          animation: animate 4s linear infinite;
-          border-color: rgba(255, 0, 87, 0.3);
-        }
-        
-        .ring i:nth-child(3) {
-          border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
-          animation: animate2 10s linear infinite;
-          border-color: rgba(255, 244, 68, 0.3);
-        }
-        
-        .ring:hover i {
-          border-color: var(--clr);
-          filter: drop-shadow(0 0 15px var(--clr));
-        }
-        
-        @keyframes animate {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-        
-        @keyframes animate2 {
-          0% {
-            transform: rotate(360deg);
-          }
-          100% {
-            transform: rotate(0deg);
-          }
-        }
-        
-        .login {
-          position: absolute;
-          width: 100%;
-          max-width: 300px;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          gap: 25px;
-          padding: 20px;
-        }
-        
-        .login h2 {
-          font-size: 2em;
-          color: #fff;
-          text-align: center;
-          margin-bottom: 10px;
-        }
-        
-        .login .inputBx {
-          position: relative;
-          width: 100%;
-          margin-bottom: 15px;
-        }
-        
-        .login .inputBx input {
-          position: relative;
-          width: 100%;
-          padding: 15px 20px;
-          background: transparent;
-          border: 2px solid #fff;
-          border-radius: 40px;
-          font-size: 1.1em;
-          color: #fff;
-          box-shadow: none;
-          outline: none;
-          transition: all 0.3s ease;
-        }
-        
-        .login .inputBx input:focus {
-          border-color: #ff357a;
-          box-shadow: 0 0 10px rgba(255, 53, 122, 0.3);
-        }
-        
-        .login .inputBx input[type="submit"] {
-          width: 100%;
-          background: transparent;
-          border: 2px solid #fff;
-          cursor: pointer;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          color: #fff;
-        }
-        
-        .login .inputBx input[type="submit"]:hover {
-          background: linear-gradient(45deg, #ff357a, #fff172);
-          border-color: #ff357a;
-          transform: scale(1.05);
-        }
-        
-        .login .inputBx input[type="submit"]:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          transform: none;
-        }
-        
-        .login .inputBx input::placeholder {
-          color: rgba(255, 255, 255, 0.75);
-        }
-        
-        .login .links {
-          position: relative;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 10px;
-          margin-top: 10px;
-        }
-        
-        .login .links a {
-          color: #fff;
-          text-decoration: none;
-          font-size: 0.9em;
-          transition: all 0.3s ease;
-          padding: 10px 20px;
-          border-radius: 25px;
-          border: 2px solid #fff;
-          background: transparent;
-          text-align: center;
-          min-width: 120px;
-        }
-        
-        .login .links a:hover {
-          background: linear-gradient(45deg, #ff357a, #fff172);
-          border-color: #ff357a;
-          transform: scale(1.05);
-          box-shadow: 0 4px 15px rgba(255, 53, 122, 0.3);
-        }
-        
-        .error-message {
-          background: rgba(255, 0, 87, 0.2);
-          border: 1px solid #ff0057;
-          color: #fff;
-          padding: 12px 20px;
-          border-radius: 20px;
-          font-size: 0.9em;
-          text-align: center;
-          margin-bottom: 15px;
-          animation: shake 0.5s ease-in-out;
-          width: 100%;
-        }
-        
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        
-        .password-toggle {
-          position: absolute;
-          right: 15px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          color: rgba(255, 255, 255, 0.75);
-          cursor: pointer;
-          font-size: 1.2em;
-          padding: 5px;
-        }
-        
-        .password-toggle:hover {
-          color: #fff;
-        }
-        
-        @media (max-width: 768px) {
-          .ring {
-            height: 400px;
-            max-width: 350px;
-          }
-          
-          .login {
-            max-width: 280px;
-            gap: 20px;
-            padding: 15px;
-          }
-          
-          .login h2 {
-            font-size: 1.8em;
-          }
-          
-          .login .inputBx input {
-            padding: 12px 18px;
-            font-size: 1em;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .ring {
-            height: 350px;
-            max-width: 300px;
-          }
-          
-          .login {
-            max-width: 250px;
-            gap: 15px;
-            padding: 10px;
-          }
-          
-          .login h2 {
-            font-size: 1.6em;
-          }
-          
-          .login .inputBx input {
-            padding: 10px 15px;
-            font-size: 0.9em;
-          }
-          
-          .login .links {
-            flex-direction: column;
-            gap: 10px;
-          }
-        }
-      `}</style>
-      
-      <div className="ring">
-        <i style={{'--clr': '#00ff0a'}}></i>
-        <i style={{'--clr': '#ff0057'}}></i>
-        <i style={{'--clr': '#fff444'}}></i>
-        <div className="login">
-          <h2>تسجيل الدخول</h2>
-          
+    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[10%] -left-[10%] w-[300px] h-[300px] bg-gradient-radial from-cyan-500/8 to-transparent rounded-full animate-float"></div>
+        <div className="absolute top-[60%] -right-[5%] w-[200px] h-[200px] bg-gradient-radial from-blue-500/6 to-transparent rounded-full animate-float" style={{animationDelay: '-2s'}}></div>
+        <div className="absolute bottom-[20%] left-[10%] w-[150px] h-[150px] bg-gradient-radial from-purple-500/4 to-transparent rounded-full animate-float" style={{animationDelay: '-4s'}}></div>
+      </div>
+
+      {/* Login Container */}
+      <div className="w-full max-w-[400px] relative z-10">
+        {/* Login Card */}
+        <div className="bg-[#151520] border border-[#2a2a35] rounded-2xl p-6 shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_0_1px_rgba(255,255,255,0.05)] relative backdrop-blur-[20px] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4),0_0_0_1px_rgba(0,255,136,0.1),0_0_40px_rgba(0,255,136,0.1)] hover:-translate-y-0.5">
+          {/* Neon Top Border */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100"></div>
+
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="text-3xl mb-3 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent filter drop-shadow-[0_0_20px_rgba(0,255,136,0.3)] animate-pulse">
+              ⚡
+            </div>
+            <h2 className="text-2xl font-semibold text-white mb-2 tracking-tight" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>تسجيل الدخول</h2>
+            <p className="text-[#a0a0b0] text-sm" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>مرحباً بك مرة أخرى! 👋</p>
+          </div>
+
+          {/* Error Message */}
           {error && (
-            <div className="error-message">
-              {error}
+            <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <div className="text-red-400 text-lg">⚠️</div>
+                <p className="text-red-300 text-sm" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>{error}</p>
+              </div>
             </div>
           )}
           
-          <form onSubmit={handleSubmit}>
-              <div className="inputBx">
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Field */}
+            <div className="relative">
+              <div className="relative">
                 <input 
                   type="email" 
+                  id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="البريد الإلكتروني"
+                  className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md px-4 py-4 text-white text-sm transition-all duration-300 focus:border-cyan-400 focus:bg-[rgba(26,26,37,0.8)] focus:shadow-[0_0_0_3px_rgba(0,255,136,0.1),0_4px_20px_rgba(0,255,136,0.1)] outline-none"
+                  placeholder=" "
                   required
                 />
+                <label htmlFor="email" className="absolute left-4 top-4 text-[#a0a0b0] text-sm transition-all duration-300 pointer-events-none origin-left-top" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                  البريد الإلكتروني
+                </label>
+                <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 transform -translate-x-1/2 rounded-sm"></div>
               </div>
-            <div className="inputBx">
+            </div>
+
+            {/* Password Field */}
+            <div className="relative">
+              <div className="relative">
               <input 
                 type={showPassword ? 'text' : 'password'} 
+                  id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="كلمة المرور"
+                  className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md px-4 py-4 pr-12 text-white text-sm transition-all duration-300 focus:border-cyan-400 focus:bg-[rgba(26,26,37,0.8)] focus:shadow-[0_0_0_3px_rgba(0,255,136,0.1),0_4px_20px_rgba(0,255,136,0.1)] outline-none"
+                  placeholder=" "
                 required
               />
+                <label htmlFor="password" className="absolute left-4 top-4 text-[#a0a0b0] text-sm transition-all duration-300 pointer-events-none origin-left-top" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                  كلمة المرور
+                </label>
               <button
                 type="button"
-                className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? '🙈' : '👁️'}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#a0a0b0] hover:text-cyan-400 transition-all duration-300 p-2 rounded-md hover:bg-[rgba(0,255,136,0.1)]"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {showPassword ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    )}
+                  </svg>
               </button>
+                <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 transform -translate-x-1/2 rounded-sm"></div>
+              </div>
             </div>
-            <div className="inputBx">
-              <input 
+
+            {/* Submit Button */}
+            <button
                 type="submit" 
-                value={loading ? 'جاري تسجيل الدخول...' : 'دخول'}
-                disabled={loading}
-              />
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-cyan-400 to-blue-400 text-[#0a0a0f] font-semibold py-4 px-6 rounded-md transition-all duration-300 relative overflow-hidden uppercase tracking-wider text-sm hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,255,136,0.3),0_0_40px_rgba(0,255,136,0.2)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
+            >
+              <span className="relative z-10">
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-[#0a0a0f]/30 border-t-[#0a0a0f] rounded-full animate-spin"></div>
+                    جاري تسجيل الدخول...
             </div>
+                ) : (
+                  'دخول'
+                )}
+              </span>
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full transition-transform duration-500 hover:translate-x-full"></div>
+            </button>
           </form>
           
-          <div className="links">
-            <Link href="/auth/register">تسجيل جديد</Link>
-            <Link href="/">العودة للرئيسية</Link>
+          {/* Divider */}
+          <div className="text-center my-6 relative">
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#2a2a35] to-transparent transform -translate-y-1/2"></div>
+            <span className="bg-[#151520] text-[#a0a0b0] px-4 text-xs uppercase tracking-wider relative z-10" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>أو</span>
+          </div>
+
+          {/* Google Login */}
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md py-3 px-4 text-white text-sm font-medium transition-all duration-300 flex items-center justify-center gap-3 hover:bg-[rgba(26,26,37,0.8)] hover:border-cyan-400 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,255,136,0.1)]"
+            style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#ea4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            تسجيل الدخول بجوجل
+          </button>
+
+          {/* Links */}
+          <div className="mt-6 space-y-3">
+            <div className="text-center">
+              <Link
+                href="/auth/register"
+                className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
+                style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
+              >
+                إنشاء حساب جديد
+              </Link>
+            </div>
+            
+            <div className="text-center">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-[#a0a0b0] hover:text-white transition-colors text-sm font-medium"
+                style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                </svg>
+                العودة للصفحة الرئيسية
+              </Link>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="mt-6 pt-4 border-t border-[#2a2a35]">
+            <p className="text-center text-xs text-[#a0a0b0]" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+              منصة المواد الدراسية - جامعة الزقازيق
+            </p>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          33% { transform: translateY(-20px) translateX(10px); }
+          66% { transform: translateY(10px) translateX(-10px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .bg-gradient-radial {
+          background: radial-gradient(circle, var(--tw-gradient-stops));
+        }
+        input:focus + label,
+        input:valid + label {
+          transform: translateY(-32px) translateX(4px) scale(0.85);
+          color: #00ff88;
+          font-weight: 500;
+        }
+        input:focus ~ .absolute.bottom-0 {
+          width: 100%;
+        }
+      `}</style>
     </div>
   );
 }

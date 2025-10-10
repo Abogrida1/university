@@ -12,7 +12,7 @@ export class UserService {
         .select('*')
         .eq('email', credentials.email)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
       if (error || !user) {
         throw new Error('المستخدم غير موجود أو غير نشط');
@@ -72,7 +72,7 @@ export class UserService {
         .from('users')
         .select('id')
         .eq('email', userData.email)
-        .single();
+        .maybeSingle();
 
       if (existingUser) {
         throw new Error('البريد الإلكتروني مستخدم بالفعل');
@@ -95,7 +95,7 @@ export class UserService {
           is_active: true
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('خطأ Supabase في إنشاء المستخدم:', error);
@@ -142,7 +142,7 @@ export class UserService {
         expires_at: expiresAt.toISOString()
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw new Error('خطأ في إنشاء الجلسة');
@@ -166,7 +166,7 @@ export class UserService {
         .select('*, users(*)')
         .eq('session_token', sessionToken)
         .gt('expires_at', new Date().toISOString())
-        .single();
+        .maybeSingle();
 
       if (sessionError || !session) {
         return null;

@@ -11,6 +11,7 @@ interface UserContextType {
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
+  loginWithGoogle: (academicData?: { department: string; year: string; term: string }) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
@@ -108,6 +109,41 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithGoogle = async (academicData?: { department: string; year: string; term: string }): Promise<boolean> => {
+    try {
+      setLoading(true);
+      
+      // تسجيل الدخول بجوجل عبر Supabase
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
+        }
+      });
+
+      if (error) {
+        console.error('خطأ في تسجيل الدخول بجوجل:', error);
+        return false;
+      }
+
+      // حفظ البيانات الأكاديمية إذا كانت متوفرة
+      if (academicData) {
+        localStorage.setItem('pendingGoogleAuth', JSON.stringify(academicData));
+      }
+
+      return true;
+    } catch (error) {
+      console.error('خطأ في تسجيل الدخول بجوجل:', error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async (): Promise<void> => {
     try {
       if (session) {
@@ -155,6 +191,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     loading,
     login,
     register,
+    loginWithGoogle,
     logout,
     updateProfile,
     changePassword

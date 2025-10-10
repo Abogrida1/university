@@ -28,7 +28,10 @@ export default async function CoursePage({ params }: { params: { id: string } })
           <div className="text-center">
             <div className="text-8xl mb-8">❌</div>
             <h1 className="text-4xl font-black text-white mb-6">الكورس غير موجود</h1>
-            <Link href="/" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30">
+            <Link href="/" className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+              </svg>
               العودة للصفحة الرئيسية
             </Link>
           </div>
@@ -43,7 +46,14 @@ export default async function CoursePage({ params }: { params: { id: string } })
         {/* Breadcrumb */}
         <nav className="mb-8">
           <ol className="flex items-center space-x-3 text-sm text-gray-400">
-            <li><Link href="/" className="hover:text-cyan-400 transition-colors">الرئيسية</Link></li>
+            <li>
+              <Link href="/" className="hover:text-cyan-400 transition-colors inline-flex items-center gap-1">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                </svg>
+                الرئيسية
+              </Link>
+            </li>
             <li className="text-gray-600">/</li>
             <li><Link href="/" className="hover:text-cyan-400 transition-colors">الكورسات</Link></li>
             <li className="text-gray-600">/</li>
