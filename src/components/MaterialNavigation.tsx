@@ -37,11 +37,11 @@ export default function MaterialNavigation({
   return (
     <>
       {/* Top Navigation Bar */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
         {/* Back to Materials Button - Top Left */}
         <button
           onClick={handleBackToMaterials}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30"
+          className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg sm:rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30 text-sm sm:text-base"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -52,7 +52,7 @@ export default function MaterialNavigation({
         {/* Home Link - Top Right */}
         <Link 
           href="/" 
-          className="inline-flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium"
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors font-medium text-sm sm:text-base"
           onClick={() => {
             // Clear any saved selection when going to home
             if (typeof window !== 'undefined') {
@@ -68,8 +68,8 @@ export default function MaterialNavigation({
       </div>
 
       {/* Breadcrumb */}
-      <nav className="mb-8">
-        <ol className="flex items-center space-x-3 text-sm text-gray-400">
+      <nav className="mb-6 sm:mb-8">
+        <ol className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm text-gray-400">
           <li>
             <Link 
               href="/" 

@@ -35,14 +35,14 @@ export default async function MaterialPage({
 
     if (!material) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center px-4">
           <div className="text-center">
-            <div className="text-6xl mb-6">📚</div>
-            <h1 className="text-4xl font-bold text-white mb-4">المادة غير موجودة</h1>
-            <p className="text-gray-300 mb-6">المادة المطلوبة غير متاحة حالياً</p>
+            <div className="text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6">📚</div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">المادة غير موجودة</h1>
+            <p className="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">المادة المطلوبة غير متاحة حالياً</p>
             <Link 
               href="/" 
-              className="inline-block px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
+              className="inline-block px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg sm:rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base"
             >
               العودة للصفحة الرئيسية
             </Link>
@@ -90,26 +90,26 @@ export default async function MaterialPage({
         />
 
         {/* Material Header */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-gray-700/50">
-          <div className="flex justify-between items-start mb-8">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 mb-6 sm:mb-8 md:mb-10 shadow-2xl border border-gray-700/50">
+          <div className="flex flex-col sm:flex-row justify-between items-start mb-6 sm:mb-8 gap-4">
             <div className="flex-1">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                  <span className="text-3xl">📚</span>
+              <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                  <span className="text-2xl sm:text-3xl">📚</span>
                 </div>
                 <div>
-                 <h1 className="text-4xl font-black text-white mb-2">{materialData.title}</h1>
-                 <p className="text-lg text-gray-400 mb-2">{materialData.titleAr}</p>
-                 <p className="text-2xl text-cyan-400 font-bold">{materialData.code}</p>
+                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2">{materialData.title}</h1>
+                 <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-2">{materialData.titleAr}</p>
+                 <p className="text-lg sm:text-xl md:text-2xl text-cyan-400 font-bold">{materialData.code}</p>
                 </div>
               </div>
-              <p className="text-gray-300 text-lg mb-2">{materialData.department}</p>
-              <p className="text-sm text-gray-500 mb-4">{materialData.departmentAr}</p>
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-2">{materialData.department}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">{materialData.departmentAr}</p>
             </div>
-            <div className="text-right bg-gray-700/50 rounded-2xl p-6 border border-gray-600/50">
-              <div className="text-cyan-400 font-bold text-lg mb-2">Year {materialData.year}</div>
-              <div className="text-sm text-gray-500 mb-2">السنة {materialData.year}</div>
-              <div className="text-gray-300 font-medium">{materialData.term}</div>
+            <div className="text-right bg-gray-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-600/50">
+              <div className="text-cyan-400 font-bold text-base sm:text-lg mb-2">Year {materialData.year}</div>
+              <div className="text-xs sm:text-sm text-gray-500 mb-2">السنة {materialData.year}</div>
+              <div className="text-gray-300 font-medium text-sm sm:text-base">{materialData.term}</div>
               <div className="text-sm text-gray-500">{materialData.termAr}</div>
             </div>
           </div>
@@ -268,30 +268,30 @@ export default async function MaterialPage({
 
         {/* PDFs Section */}
         {!materialData.showGoogleDriveOnly && materialData.showPdfsSection !== false && (
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-gray-700/50">
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-red-500/20 rounded-2xl flex items-center justify-center border border-red-500/30">
-                <span className="text-red-400 font-bold text-xl">📄</span>
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 mb-6 sm:mb-8 md:mb-10 shadow-2xl border border-gray-700/50">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-500/20 rounded-xl sm:rounded-2xl flex items-center justify-center border border-red-500/30">
+                <span className="text-red-400 font-bold text-lg sm:text-xl">📄</span>
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white">Material</h2>
-                <p className="text-sm text-gray-400">المواد الدراسية</p>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">Material</h2>
+                <p className="text-xs sm:text-sm text-gray-400">المواد الدراسية</p>
               </div>
             </div>
-             <span className="bg-red-500/20 text-red-300 px-4 py-2 rounded-full font-bold border border-red-500/30">
+             <span className="bg-red-500/20 text-red-300 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-bold border border-red-500/30 text-xs sm:text-sm">
                {pdfsData.length} PDF Files
              </span>
           </div>
 
           {pdfsData.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="text-8xl mb-8">📝</div>
-              <h3 className="text-2xl font-bold text-white mb-4">لا توجد ملفات PDF</h3>
-              <p className="text-gray-400 text-lg">لا توجد ملفات PDF متاحة لهذه المادة بعد</p>
+            <div className="text-center py-8 sm:py-12 md:py-16">
+              <div className="text-6xl sm:text-7xl md:text-8xl mb-6 sm:mb-8">📝</div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">لا توجد ملفات PDF</h3>
+              <p className="text-gray-400 text-sm sm:text-base md:text-lg">لا توجد ملفات PDF متاحة لهذه المادة بعد</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {pdfsData.map((pdf: any) => (
                 <PDFViewer
                   key={pdf.id}
@@ -307,18 +307,18 @@ export default async function MaterialPage({
 
         {/* Videos Section */}
         {!materialData.showGoogleDriveOnly && materialData.showVideosSection !== false && (
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30">
-                <span className="text-blue-400 font-bold text-xl">🎥</span>
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-700/50">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500/20 rounded-xl sm:rounded-2xl flex items-center justify-center border border-blue-500/30">
+                <span className="text-blue-400 font-bold text-lg sm:text-xl">🎥</span>
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white">Video Lectures</h2>
-                <p className="text-sm text-gray-400">شرح الفيديوهات</p>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">Video Lectures</h2>
+                <p className="text-xs sm:text-sm text-gray-400">شرح الفيديوهات</p>
               </div>
             </div>
-             <span className="bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full font-bold border border-blue-500/30">
+             <span className="bg-blue-500/20 text-blue-300 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-bold border border-blue-500/30 text-xs sm:text-sm">
                {videosData.length} {videosData.some((v: any) => v.is_playlist) ? 'Playlist' : 'Videos'}
                {videosData.some((v: any) => v.is_playlist) && (
                  <span className="text-xs text-blue-200 ml-1">

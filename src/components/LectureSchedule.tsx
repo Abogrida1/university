@@ -98,13 +98,13 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
     return (
       <div className="bg-gradient-to-r from-yellow-900/30 via-orange-900/30 to-red-900/30 backdrop-blur-sm rounded-3xl p-8 max-w-6xl mx-auto border border-yellow-500/30 shadow-2xl shadow-yellow-500/20 mb-8">
         <div className="text-center">
-          <div className="text-6xl mb-4">📅</div>
-          <h3 className="text-2xl font-bold text-white mb-4">جدول المحاضرات غير متاح</h3>
-          <p className="text-yellow-300 text-lg mb-6">
+          <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📅</div>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">جدول المحاضرات غير متاح</h3>
+          <p className="text-yellow-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6">
             لم يتم إعداد جدول المحاضرات للقسم والسنة والترم المحدد بعد
           </p>
-          <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-xl p-4 max-w-md mx-auto">
-            <p className="text-yellow-300 text-sm font-medium">
+          <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 max-w-md mx-auto">
+            <p className="text-yellow-300 text-xs sm:text-sm font-medium">
               💡 سيتم إضافة جدول المحاضرات قريباً من قبل الإدارة
             </p>
           </div>
@@ -123,27 +123,27 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
     });
     
     return (
-      <div className="bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-3xl p-8 max-w-6xl mx-auto border border-blue-500/30 shadow-2xl shadow-blue-500/20 mb-8">
-        <div className="text-center mb-6">
-          <div className="text-6xl mb-4">📅</div>
-          <h2 className="text-3xl font-bold text-white mb-2">جدول المحاضرات (PDF)</h2>
-          <p className="text-blue-300 text-lg">
+      <div className="bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto border border-blue-500/30 shadow-2xl shadow-blue-500/20 mb-6 sm:mb-8">
+        <div className="text-center mb-4 sm:mb-6">
+          <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📅</div>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">جدول المحاضرات (PDF)</h2>
+          <p className="text-blue-300 text-sm sm:text-base md:text-lg">
             {effectiveDepartment} - السنة {effectiveYear} - {effectiveTerm === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
           </p>
           {schedule.size && (
-            <p className="text-sm text-blue-300 mt-2">الحجم: {schedule.size}</p>
+            <p className="text-xs sm:text-sm text-blue-300 mt-2">الحجم: {schedule.size}</p>
           )}
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4">
           {schedule.fileUrl && (
             <>
               {/* Preview button - hidden on mobile only */}
               <button
                 type="button"
                 onClick={() => setShowPreview(prev => !prev)}
-                className="hidden md:flex bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-xl font-bold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 items-center gap-2"
+                className="hidden md:flex bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold hover:from-purple-600 hover:to-pink-700 transition-all duration-300 items-center gap-2 text-sm sm:text-base"
                 title={showPreview ? 'إخفاء المعاينة' : 'معاينة الجدول'}
               >
                 {showPreview ? (
@@ -163,7 +163,7 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
               <a
                 href={schedule.fileUrl}
                 download={schedule.fileName || 'schedule.pdf'}
-                className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 text-center"
+                className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 text-center text-sm sm:text-base"
                 title="تحميل الجدول"
                 onClick={() => {
                   console.log('📥 Downloading schedule:', {
@@ -313,21 +313,21 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
       </div>
 
       {/* Summary */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-xl p-4 text-center">
-          <div className="text-3xl mb-2">📚</div>
-          <p className="text-green-300 font-semibold">إجمالي المواد</p>
-          <p className="text-white text-2xl font-bold">{courses.length}</p>
+      <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+        <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
+          <div className="text-2xl sm:text-3xl mb-2">📚</div>
+          <p className="text-green-300 font-semibold text-sm sm:text-base">إجمالي المواد</p>
+          <p className="text-white text-xl sm:text-2xl font-bold">{courses.length}</p>
         </div>
-        <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-xl p-4 text-center">
-          <div className="text-3xl mb-2">🏛️</div>
-          <p className="text-blue-300 font-semibold">القسم</p>
-          <p className="text-white text-lg font-bold">{effectiveDepartment}</p>
+        <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
+          <div className="text-2xl sm:text-3xl mb-2">🏛️</div>
+          <p className="text-blue-300 font-semibold text-sm sm:text-base">القسم</p>
+          <p className="text-white text-base sm:text-lg font-bold">{effectiveDepartment}</p>
         </div>
-        <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl p-4 text-center">
-          <div className="text-3xl mb-2">📅</div>
-          <p className="text-purple-300 font-semibold">الترم</p>
-          <p className="text-white text-lg font-bold">
+        <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
+          <div className="text-2xl sm:text-3xl mb-2">📅</div>
+          <p className="text-purple-300 font-semibold text-sm sm:text-base">الترم</p>
+          <p className="text-white text-base sm:text-lg font-bold">
             {effectiveTerm === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
           </p>
         </div>
