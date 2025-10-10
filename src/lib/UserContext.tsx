@@ -114,14 +114,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       
       // تسجيل الدخول بجوجل عبر Supabase
-      const redirectUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://university-3-cuxd.onrender.com/auth/callback'
-        : `${window.location.origin}/auth/callback`;
-        
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl,
+          redirectTo: 'https://university-3-cuxd.onrender.com/auth/callback',
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
