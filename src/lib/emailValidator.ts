@@ -24,7 +24,7 @@ export function validateNonUniversityEmail(email: string): boolean {
   ];
 
   // Extract domain from email
-  const emailDomain = email.toLowerCase().split('@')[1];
+  const emailDomain = email.toLowerCase().trim().split('@')[1];
   
   if (!emailDomain) {
     return false;
@@ -49,8 +49,9 @@ export function isValidEmailFormat(email: string): boolean {
     return false;
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  // More comprehensive email regex
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  return emailRegex.test(email.trim());
 }
 
 /**
@@ -59,15 +60,17 @@ export function isValidEmailFormat(email: string): boolean {
  * @returns object with validation result and message
  */
 export function validateEmail(email: string): { isValid: boolean; message: string } {
-  if (!email) {
+  if (!email || !email.trim()) {
     return { isValid: false, message: 'البريد الإلكتروني مطلوب' };
   }
 
-  if (!isValidEmailFormat(email)) {
+  const trimmedEmail = email.trim();
+
+  if (!isValidEmailFormat(trimmedEmail)) {
     return { isValid: false, message: 'تنسيق البريد الإلكتروني غير صحيح' };
   }
 
-  if (!validateNonUniversityEmail(email)) {
+  if (!validateNonUniversityEmail(trimmedEmail)) {
     return { 
       isValid: false, 
       message: 'ممنوع استخدام البريد الإلكتروني الجامعي. يرجى استخدام بريد إلكتروني شخصي.' 

@@ -5,7 +5,7 @@ import { useUser } from '@/lib/UserContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RegisterData } from '@/lib/types';
-import { validateNonUniversityEmail } from '@/lib/emailValidator';
+import { validateEmail } from '@/lib/emailValidator';
 
 export default function RegisterPage() {
   const { user, register, loginWithGoogle, loading } = useUser();
@@ -89,9 +89,9 @@ export default function RegisterPage() {
     }
 
     // Validate email format and check if it's not a university email
-    const emailValidation = validateNonUniversityEmail(formData.email);
+    const emailValidation = validateEmail(formData.email);
     if (!emailValidation.isValid) {
-      setError(emailValidation.error || 'البريد الإلكتروني غير صحيح');
+      setError(emailValidation.message || 'البريد الإلكتروني غير صحيح');
       return;
     }
 
@@ -126,9 +126,9 @@ export default function RegisterPage() {
     const email = e.target.value.trim();
     
     if (email) {
-      const emailValidation = validateNonUniversityEmail(email);
+      const emailValidation = validateEmail(email);
       if (!emailValidation.isValid) {
-        setEmailError(emailValidation.error || '');
+        setEmailError(emailValidation.message || '');
       } else {
         setEmailError('');
       }
