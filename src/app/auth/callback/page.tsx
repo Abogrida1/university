@@ -154,22 +154,22 @@ export default function AuthCallbackPage() {
           console.log('Term:', userProfile.term);
           console.log('========================');
           
-          // توجيه فوري بدون انتظار
-          if (isNewUser) {
-            // مستخدم جديد - توجيه لاختيار البيانات الأكاديمية
-            console.log('🆕 New user - redirecting to academic selection...');
-            // حفظ بيانات المستخدم مؤقتاً
-            localStorage.setItem('temp_user_data', JSON.stringify({
-              id: userProfile.id,
-              email: userProfile.email,
-              name: userProfile.name
-            }));
-            window.location.href = '/auth/register?step=1&google=true';
-          } else {
-            // مستخدم موجود - توجيه مباشر لصفحة الترحيب
-            console.log('👤 Existing user - redirecting to welcome page...');
-            window.location.href = '/welcome';
-          }
+           // توجيه فوري بدون انتظار
+           if (isNewUser) {
+             // مستخدم جديد - توجيه لاختيار البيانات الأكاديمية
+             console.log('🆕 New user - redirecting to academic selection...');
+             // حفظ بيانات المستخدم مؤقتاً
+             localStorage.setItem('temp_user_data', JSON.stringify({
+               id: userProfile.id,
+               email: userProfile.email,
+               name: userProfile.name
+             }));
+             window.location.href = '/auth/register?step=1&google=true';
+           } else {
+             // مستخدم موجود - توجيه مباشر للصفحة الرئيسية
+             console.log('👤 Existing user - redirecting to home page...');
+             window.location.href = '/';
+           }
           } else {
             console.error('فشل في إنشاء الجلسة');
             setError('خطأ في إنشاء الجلسة');
