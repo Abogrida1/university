@@ -131,8 +131,16 @@ export class UserService {
 
   // إنشاء جلسة جديدة
   static async createSession(userId: string): Promise<UserSession> {
+    console.log('🔑 UserService.createSession called with userId:', userId);
+    
     const sessionToken = randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 أيام
+
+    console.log('📝 Session data:', {
+      user_id: userId,
+      session_token: sessionToken.substring(0, 10) + '...',
+      expires_at: expiresAt.toISOString()
+    });
 
     const { data: session, error } = await supabase
       .from('user_sessions')
@@ -145,8 +153,11 @@ export class UserService {
       .maybeSingle();
 
     if (error) {
-      throw new Error('خطأ في إنشاء الجلسة');
+      console.error('❌ Error creating session:', error);
+      throw new Error(`خطأ في إنشاء الجلسة: ${error.message}`);
     }
+
+    console.log('✅ Session created successfully:', session);
 
     return {
       id: session.id,

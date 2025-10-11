@@ -33,7 +33,9 @@ export default function AuthCallbackPage() {
         }
 
         const googleUser = session.user;
-        console.log('Google user data:', googleUser);
+        console.log('🔍 Google user data:', googleUser);
+        console.log('📧 User email:', googleUser.email);
+        console.log('👤 User metadata:', googleUser.user_metadata);
         
         // الحصول على البيانات الأكاديمية المحفوظة
         const pendingAuthData = localStorage.getItem('pendingGoogleAuth');
@@ -49,6 +51,7 @@ export default function AuthCallbackPage() {
         }
 
         // التحقق من وجود المستخدم في قاعدة البيانات
+        console.log('🔍 Searching for existing user with email:', googleUser.email);
         const { data: existingUser, error: userError } = await supabase
           .from('users')
           .select('*')
@@ -56,10 +59,12 @@ export default function AuthCallbackPage() {
           .maybeSingle();
 
         if (userError) {
-          console.error('خطأ في البحث عن المستخدم:', userError);
+          console.error('❌ خطأ في البحث عن المستخدم:', userError);
           setError('خطأ في قاعدة البيانات');
           return;
         }
+
+        console.log('👤 Existing user found:', existingUser);
 
         let userProfile;
         
@@ -122,12 +127,15 @@ export default function AuthCallbackPage() {
         }
 
         // إنشاء جلسة جديدة
+        console.log('🔑 Creating session for user:', userProfile.id);
         try {
           const sessionResult = await UserService.createSession(userProfile.id);
+          console.log('✅ Session created successfully:', sessionResult);
           
           if (sessionResult) {
             // حفظ الجلسة في localStorage
             localStorage.setItem('session_token', sessionResult.sessionToken);
+            console.log('💾 Session token saved to localStorage');
           
           // إعادة توجيه إلى الصفحة الرئيسية أو صفحة الترحيب
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
