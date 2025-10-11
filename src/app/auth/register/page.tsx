@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RegisterData } from '@/lib/types';
 import { validateEmail } from '@/lib/emailValidator';
+import { supabase } from '@/lib/supabase';
 
 export default function RegisterPage() {
   const { user, register, loginWithGoogle, loading } = useUser();
@@ -28,6 +29,8 @@ export default function RegisterPage() {
   const [emailError, setEmailError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+  const [tempUserData, setTempUserData] = useState<any>(null);
 
   // إعادة توجيه المستخدمين المسجلين
   useEffect(() => {
@@ -35,6 +38,31 @@ export default function RegisterPage() {
       router.push('/');
     }
   }, [user, router]);
+
+  // التحقق من المستخدمين من Google
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isGoogle = urlParams.get('google') === 'true';
+    
+    if (isGoogle) {
+      console.log('🔍 Google user detected, checking temp data...');
+      const tempData = localStorage.getItem('temp_user_data');
+      if (tempData) {
+        try {
+          const userData = JSON.parse(tempData);
+          console.log('👤 Temp user data found:', userData);
+          setTempUserData(userData);
+          setIsGoogleUser(true);
+          setFormData(prev => ({
+            ...prev,
+            email: userData.email
+          }));
+        } catch (error) {
+          console.error('❌ Error parsing temp user data:', error);
+        }
+      }
+    }
+  }, []);
 
   const departments = [
     { value: 'Cyber Security', label: 'الأمن السيبراني', icon: '🛡️', color: 'from-red-500 to-pink-600' },
@@ -66,13 +94,20 @@ export default function RegisterPage() {
       setError('يرجى اختيار القسم والسنة والترم');
       return;
     }
-    setFormData({
-      ...formData,
-      department: selectedData.department,
-      year: parseInt(selectedData.year),
-      term: selectedData.term as 'FIRST' | 'SECOND'
-    });
-    setStep(2);
+    
+    if (isGoogleUser) {
+      // للمستخدمين من Google، تحديث البيانات مباشرة
+      handleGoogleUserUpdate();
+    } else {
+      // للمستخدمين العاديين، الانتقال للخطوة التالية
+      setFormData({
+        ...formData,
+        department: selectedData.department,
+        year: parseInt(selectedData.year),
+        term: selectedData.term as 'FIRST' | 'SECOND'
+      });
+      setStep(2);
+    }
     setError('');
     setEmailError('');
   };
@@ -153,6 +188,48 @@ export default function RegisterPage() {
     }
   };
 
+  const handleGoogleUserUpdate = async () => {
+    if (!tempUserData || !selectedData.department || !selectedData.year || !selectedData.term) {
+      setError('يرجى اختيار جميع البيانات الأكاديمية');
+      return;
+    }
+
+    try {
+      console.log('🔄 Updating Google user academic data...');
+      console.log('User ID:', tempUserData.id);
+      console.log('Academic data:', selectedData);
+
+      // تحديث بيانات المستخدم في قاعدة البيانات
+      const { data, error } = await supabase
+        .from('users')
+        .update({
+          department: selectedData.department,
+          year: parseInt(selectedData.year),
+          term: selectedData.term
+        })
+        .eq('id', tempUserData.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('❌ Error updating user:', error);
+        setError('خطأ في تحديث البيانات');
+        return;
+      }
+
+      console.log('✅ User updated successfully:', data);
+
+      // حذف البيانات المؤقتة
+      localStorage.removeItem('temp_user_data');
+
+      // إعادة تحميل الصفحة لتحديث UserContext
+      window.location.href = '/welcome';
+    } catch (error) {
+      console.error('❌ Error updating Google user:', error);
+      setError('خطأ في تحديث البيانات');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black py-6 sm:py-8 lg:py-12">
       <div className="container mx-auto px-3 sm:px-4 lg:px-6">
@@ -172,6 +249,17 @@ export default function RegisterPage() {
         {/* Step 1: Academic Selection */}
         {step === 1 && (
           <div className="max-w-7xl mx-auto">
+            {isGoogleUser && (
+              <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-blue-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
+                <div className="flex items-center justify-center space-x-2">
+                  <span className="text-base sm:text-lg lg:text-xl">🎓</span>
+                  <span className="font-medium text-xs sm:text-sm lg:text-base">
+                    مرحباً {tempUserData?.name}! يرجى اختيار بياناتك الأكاديمية لإكمال التسجيل
+                  </span>
+                </div>
+              </div>
+            )}
+
             {error && (
               <div className="bg-red-900/30 border border-red-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-red-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
                 <div className="flex items-center justify-center space-x-2">
@@ -263,9 +351,19 @@ export default function RegisterPage() {
             <div className="text-center px-2 sm:px-4 lg:px-0">
               <button
                 onClick={handleNext}
-                className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg sm:rounded-xl lg:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-cyan-500/30 w-full sm:w-auto"
+                disabled={loading}
+                className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg sm:rounded-xl lg:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-cyan-500/30 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                التالي
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>جاري الحفظ...</span>
+                  </div>
+                ) : isGoogleUser ? (
+                  'إكمال التسجيل'
+                ) : (
+                  'التالي'
+                )}
               </button>
             </div>
 

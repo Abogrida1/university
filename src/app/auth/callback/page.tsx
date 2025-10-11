@@ -141,28 +141,33 @@ export default function AuthCallbackPage() {
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
           setSuccess(true);
           
-          // التحقق من أن المستخدم جديد - تبسيط المنطق
-          const emailPrefix = userProfile.email?.split('@')[0] || '';
-          const isNewUser = !userProfile.name || 
-                           userProfile.name === emailPrefix || 
-                           userProfile.name === userProfile.email ||
-                           userProfile.name.length < 3;
+          // التحقق من أن المستخدم جديد بناءً على البيانات الأكاديمية
+          const hasAcademicData = userProfile.department && 
+                                 userProfile.department !== 'General Program' &&
+                                 userProfile.year && 
+                                 userProfile.term;
           
           console.log('=== USER PROFILE DEBUG ===');
           console.log('User profile:', userProfile);
-          console.log('User name:', userProfile.name);
-          console.log('Email:', userProfile.email);
-          console.log('Email prefix:', emailPrefix);
-          console.log('Is new user:', isNewUser);
+          console.log('Department:', userProfile.department);
+          console.log('Year:', userProfile.year);
+          console.log('Term:', userProfile.term);
+          console.log('Has academic data:', hasAcademicData);
           console.log('========================');
           
           // توجيه فوري بدون انتظار
-          if (isNewUser) {
-            console.log('🔄 New user - redirecting to welcome page...');
-            window.location.href = '/welcome';
+          if (!hasAcademicData) {
+            console.log('🔄 New user without academic data - redirecting to academic selection...');
+            // حفظ بيانات المستخدم مؤقتاً
+            localStorage.setItem('temp_user_data', JSON.stringify({
+              id: userProfile.id,
+              email: userProfile.email,
+              name: userProfile.name
+            }));
+            window.location.href = '/auth/register?step=1&google=true';
           } else {
-            console.log('🏠 Existing user - redirecting to home page...');
-            window.location.href = '/';
+            console.log('🏠 User with academic data - redirecting to welcome page...');
+            window.location.href = '/welcome';
           }
           } else {
             console.error('فشل في إنشاء الجلسة');
