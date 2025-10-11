@@ -119,12 +119,21 @@ export function UserProvider({ children }: { children: ReactNode }) {
       
       // تحديد redirect URL مباشرة
       const isProduction = process.env.NODE_ENV === 'production';
-      const redirectUrl = isProduction 
-        ? 'https://university-3-cuxd.onrender.com/auth/callback'
-        : 'http://localhost:3000/auth/callback';
+      const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+      
+      let redirectUrl;
+      if (isProduction && !isLocalhost) {
+        redirectUrl = 'https://university-3-cuxd.onrender.com/auth/callback';
+      } else if (isLocalhost) {
+        redirectUrl = 'http://localhost:3000/auth/callback';
+      } else {
+        redirectUrl = 'https://university-3-cuxd.onrender.com/auth/callback';
+      }
       
       console.log('📍 Environment:', process.env.NODE_ENV);
       console.log('📍 Is Production:', isProduction);
+      console.log('📍 Is Localhost:', isLocalhost);
+      console.log('📍 Hostname:', typeof window !== 'undefined' ? window.location.hostname : 'undefined');
       console.log('📍 Redirect URL:', redirectUrl);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
