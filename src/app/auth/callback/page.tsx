@@ -67,9 +67,11 @@ export default function AuthCallbackPage() {
         console.log('👤 Existing user found:', existingUser);
 
         let userProfile;
+        let isNewUser = false;
         
         if (existingUser) {
           // المستخدم موجود، تحديث البيانات
+          console.log('👤 Existing user - updating data');
           const updateData: any = {
             name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
             last_login: new Date().toISOString(),
@@ -97,8 +99,11 @@ export default function AuthCallbackPage() {
           }
 
           userProfile = updatedUser;
+          isNewUser = false;
         } else {
           // مستخدم جديد، إنشاء حساب
+          console.log('🆕 New user - creating account');
+          isNewUser = true;
           const newUserData = {
             email: googleUser.email!,
             name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
@@ -141,23 +146,18 @@ export default function AuthCallbackPage() {
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
           setSuccess(true);
           
-          // التحقق من أن المستخدم جديد بناءً على البيانات الأكاديمية
-          const hasAcademicData = userProfile.department && 
-                                 userProfile.department !== 'General Program' &&
-                                 userProfile.year && 
-                                 userProfile.term;
-          
-          console.log('=== USER PROFILE DEBUG ===');
+          console.log('=== USER FLOW DEBUG ===');
+          console.log('Is new user:', isNewUser);
           console.log('User profile:', userProfile);
           console.log('Department:', userProfile.department);
           console.log('Year:', userProfile.year);
           console.log('Term:', userProfile.term);
-          console.log('Has academic data:', hasAcademicData);
           console.log('========================');
           
           // توجيه فوري بدون انتظار
-          if (!hasAcademicData) {
-            console.log('🔄 New user without academic data - redirecting to academic selection...');
+          if (isNewUser) {
+            // مستخدم جديد - توجيه لاختيار البيانات الأكاديمية
+            console.log('🆕 New user - redirecting to academic selection...');
             // حفظ بيانات المستخدم مؤقتاً
             localStorage.setItem('temp_user_data', JSON.stringify({
               id: userProfile.id,
@@ -166,7 +166,8 @@ export default function AuthCallbackPage() {
             }));
             window.location.href = '/auth/register?step=1&google=true';
           } else {
-            console.log('🏠 User with academic data - redirecting to welcome page...');
+            // مستخدم موجود - توجيه مباشر لصفحة الترحيب
+            console.log('👤 Existing user - redirecting to welcome page...');
             window.location.href = '/welcome';
           }
           } else {
