@@ -29,19 +29,31 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const loadUserFromSession = async () => {
       try {
+        console.log('🔄 UserContext: Loading user from session...');
         const sessionToken = localStorage.getItem('session_token');
+        console.log('🔑 Session token found:', sessionToken ? 'Yes' : 'No');
+        
         if (sessionToken) {
+          console.log('🔍 Validating session token...');
           const userProfile = await UserService.validateSession(sessionToken);
+          console.log('👤 User profile from session:', userProfile);
+          
           if (userProfile) {
+            console.log('✅ User loaded successfully:', userProfile);
             setUser(userProfile);
+            
             // تحديث الجلسة
-            const { data: sessionData } = await supabase
+            console.log('🔄 Loading session data...');
+            const { data: sessionData, error: sessionError } = await supabase
               .from('user_sessions')
               .select('*')
               .eq('session_token', sessionToken)
               .single();
             
-            if (sessionData) {
+            if (sessionError) {
+              console.error('❌ Error loading session data:', sessionError);
+            } else {
+              console.log('✅ Session data loaded:', sessionData);
               setSession({
                 id: sessionData.id,
                 userId: sessionData.user_id,
@@ -52,14 +64,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
               });
             }
           } else {
+            console.log('❌ Invalid session, removing token');
             // الجلسة غير صالحة، احذفها
             localStorage.removeItem('session_token');
           }
+        } else {
+          console.log('❌ No session token found');
         }
       } catch (error) {
-        console.error('خطأ في تحميل المستخدم:', error);
+        console.error('❌ Error loading user:', error);
         localStorage.removeItem('session_token');
       } finally {
+        console.log('🔄 UserContext loading complete');
         setLoading(false);
       }
     };

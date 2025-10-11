@@ -172,6 +172,8 @@ export class UserService {
   // التحقق من صحة الجلسة
   static async validateSession(sessionToken: string): Promise<UserProfile | null> {
     try {
+      console.log('🔍 UserService.validateSession called with token:', sessionToken.substring(0, 10) + '...');
+      
       const { data: session, error: sessionError } = await supabase
         .from('user_sessions')
         .select('*, users(*)')
@@ -179,7 +181,15 @@ export class UserService {
         .gt('expires_at', new Date().toISOString())
         .maybeSingle();
 
-      if (sessionError || !session) {
+      console.log('🔍 Session validation result:', { session, sessionError });
+
+      if (sessionError) {
+        console.error('❌ Session validation error:', sessionError);
+        return null;
+      }
+      
+      if (!session) {
+        console.log('❌ No valid session found');
         return null;
       }
 
@@ -196,7 +206,14 @@ export class UserService {
         .eq('user_id', session.user_id);
 
       const user = session.users;
-      return {
+      console.log('👤 User data from session:', user);
+      
+      if (!user) {
+        console.error('❌ No user data found in session');
+        return null;
+      }
+      
+      const userProfile = {
         id: user.id,
         email: user.email,
         name: user.name,
@@ -210,8 +227,11 @@ export class UserService {
         updatedAt: user.updated_at,
         permissions: permissions?.map(p => p.permissions.name) || []
       };
+      
+      console.log('✅ User profile created successfully:', userProfile);
+      return userProfile;
     } catch (error) {
-      console.error('خطأ في التحقق من الجلسة:', error);
+      console.error('❌ Error validating session:', error);
       return null;
     }
   }
