@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { UserProfile, UserSession, LoginCredentials, RegisterData } from './types';
 import { UserService } from './userService';
 import { supabase } from './supabase';
-import { oauthConfig } from './oauthConfig';
+import { getOAuthConfig } from './oauthConfig';
 
 interface UserContextType {
   user: UserProfile | null;
@@ -116,11 +116,26 @@ export function UserProvider({ children }: { children: ReactNode }) {
       
       // تسجيل الدخول بجوجل عبر Supabase
       console.log('🚀 Starting Google OAuth...');
-      console.log('📍 Redirect URL:', oauthConfig.google.redirectTo);
+      
+      // تحديد redirect URL مباشرة
+      const isProduction = process.env.NODE_ENV === 'production';
+      const redirectUrl = isProduction 
+        ? 'https://university-3-cuxd.onrender.com/auth/callback'
+        : 'http://localhost:3000/auth/callback';
+      
+      console.log('📍 Environment:', process.env.NODE_ENV);
+      console.log('📍 Is Production:', isProduction);
+      console.log('📍 Redirect URL:', redirectUrl);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: oauthConfig.google
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
+        }
       });
 
       console.log('📊 OAuth Response:', { data, error });
