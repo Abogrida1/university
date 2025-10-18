@@ -23,14 +23,21 @@ export default function WelcomePage() {
 
   // إعادة توجيه المستخدمين غير المسجلين أو غير النشطين أو بدون بيانات أكاديمية
   useEffect(() => {
-    // انتظار قليل للتأكد من تحميل بيانات المستخدم
+    // انتظار أطول للتأكد من تحميل بيانات المستخدم
     const timer = setTimeout(() => {
       if ((!user || (user && !user.is_active) || (user && (!user.department || !user.year || !user.term))) && !hasRedirected) {
         console.log('No valid user found after timeout, redirecting to register...');
+        console.log('User status:', {
+          user: !!user,
+          is_active: user?.is_active,
+          department: user?.department,
+          year: user?.year,
+          term: user?.term
+        });
         setHasRedirected(true);
         window.location.href = '/auth/register?step=1&google=true';
       }
-    }, 3000);
+    }, 5000); // زيادة الوقت إلى 5 ثوانٍ
 
     return () => clearTimeout(timer);
   }, [user, hasRedirected]);

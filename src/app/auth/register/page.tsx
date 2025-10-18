@@ -37,6 +37,12 @@ export default function RegisterPage() {
   useEffect(() => {
     if (user && user.is_active && user.department && user.year && user.term) {
       console.log('✅ Active user with academic data detected, redirecting to welcome...');
+      console.log('User data:', {
+        is_active: user.is_active,
+        department: user.department,
+        year: user.year,
+        term: user.term
+      });
       // تأخير قصير للتأكد من تحديث UserContext
       setTimeout(() => {
         window.location.href = '/welcome';
