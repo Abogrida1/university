@@ -16,6 +16,7 @@ interface UserContextType {
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  setUser: (user: UserProfile | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -258,7 +259,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     loginWithGoogle,
     logout,
     updateProfile,
-    changePassword
+    changePassword,
+    setUser
   };
 
   return (

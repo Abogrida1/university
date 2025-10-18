@@ -9,7 +9,7 @@ import { validateEmail } from '@/lib/emailValidator';
 import { supabase } from '@/lib/supabase';
 
 export default function RegisterPage() {
-  const { user, register, loginWithGoogle, loading } = useUser();
+  const { user, register, loginWithGoogle, loading, setUser } = useUser();
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [selectedData, setSelectedData] = useState({
