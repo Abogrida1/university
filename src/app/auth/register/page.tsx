@@ -37,14 +37,6 @@ export default function RegisterPage() {
 
   // إعادة توجيه المستخدمين المسجلين (عدا المستخدمين الجدد من جوجل)
   useEffect(() => {
-    // تحقق من وجود بيانات جوجل مؤقتة
-    const googleData = localStorage.getItem('google_user_data');
-    if (googleData) {
-      console.log('🔍 Google user data detected - preventing redirect');
-      setIsGoogleFlow(true);
-      return;
-    }
-    
     // تحقق من URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const isGoogle = urlParams.get('google') === 'true';
@@ -68,48 +60,20 @@ export default function RegisterPage() {
     if (isGoogle) {
       console.log('🔍 Google user detected, checking data...');
       
-      // أولاً: تحقق من البيانات المؤقتة (للمستخدمين الموجودين)
+      // تحقق من البيانات المؤقتة
       const tempData = localStorage.getItem('temp_user_data');
       if (tempData && tempData.trim() !== '') {
         try {
           const userData = JSON.parse(tempData);
-          console.log('👤 Temp user data found (existing user):', userData);
+          console.log('👤 Temp user data found:', userData);
           setTempUserData(userData);
           setIsGoogleUser(true);
           setFormData(prev => ({
             ...prev,
             email: userData.email
           }));
-          return;
         } catch (error) {
           console.error('❌ Error parsing temp user data:', error);
-        }
-      }
-      
-      // ثانياً: تحقق من بيانات جوجل (للمستخدمين الجدد)
-      const googleData = localStorage.getItem('google_user_data');
-      if (googleData && googleData.trim() !== '') {
-        try {
-          const userData = JSON.parse(googleData);
-          console.log('👤 Google user data found (new user):', userData);
-          setTempUserData({
-            id: null, // لا يوجد ID بعد
-            email: userData.email,
-            name: userData.name
-          });
-          setIsGoogleUser(true);
-          setFormData(prev => ({
-            ...prev,
-            email: userData.email
-          }));
-          
-          // تنظيف أي جلسة موجودة للمستخدمين الجدد
-          localStorage.removeItem('session_token');
-          
-          // منع أي توجيه تلقائي
-          console.log('🚫 Preventing auto-redirect for Google user');
-        } catch (error) {
-          console.error('❌ Error parsing google user data:', error);
         }
       }
     }
@@ -249,92 +213,36 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      console.log('🔄 Processing Google user academic data...');
+      console.log('🔄 Updating Google user academic data...');
       console.log('User ID:', tempUserData.id);
       console.log('Academic data:', selectedData);
 
-      let userProfile;
-
-      if (tempUserData.id) {
-        // مستخدم موجود - تحديث البيانات
-        console.log('👤 Updating existing user...');
-        const { data, error } = await supabase
-          .from('users')
-          .update({
-            department: selectedData.department,
-            year: parseInt(selectedData.year),
-            term: selectedData.term
-          })
-          .eq('id', tempUserData.id)
-          .select()
-          .single();
-
-        if (error) {
-          console.error('❌ Error updating user:', error);
-          setError('خطأ في تحديث البيانات');
-          return;
-        }
-
-        userProfile = data;
-      } else {
-        // مستخدم جديد - إنشاء حساب جديد
-        console.log('🆕 Creating new user...');
-        const googleData = localStorage.getItem('google_user_data');
-        if (!googleData) {
-          setError('خطأ في البيانات المحفوظة');
-          return;
-        }
-
-        const googleUserData = JSON.parse(googleData);
-        const newUserData = {
-          email: googleUserData.email,
-          name: googleUserData.name,
-          password_hash: 'google_oauth_user',
+      // تحديث بيانات المستخدم في قاعدة البيانات
+      const { data, error } = await supabase
+        .from('users')
+        .update({
           department: selectedData.department,
           year: parseInt(selectedData.year),
-          term: selectedData.term,
-          role: 'student',
-          is_active: true,
-          last_login: new Date().toISOString()
-        };
+          term: selectedData.term
+        })
+        .eq('id', tempUserData.id)
+        .select()
+        .single();
 
-        const { data: newUser, error: createError } = await supabase
-          .from('users')
-          .insert([newUserData])
-          .select()
-          .single();
-
-        if (createError) {
-          console.error('❌ Error creating user:', createError);
-          setError('خطأ في إنشاء الحساب');
-          return;
-        }
-
-        userProfile = newUser;
+      if (error) {
+        console.error('❌ Error updating user:', error);
+        setError('خطأ في تحديث البيانات');
+        return;
       }
 
-      console.log('✅ User processed successfully:', userProfile);
-
-      // إنشاء جلسة جديدة للمستخدم
-      try {
-        const { UserService } = await import('@/lib/userService');
-        const sessionResult = await UserService.createSession(userProfile.id);
-        
-        if (sessionResult) {
-          console.log('✅ Session created for Google user:', sessionResult);
-          localStorage.setItem('session_token', sessionResult.sessionToken);
-        }
-      } catch (sessionError) {
-        console.error('❌ Error creating session:', sessionError);
-      }
+      console.log('✅ User updated successfully:', data);
 
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
-      localStorage.removeItem('google_user_data');
 
       // إظهار رسالة النجاح
       setUpdateSuccess(true);
-      console.log('✅ Google user data processed successfully!');
+      console.log('✅ Google user data updated successfully!');
 
       // إعادة تحميل الصفحة لتحديث UserContext
       console.log('🔄 Redirecting to welcome page...');
@@ -342,14 +250,14 @@ export default function RegisterPage() {
         window.location.href = '/welcome';
       }, 2000);
     } catch (error) {
-      console.error('❌ Error processing Google user:', error);
-      setError('خطأ في معالجة البيانات');
+      console.error('❌ Error updating Google user:', error);
+      setError('خطأ في تحديث البيانات');
     } finally {
       setIsUpdating(false);
     }
   };
 
-  // منع التوجيه للمستخدمين الجدد من جوجل
+  // منع التوجيه للمستخدمين من جوجل
   if (isGoogleFlow && !isGoogleUser) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
@@ -359,38 +267,6 @@ export default function RegisterPage() {
         </div>
       </div>
     );
-  }
-
-  // منع التوجيه إذا كان المستخدم موجود ولكن من جوجل
-  if (user && isGoogleUser) {
-    console.log('🚫 User exists but is Google user - preventing redirect');
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-300">جاري تحضير صفحة التسجيل...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // منع التوجيه إذا كان هناك بيانات جوجل مؤقتة
-  if (typeof window !== 'undefined') {
-    const googleData = localStorage.getItem('google_user_data');
-    const urlParams = new URLSearchParams(window.location.search);
-    const isGoogle = urlParams.get('google') === 'true';
-    
-    if (googleData || isGoogle) {
-      console.log('🚫 Google flow detected - preventing redirect');
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-300">جاري تحضير صفحة التسجيل...</p>
-          </div>
-        </div>
-      );
-    }
   }
 
   return (

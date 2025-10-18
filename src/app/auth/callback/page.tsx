@@ -107,56 +107,35 @@ export default function AuthCallbackPage() {
           userProfile = updatedUser;
           isNewUser = false;
         } else {
-          // مستخدم جديد - التحقق من مصدر تسجيل الدخول
-          console.log('🆕 New user detected');
+          // مستخدم جديد - إنشاء حساب مؤقت مع بيانات معلقة
+          console.log('🆕 New user - creating temporary account with pending data');
           isNewUser = true;
           
-          if (loginSource === 'login') {
-            // جاء من صفحة تسجيل الدخول - لا ننشئ حساب بعد، نوجه لاختيار البيانات أولاً
-            console.log('🆕 New user from login page - redirecting to academic selection without creating account...');
-            
-            // حفظ بيانات جوجل مؤقتاً لاستخدامها لاحقاً
-            localStorage.setItem('google_user_data', JSON.stringify({
-              email: googleUser.email!,
-              name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
-              user_metadata: googleUser.user_metadata
-            }));
-            
-            // تنظيف أي جلسة موجودة
-            localStorage.removeItem('session_token');
-            
-            // توجيه مباشر لاختيار البيانات الأكاديمية
-            window.location.href = '/auth/register?step=1&google=true';
+          const newUserData = {
+            email: googleUser.email!,
+            name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
+            password_hash: 'google_oauth_user',
+            department: 'PENDING', // معلق حتى يختار المستخدم
+            year: 0, // معلق حتى يختار المستخدم
+            term: 'PENDING', // معلق حتى يختار المستخدم
+            role: 'student',
+            is_active: true,
+            last_login: new Date().toISOString()
+          };
+
+          const { data: newUser, error: createError } = await supabase
+            .from('users')
+            .insert([newUserData])
+            .select()
+            .maybeSingle();
+
+          if (createError) {
+            console.error('خطأ في إنشاء المستخدم:', createError);
+            setError('خطأ في إنشاء الحساب');
             return;
-          } else {
-            // جاء من صفحة التسجيل - إنشاء حساب كامل
-            console.log('🆕 New user from register page - creating full account...');
-            const newUserData = {
-              email: googleUser.email!,
-              name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
-              password_hash: 'google_oauth_user',
-              department: academicData?.department || 'General Program',
-              year: academicData ? parseInt(academicData.year) : 1,
-              term: academicData?.term || 'FIRST',
-              role: 'student',
-              is_active: true,
-              last_login: new Date().toISOString()
-            };
-
-            const { data: newUser, error: createError } = await supabase
-              .from('users')
-              .insert([newUserData])
-              .select()
-              .maybeSingle();
-
-            if (createError) {
-              console.error('خطأ في إنشاء المستخدم:', createError);
-              setError('خطأ في إنشاء الحساب');
-              return;
-            }
-
-            userProfile = newUser;
           }
+
+          userProfile = newUser;
         }
 
         // إنشاء جلسة جديدة
@@ -184,16 +163,14 @@ export default function AuthCallbackPage() {
           
            // توجيه فوري بدون انتظار
            if (isNewUser) {
-             // مستخدم جديد - التحقق من مصدر تسجيل الدخول
-             if (loginSource === 'login') {
-               // هذا لا يجب أن يحدث لأننا نوجه مباشرة في الكود أعلاه
-               console.log('🆕 New user from login page - this should not happen');
-               window.location.href = '/auth/register?step=1&google=true';
-             } else {
-               // جاء من صفحة التسجيل - توجيه مباشر للصفحة الرئيسية
-               console.log('🆕 New user from register page - redirecting to home page...');
-               window.location.href = '/';
-             }
+             // مستخدم جديد - توجيه لاختيار البيانات الأكاديمية
+             console.log('🆕 New user - redirecting to academic selection...');
+             localStorage.setItem('temp_user_data', JSON.stringify({
+               id: userProfile.id,
+               email: userProfile.email,
+               name: userProfile.name
+             }));
+             window.location.href = '/auth/register?step=1&google=true';
            } else {
              // مستخدم موجود - التحقق من اكتمال البيانات الأكاديمية
              if (userProfile.department === 'PENDING' || userProfile.year === 0 || userProfile.term === 'PENDING') {

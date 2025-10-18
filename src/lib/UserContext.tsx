@@ -31,15 +31,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       try {
         console.log('🔄 UserContext: Loading user from session...');
         
-        // تحقق من وجود بيانات جوجل مؤقتة (مستخدم جديد)
-        const googleData = localStorage.getItem('google_user_data');
-        if (googleData) {
-          console.log('🔍 Google user data found - skipping user loading completely');
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return;
-        }
         
         const sessionToken = localStorage.getItem('session_token');
         console.log('🔑 Session token found:', sessionToken ? 'Yes' : 'No');
