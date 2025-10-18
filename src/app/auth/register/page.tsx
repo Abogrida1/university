@@ -47,7 +47,7 @@ export default function RegisterPage() {
     if (isGoogle) {
       console.log('🔍 Google user detected, checking temp data...');
       const tempData = localStorage.getItem('temp_user_data');
-      if (tempData) {
+      if (tempData && tempData.trim() !== '') {
         try {
           const userData = JSON.parse(tempData);
           console.log('👤 Temp user data found:', userData);
@@ -65,21 +65,21 @@ export default function RegisterPage() {
   }, []);
 
   const departments = [
-    { value: 'Cyber Security', label: 'الأمن السيبراني', icon: '🛡️', color: 'from-red-500 to-pink-600' },
-    { value: 'Artificial Intelligence', label: 'الذكاء الاصطناعي', icon: '🤖', color: 'from-blue-500 to-indigo-600' },
-    { value: 'General Program', label: 'البرنامج العام', icon: '🎓', color: 'from-green-500 to-teal-600' }
+    { value: 'Cyber Security', label: 'الأمن السيبراني', icon: '🛡️', color: 'from-yellow-500 to-yellow-600' },
+    { value: 'Artificial Intelligence', label: 'الذكاء الاصطناعي', icon: '🤖', color: 'from-yellow-500 to-yellow-600' },
+    { value: 'General Program', label: 'البرنامج العام', icon: '🎓', color: 'from-yellow-500 to-yellow-600' }
   ];
 
   const years = [
-    { value: '1', label: 'السنة الأولى', icon: '1️⃣', color: 'from-orange-500 to-red-600' },
-    { value: '2', label: 'السنة الثانية', icon: '2️⃣', color: 'from-yellow-500 to-orange-600' },
-    { value: '3', label: 'السنة الثالثة', icon: '3️⃣', color: 'from-green-500 to-emerald-600' },
-    { value: '4', label: 'السنة الرابعة', icon: '4️⃣', color: 'from-blue-500 to-indigo-600' }
+    { value: '1', label: 'السنة الأولى', icon: '1️⃣', color: 'from-yellow-500 to-yellow-600' },
+    { value: '2', label: 'السنة الثانية', icon: '2️⃣', color: 'from-yellow-500 to-yellow-600' },
+    { value: '3', label: 'السنة الثالثة', icon: '3️⃣', color: 'from-yellow-500 to-yellow-600' },
+    { value: '4', label: 'السنة الرابعة', icon: '4️⃣', color: 'from-yellow-500 to-yellow-600' }
   ];
 
   const terms = [
-    { value: 'FIRST', label: 'الترم الأول', icon: '1️⃣', color: 'from-indigo-500 to-pink-600' },
-    { value: 'SECOND', label: 'الترم الثاني', icon: '2️⃣', color: 'from-cyan-500 to-blue-600' }
+    { value: 'FIRST', label: 'الترم الأول', icon: '1️⃣', color: 'from-yellow-500 to-yellow-600' },
+    { value: 'SECOND', label: 'الترم الثاني', icon: '2️⃣', color: 'from-yellow-500 to-yellow-600' }
   ];
 
   const handleSelection = (type: string, value: string) => {
@@ -231,14 +231,22 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black py-6 sm:py-8 lg:py-12">
+    <div className="min-h-screen py-6 sm:py-8 lg:py-12 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="container mx-auto px-3 sm:px-4 lg:px-6">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 lg:mb-12">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl lg:rounded-3xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
-            <span className="text-xl sm:text-2xl lg:text-3xl">👤</span>
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-xl sm:rounded-2xl lg:rounded-3xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-yellow-500/25">
+            <img 
+              src="/assets/icons/main-icon.png" 
+              alt="University Materials" 
+              className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10"
+            />
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-2 sm:mb-3 lg:mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent mb-2 sm:mb-3 lg:mb-4">
             إنشاء حساب جديد
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2 sm:px-4">
@@ -279,12 +287,14 @@ export default function RegisterPage() {
                     onClick={() => handleSelection('department', dept.value)}
                     className={`group relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 ${
                       selectedData.department === dept.value
-                        ? `bg-gradient-to-r ${dept.color} shadow-lg sm:shadow-xl lg:shadow-2xl`
-                        : 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50'
+                        ? `bg-gradient-to-r ${dept.color} shadow-lg sm:shadow-xl lg:shadow-2xl text-black`
+                        : 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50 text-white'
                     }`}
                   >
                     <div className="text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 lg:mb-4">{dept.icon}</div>
-                    <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-white mb-1 sm:mb-2">{dept.label}</h3>
+                    <h3 className={`text-sm sm:text-lg lg:text-xl font-bold mb-1 sm:mb-2 ${
+                      selectedData.department === dept.value ? 'text-black' : 'text-white'
+                    }`}>{dept.label}</h3>
                     {selectedData.department === dept.value && (
                       <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-white rounded-full flex items-center justify-center">
                         <span className="text-green-600 text-xs sm:text-sm">✓</span>
@@ -305,12 +315,14 @@ export default function RegisterPage() {
                     onClick={() => handleSelection('year', year.value)}
                     className={`group relative overflow-hidden rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 ${
                       selectedData.year === year.value
-                        ? `bg-gradient-to-r ${year.color} shadow-md sm:shadow-lg lg:shadow-xl`
-                        : 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50'
+                        ? `bg-gradient-to-r ${year.color} shadow-md sm:shadow-lg lg:shadow-xl text-black`
+                        : 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50 text-white'
                     }`}
                   >
                     <div className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2">{year.icon}</div>
-                    <h3 className="text-xs sm:text-sm lg:text-lg font-bold text-white">{year.label}</h3>
+                    <h3 className={`text-xs sm:text-sm lg:text-lg font-bold ${
+                      selectedData.year === year.value ? 'text-black' : 'text-white'
+                    }`}>{year.label}</h3>
                     {selectedData.year === year.value && (
                       <div className="absolute top-1 right-1 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-white rounded-full flex items-center justify-center">
                         <span className="text-green-600 text-xs">✓</span>
@@ -331,12 +343,14 @@ export default function RegisterPage() {
                     onClick={() => handleSelection('term', term.value)}
                     className={`group relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 ${
                       selectedData.term === term.value
-                        ? `bg-gradient-to-r ${term.color} shadow-md sm:shadow-lg lg:shadow-xl`
-                        : 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50'
+                        ? `bg-gradient-to-r ${term.color} shadow-md sm:shadow-lg lg:shadow-xl text-black`
+                        : 'bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/50 text-white'
                     }`}
                   >
                     <div className="text-xl sm:text-2xl lg:text-3xl mb-2 sm:mb-3 lg:mb-4">{term.icon}</div>
-                    <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-white">{term.label}</h3>
+                    <h3 className={`text-sm sm:text-lg lg:text-xl font-bold ${
+                      selectedData.term === term.value ? 'text-black' : 'text-white'
+                    }`}>{term.label}</h3>
                     {selectedData.term === term.value && (
                       <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-white rounded-full flex items-center justify-center">
                         <span className="text-green-600 text-xs sm:text-sm">✓</span>
@@ -352,7 +366,7 @@ export default function RegisterPage() {
               <button
                 onClick={handleNext}
                 disabled={loading}
-                className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg sm:rounded-xl lg:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-cyan-500/30 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg sm:rounded-xl lg:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-yellow-500/30 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -429,9 +443,17 @@ export default function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2 sm:right-3 lg:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors text-base sm:text-lg lg:text-xl"
+                      className="absolute right-2 sm:right-3 lg:right-4 top-1/2 transform -translate-y-1/2 text-yellow-400 hover:text-yellow-300 transition-colors text-base sm:text-lg lg:text-xl"
                     >
-                      {showPassword ? '🙈' : '👁️'}
+                      {showPassword ? (
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -453,9 +475,17 @@ export default function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-2 sm:right-3 lg:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors text-base sm:text-lg lg:text-xl"
+                      className="absolute right-2 sm:right-3 lg:right-4 top-1/2 transform -translate-y-1/2 text-yellow-400 hover:text-yellow-300 transition-colors text-base sm:text-lg lg:text-xl"
                     >
-                      {showConfirmPassword ? '🙈' : '👁️'}
+                      {showConfirmPassword ? (
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -464,7 +494,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-2 sm:py-3 lg:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl lg:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2 sm:py-3 lg:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl lg:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-yellow-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {loading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب'}
                 </button>

@@ -48,14 +48,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-3xl mb-6 shadow-2xl shadow-cyan-500/25 animate-pulse">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-3xl mb-6 shadow-2xl shadow-yellow-500/25 animate-pulse">
             <span className="text-3xl">🔐</span>
           </div>
-          <h1 className="text-4xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent mb-4">
             تسجيل الدخول
           </h1>
           <p className="text-gray-300 text-lg">
@@ -86,7 +86,7 @@ export default function LoginPage() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-lg"
+                    className="w-full px-4 py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-lg"
                     placeholder="example@gmail.com"
                     required
                   />
@@ -106,7 +106,7 @@ export default function LoginPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-4 py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-lg pr-12"
+                    className="w-full px-4 py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-lg pr-12"
                     placeholder="••••••••"
                     required
                   />

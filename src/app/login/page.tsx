@@ -64,25 +64,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] -left-[10%] w-[300px] h-[300px] bg-gradient-radial from-cyan-500/8 to-transparent rounded-full animate-float"></div>
-        <div className="absolute top-[60%] -right-[5%] w-[200px] h-[200px] bg-gradient-radial from-blue-500/6 to-transparent rounded-full animate-float" style={{animationDelay: '-2s'}}></div>
-        <div className="absolute bottom-[20%] left-[10%] w-[150px] h-[150px] bg-gradient-radial from-indigo-500/4 to-transparent rounded-full animate-float" style={{animationDelay: '-4s'}}></div>
+        <div className="absolute top-[10%] -left-[10%] w-[300px] h-[300px] bg-gradient-radial from-yellow-500/8 to-transparent rounded-full animate-float"></div>
+        <div className="absolute top-[60%] -right-[5%] w-[200px] h-[200px] bg-gradient-radial from-yellow-500/6 to-transparent rounded-full animate-float" style={{animationDelay: '-2s'}}></div>
+        <div className="absolute bottom-[20%] left-[10%] w-[150px] h-[150px] bg-gradient-radial from-yellow-500/4 to-transparent rounded-full animate-float" style={{animationDelay: '-4s'}}></div>
       </div>
 
       {/* Login Container */}
       <div className="w-full max-w-[400px] relative z-10">
         {/* Login Card */}
-        <div className="bg-[#151520] border border-[#2a2a35] rounded-2xl p-6 shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_0_1px_rgba(255,255,255,0.05)] relative backdrop-blur-[20px] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4),0_0_0_1px_rgba(0,255,136,0.1),0_0_40px_rgba(0,255,136,0.1)] hover:-translate-y-0.5">
+        <div className="bg-[#151520] border border-[#2a2a35] rounded-2xl p-6 shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_0_1px_rgba(255,255,255,0.05)] relative backdrop-blur-[20px] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,215,0,0.1),0_0_40px_rgba(255,215,0,0.1)] hover:-translate-y-0.5">
           {/* Neon Top Border */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100"></div>
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100"></div>
 
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="text-3xl mb-3 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent filter drop-shadow-[0_0_20px_rgba(0,255,136,0.3)] animate-pulse">
-              ⚡
+            <div className="mb-3">
+              <img 
+                src="/assets/icons/main-icon.png" 
+                alt="University Materials" 
+                className="w-12 h-12 mx-auto filter drop-shadow-[0_0_20px_rgba(255,215,0,0.3)] animate-pulse"
+              />
             </div>
             <h2 className="text-2xl font-semibold text-white mb-2 tracking-tight" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>تسجيل الدخول</h2>
             <p className="text-[#a0a0b0] text-sm" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>مرحباً بك مرة أخرى! 👋</p>
@@ -109,14 +117,14 @@ export default function LoginPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md px-4 py-4 text-white text-sm transition-all duration-300 focus:border-cyan-400 focus:bg-[rgba(26,26,37,0.8)] focus:shadow-[0_0_0_3px_rgba(0,255,136,0.1),0_4px_20px_rgba(0,255,136,0.1)] outline-none"
+                  className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md px-4 py-4 text-white text-sm transition-all duration-300 focus:border-yellow-400 focus:bg-[rgba(26,26,37,0.8)] focus:shadow-[0_0_0_3px_rgba(0,255,136,0.1),0_4px_20px_rgba(0,255,136,0.1)] outline-none"
                   placeholder=" "
                   required
                 />
                 <label htmlFor="email" className="absolute left-4 top-4 text-[#a0a0b0] text-sm transition-all duration-300 pointer-events-none origin-left-top" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                   البريد الإلكتروني
                 </label>
-                <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 transform -translate-x-1/2 rounded-sm"></div>
+                <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-300 transform -translate-x-1/2 rounded-sm"></div>
               </div>
             </div>
 
@@ -129,7 +137,7 @@ export default function LoginPage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                  className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md px-4 py-4 pr-12 text-white text-sm transition-all duration-300 focus:border-cyan-400 focus:bg-[rgba(26,26,37,0.8)] focus:shadow-[0_0_0_3px_rgba(0,255,136,0.1),0_4px_20px_rgba(0,255,136,0.1)] outline-none"
+                  className="w-full bg-[#1a1a25] border border-[#2a2a35] rounded-md px-4 py-4 pr-12 text-white text-sm transition-all duration-300 focus:border-yellow-400 focus:bg-[rgba(26,26,37,0.8)] focus:shadow-[0_0_0_3px_rgba(0,255,136,0.1),0_4px_20px_rgba(0,255,136,0.1)] outline-none"
                   placeholder=" "
                 required
               />
@@ -139,7 +147,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#a0a0b0] hover:text-cyan-400 transition-all duration-300 p-2 rounded-md hover:bg-[rgba(0,255,136,0.1)]"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#a0a0b0] hover:text-yellow-400 transition-all duration-300 p-2 rounded-md hover:bg-[rgba(255,215,0,0.1)]"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     {showPassword ? (
@@ -149,7 +157,7 @@ export default function LoginPage() {
                     )}
                   </svg>
               </button>
-                <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 transform -translate-x-1/2 rounded-sm"></div>
+                <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-300 transform -translate-x-1/2 rounded-sm"></div>
               </div>
             </div>
 
@@ -157,7 +165,7 @@ export default function LoginPage() {
             <button
                 type="submit" 
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-cyan-400 to-blue-400 text-[#0a0a0f] font-semibold py-4 px-6 rounded-md transition-all duration-300 relative overflow-hidden uppercase tracking-wider text-sm hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,255,136,0.3),0_0_40px_rgba(0,255,136,0.2)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-[#0a0a0f] font-semibold py-4 px-6 rounded-md transition-all duration-300 relative overflow-hidden uppercase tracking-wider text-sm hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(255,215,0,0.3),0_0_40px_rgba(255,215,0,0.2)] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
             >
               <span className="relative z-10">
@@ -200,7 +208,7 @@ export default function LoginPage() {
             <div className="text-center">
               <Link
                 href="/auth/register"
-                className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
+                className="text-yellow-400 hover:text-cyan-300 transition-colors text-sm font-medium"
                 style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
               >
                 إنشاء حساب جديد

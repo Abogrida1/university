@@ -23,12 +23,16 @@ export default async function CoursePage({ params }: { params: { id: string } })
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-        <div className="container mx-auto px-4 py-20">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+        {/* Golden Light Effects */}
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+        <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="text-center">
             <div className="text-8xl mb-8">❌</div>
             <h1 className="text-4xl font-black text-white mb-6">الكورس غير موجود</h1>
-            <Link href="/" className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30">
+            <Link href="/" className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-8 py-4 rounded-2xl font-bold text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
               </svg>
@@ -41,13 +45,17 @@ export default async function CoursePage({ params }: { params: { id: string } })
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-      <div className="container mx-auto px-4 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="container mx-auto px-4 py-10 relative z-10">
         {/* Breadcrumb */}
         <nav className="mb-8">
           <ol className="flex items-center space-x-3 text-sm text-gray-400">
             <li>
-              <Link href="/" className="hover:text-cyan-400 transition-colors inline-flex items-center gap-1">
+              <Link href="/" className="hover:text-yellow-400 transition-colors inline-flex items-center gap-1">
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
                 </svg>
@@ -55,29 +63,29 @@ export default async function CoursePage({ params }: { params: { id: string } })
               </Link>
             </li>
             <li className="text-gray-600">/</li>
-            <li><Link href="/" className="hover:text-cyan-400 transition-colors">الكورسات</Link></li>
+            <li><Link href="/" className="hover:text-yellow-400 transition-colors">الكورسات</Link></li>
             <li className="text-gray-600">/</li>
-            <li className="text-cyan-400 font-medium">{course.title}</li>
+            <li className="text-yellow-400 font-medium">{course.title}</li>
           </ol>
         </nav>
 
         {/* Course Header */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-gray-700/50">
+        <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-yellow-500/30">
           <div className="flex justify-between items-start mb-8">
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/30">
                   <span className="text-3xl">📖</span>
                 </div>
                 <div>
                   <h1 className="text-4xl font-black text-white mb-2">{course.title}</h1>
-                  <p className="text-2xl text-cyan-400 font-bold">{course.code}</p>
+                  <p className="text-2xl text-yellow-400 font-bold">{course.code}</p>
                 </div>
               </div>
               <p className="text-gray-300 text-lg mb-4">{course.department}</p>
             </div>
             <div className="text-right bg-gray-700/50 rounded-2xl p-6 border border-gray-600/50">
-              <div className="text-cyan-400 font-bold text-lg mb-2">السنة {course.year}</div>
+              <div className="text-yellow-400 font-bold text-lg mb-2">السنة {course.year}</div>
               <div className="text-gray-300 font-medium">الفصل {course.term}</div>
             </div>
           </div>
@@ -85,7 +93,7 @@ export default async function CoursePage({ params }: { params: { id: string } })
 
         {/* Course Links Section */}
         {(course.bookLink || course.lecturesLink || course.googleDriveLink || course.additionalLinks) && (
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-gray-700/50">
+          <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-yellow-500/30">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/30">
                 <span className="text-yellow-400 font-bold text-xl">🔗</span>
@@ -103,14 +111,14 @@ export default async function CoursePage({ params }: { params: { id: string } })
                   href={course.bookLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-blue-600/20 to-blue-700/20 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
+                  className="group bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-blue-400 text-2xl">📖</span>
+                    <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                      <span className="text-yellow-400 text-2xl">📖</span>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">Book</h3>
+                      <h3 className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors">Book</h3>
                       <p className="text-sm text-gray-400">كتاب الكورس</p>
                     </div>
                   </div>
@@ -124,11 +132,11 @@ export default async function CoursePage({ params }: { params: { id: string } })
                   href={course.lecturesLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-green-600/20 to-green-700/20 backdrop-blur-sm rounded-2xl p-6 border border-green-500/30 hover:border-green-400/50 transition-all duration-300 hover:scale-105"
+                  className="group bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-green-400 text-2xl">🎥</span>
+                    <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                      <span className="text-yellow-400 text-2xl">🎥</span>
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-white group-hover:text-green-300 transition-colors">Lectures</h3>
@@ -219,8 +227,8 @@ export default async function CoursePage({ params }: { params: { id: string } })
                             <span className="text-red-400 font-bold text-xl">📄</span>
                           </div>
                         ) : (
-                          <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30 group-hover:bg-blue-500/30 transition-colors">
-                            <span className="text-blue-400 font-bold text-xl">🎥</span>
+                          <div className="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/30 group-hover:bg-blue-500/30 transition-colors">
+                            <span className="text-yellow-400 font-bold text-xl">🎥</span>
                           </div>
                         )}
                       </div>
@@ -237,7 +245,7 @@ export default async function CoursePage({ params }: { params: { id: string } })
                     </div>
                     
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:space-x-3">
-                      <button className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2">
+                      <button className="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30 flex items-center justify-center gap-2">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>

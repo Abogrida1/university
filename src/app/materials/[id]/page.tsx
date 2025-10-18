@@ -1,17 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { materialsService, pdfsService, videosService } from '@/lib/supabaseServiceFixed';
 import PDFViewer from '@/components/PDFViewer';
 import MaterialNavigation from '@/components/MaterialNavigation';
+import VideoCard from '@/components/VideoCard';
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic';
-
-// Generate static params (required for Next.js)
-export async function generateStaticParams() {
-  // Return empty array to avoid Supabase connection during build
-  // Dynamic routes will be generated on-demand
-  return [];
-}
+export const revalidate = 0;
 
 export default async function MaterialPage({ 
   params, 
@@ -23,26 +20,32 @@ export default async function MaterialPage({
   const materialId = params.id;
   const { program, year, term } = searchParams;
   
-  console.log('🔍 Material page searchParams:', { program, year, term });
-  
   try {
-    // Fetch data from Supabase
-    const [material, materialPdfs, materialVideos] = await Promise.all([
+    // Optimized parallel data fetching with error handling
+    const [material, materialPdfs, materialVideos] = await Promise.allSettled([
       materialsService.getById(materialId),
       pdfsService.getByMaterialId(materialId),
       videosService.getByMaterialId(materialId)
+    ]).then(results => [
+      results[0].status === 'fulfilled' ? results[0].value : null,
+      results[1].status === 'fulfilled' ? results[1].value : [],
+      results[2].status === 'fulfilled' ? results[2].value : []
     ]);
 
     if (!material) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center px-4">
-          <div className="text-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden flex items-center justify-center px-4">
+          {/* Golden Light Effects */}
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+            <div className="text-center relative z-10">
             <div className="text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6">📚</div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">المادة غير موجودة</h1>
             <p className="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">المادة المطلوبة غير متاحة حالياً</p>
             <Link 
               href="/" 
-              className="inline-flex items-center gap-2 px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg sm:rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base"
+              className="inline-flex items-center gap-2 px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-lg sm:rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
@@ -67,12 +70,12 @@ export default async function MaterialPage({
 
   if (!material) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
         <div className="container mx-auto px-4 py-20">
           <div className="text-center">
             <div className="text-8xl mb-8">❌</div>
             <h1 className="text-4xl font-black text-white mb-6">المادة غير موجودة</h1>
-            <Link href="/" className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30">
+            <Link href="/" className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
               </svg>
@@ -84,9 +87,13 @@ export default async function MaterialPage({
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-      <div className="container mx-auto px-4 py-10">
+   return (
+     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+       {/* Golden Light Effects */}
+       <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5 pointer-events-none"></div>
+       <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+       <div className="container mx-auto px-4 pt-4 pb-10 relative z-10">
         {/* Navigation */}
         <MaterialNavigation 
           program={program}
@@ -95,64 +102,58 @@ export default async function MaterialPage({
           materialTitle={material.title}
         />
 
-        {/* Material Header */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 mb-6 sm:mb-8 md:mb-10 shadow-2xl border border-gray-700/50">
-          <div className="flex flex-col sm:flex-row justify-between items-start mb-6 sm:mb-8 gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                  <span className="text-2xl sm:text-3xl">📚</span>
-                </div>
-                <div>
-                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2">{materialData.title}</h1>
-                 <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-2">{materialData.titleAr}</p>
-                 <p className="text-lg sm:text-xl md:text-2xl text-cyan-400 font-bold">{materialData.code}</p>
-                </div>
+        {/* Material Header - Improved */}
+        <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-xl border border-yellow-500/30">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center shadow-lg shadow-yellow-500/30">
+                <span className="text-xl" role="img" aria-label="book">📚</span>
               </div>
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-2">{materialData.department}</p>
-              <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">{materialData.departmentAr}</p>
+              <div>
+                <h1 className="text-2xl font-black text-white mb-1">{materialData.title}</h1>
+                <p className="text-base text-gray-300 mb-1">{materialData.titleAr}</p>
+                <p className="text-yellow-400 font-bold text-base">{materialData.code}</p>
+              </div>
             </div>
-            <div className="text-right bg-gray-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-600/50">
-              <div className="text-cyan-400 font-bold text-base sm:text-lg mb-2">Year {materialData.year}</div>
-              <div className="text-xs sm:text-sm text-gray-500 mb-2">السنة {materialData.year}</div>
-              <div className="text-gray-300 font-medium text-sm sm:text-base">{materialData.term}</div>
-              <div className="text-sm text-gray-500">{materialData.termAr}</div>
+            <div className="text-right bg-gray-700/50 rounded-lg p-4 border border-yellow-500/30">
+              <div className="text-yellow-400 font-bold text-base">Year {materialData.year}</div>
+              <div className="text-sm text-gray-400">السنة {materialData.year}</div>
+              <div className="text-gray-300 font-medium text-sm">{materialData.term}</div>
             </div>
           </div>
         </div>
 
-        {/* Material Links Section */}
+        {/* Material Links Section - Improved */}
         {(materialData.bookLink || materialData.lecturesLink || materialData.googleDriveLink || materialData.additionalLinks) && !materialData.showGoogleDriveOnly && materialData.showMaterialLinksSection !== false && (
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 mb-10 shadow-2xl border border-gray-700/50">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/30">
-                <span className="text-yellow-400 font-bold text-xl">🔗</span>
+          <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-xl border border-yellow-500/30">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-500/30">
+                <span className="text-yellow-400 font-bold text-lg">🔗</span>
               </div>
               <div>
-                <h2 className="text-3xl font-black text-white">Material Links</h2>
+                <h2 className="text-xl font-black text-white">Material Links</h2>
                 <p className="text-sm text-gray-400">روابط مفيدة للمادة</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Book Link */}
               {materialData.bookLink && (
                 <a
                   href={materialData.bookLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-blue-600/20 to-blue-700/20 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
+                  className="group bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm rounded-lg p-4 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 hover:scale-105"
                 >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-blue-400 text-2xl">📖</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                      <span className="text-yellow-400 text-xl">📖</span>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">Book</h3>
+                      <h3 className="text-base font-bold text-white group-hover:text-yellow-300 transition-colors">Book</h3>
                       <p className="text-sm text-gray-400">كتاب المادة</p>
                     </div>
                   </div>
-                  <p className="text-gray-300 text-sm">انقر للوصول إلى كتاب المادة</p>
                 </a>
               )}
 
@@ -162,18 +163,17 @@ export default async function MaterialPage({
                   href={materialData.lecturesLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-green-600/20 to-green-700/20 backdrop-blur-sm rounded-2xl p-6 border border-green-500/30 hover:border-green-400/50 transition-all duration-300 hover:scale-105"
+                  className="group bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 backdrop-blur-sm rounded-lg p-4 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 hover:scale-105"
                 >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-green-400 text-2xl">🎥</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                      <span className="text-yellow-400 text-xl">🎥</span>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white group-hover:text-green-300 transition-colors">Lectures</h3>
+                      <h3 className="text-base font-bold text-white group-hover:text-green-300 transition-colors">Lectures</h3>
                       <p className="text-sm text-gray-400">محاضرات المادة</p>
                     </div>
                   </div>
-                  <p className="text-gray-300 text-sm">انقر للوصول إلى محاضرات المادة</p>
                 </a>
               )}
 
@@ -183,18 +183,17 @@ export default async function MaterialPage({
                   href={materialData.googleDriveLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-yellow-600/20 to-yellow-700/20 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 hover:scale-105"
+                  className="group bg-gradient-to-r from-yellow-600/20 to-yellow-700/20 backdrop-blur-sm rounded-lg p-4 border border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 hover:scale-105"
                 >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-yellow-400 text-2xl">☁️</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                      <span className="text-yellow-400 text-xl">☁️</span>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors">Google Drive</h3>
+                      <h3 className="text-base font-bold text-white group-hover:text-yellow-300 transition-colors">Google Drive</h3>
                       <p className="text-sm text-gray-400">ملفات Google Drive</p>
                     </div>
                   </div>
-                  <p className="text-gray-300 text-sm">انقر للوصول إلى ملفات Google Drive</p>
                 </a>
               )}
 
@@ -246,7 +245,7 @@ export default async function MaterialPage({
             <div className="bg-gradient-to-r from-cyan-500/10 to-blue-600/10 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
                     <span className="text-white text-xl">📁</span>
                   </div>
                   <div>
@@ -259,7 +258,7 @@ export default async function MaterialPage({
                   href={materialData.googleDriveLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30 flex items-center gap-2"
+                  className="group bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30 flex items-center gap-2"
                 >
                   <span className="text-lg">☁️</span>
                   <span>فتح Drive</span>
@@ -272,20 +271,20 @@ export default async function MaterialPage({
           </div>
         )}
 
-        {/* PDFs Section */}
+        {/* PDFs Section - Improved */}
         {!materialData.showGoogleDriveOnly && materialData.showPdfsSection !== false && (
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 mb-6 sm:mb-8 md:mb-10 shadow-2xl border border-gray-700/50">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-500/20 rounded-xl sm:rounded-2xl flex items-center justify-center border border-red-500/30">
-                <span className="text-red-400 font-bold text-lg sm:text-xl">📄</span>
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 mb-6 shadow-xl border border-gray-700/50">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center border border-red-500/30">
+                <span className="text-red-400 font-bold text-lg">📄</span>
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">Material</h2>
-                <p className="text-xs sm:text-sm text-gray-400">المواد الدراسية</p>
+                <h2 className="text-xl font-black text-white">Material</h2>
+                <p className="text-sm text-gray-400">المواد الدراسية</p>
               </div>
             </div>
-             <span className="bg-red-500/20 text-red-300 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-bold border border-red-500/30 text-xs sm:text-sm">
+             <span className="bg-red-500/20 text-red-300 px-4 py-2 rounded-full font-bold border border-red-500/30 text-sm">
                {pdfsData.length} PDF Files
              </span>
           </div>
@@ -311,23 +310,23 @@ export default async function MaterialPage({
         </div>
         )}
 
-        {/* Videos Section */}
+        {/* Videos Section - Improved */}
         {!materialData.showGoogleDriveOnly && materialData.showVideosSection !== false && (
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-700/50">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500/20 rounded-xl sm:rounded-2xl flex items-center justify-center border border-blue-500/30">
-                <span className="text-blue-400 font-bold text-lg sm:text-xl">🎥</span>
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-gray-700/50">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-500/30">
+                <span className="text-yellow-400 font-bold text-lg">🎥</span>
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">Video Lectures</h2>
-                <p className="text-xs sm:text-sm text-gray-400">شرح الفيديوهات</p>
+                <h2 className="text-xl font-black text-white">Video Lectures</h2>
+                <p className="text-sm text-gray-400">شرح الفيديوهات</p>
               </div>
             </div>
-             <span className="bg-blue-500/20 text-blue-300 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-bold border border-blue-500/30 text-xs sm:text-sm">
+             <span className="bg-yellow-500/20 text-blue-300 px-4 py-2 rounded-full font-bold border border-yellow-500/30 text-sm">
                {videosData.length} {videosData.some((v: any) => v.is_playlist) ? 'Playlist' : 'Videos'}
                {videosData.some((v: any) => v.is_playlist) && (
-                 <span className="text-xs text-blue-200 ml-1">
+                 <span className="text-sm text-blue-200 ml-1">
                    (متعدد الفيديوهات)
                  </span>
                )}
@@ -341,134 +340,81 @@ export default async function MaterialPage({
               <p className="text-gray-400 text-lg">لا توجد فيديوهات متاحة لهذه المادة بعد</p>
             </div>
           ) : (
-            <div className="space-y-8">
-              {videosData.map((video: any) => {
-                console.log('🎥 Video data:', {
-                  id: video.id,
-                  title: video.title,
-                  is_playlist: video.is_playlist,
-                  playlist_id: video.playlist_id,
-                  playlist_url: video.playlist_url,
-                  youtube_id: video.youtube_id
-                });
-                
-                // Log playlist embed URL for debugging
-                if (video.is_playlist && video.playlist_id) {
-                  const embedUrl = `https://www.youtube.com/embed/videoseries?list=${video.playlist_id}&autoplay=0&rel=0&modestbranding=1&showinfo=1&controls=1&loop=1&playlist=${video.playlist_id}`;
-                  console.log('📺 Playlist embed URL:', embedUrl);
-                }
-                
-                return (
-                <div key={video.id} className="group bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-blue-500/50 hover:bg-gray-700/50 transition-all duration-300">
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Video Embed */}
-                    <div className="lg:col-span-2">
-                      <div className="relative w-full h-64 lg:h-80 rounded-xl overflow-hidden shadow-2xl">
-                        {video.is_playlist && video.playlist_id ? (
-                          <>
+            <div className="space-y-6">
+              {videosData.map((video: any, index: number) => {
+                // Separate regular videos from playlists
+                if (video.is_playlist) {
+                  // Keep original design for playlists
+                  return (
+                    <div key={video.id} className="group bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-blue-500/50 hover:bg-gray-700/50 transition-all duration-300">
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Video Embed */}
+                        <div className="lg:col-span-2">
+                          <div className="relative w-full h-64 lg:h-80 rounded-xl overflow-hidden shadow-2xl">
                             <iframe
-                              src={`https://www.youtube.com/embed/videoseries?list=${video.playlist_id}&autoplay=0&rel=0&modestbranding=1&showinfo=1&controls=1&loop=1&playlist=${video.playlist_id}`}
+                              src={`https://www.youtube.com/embed/videoseries?list=${video.playlist_id}&autoplay=0&rel=0&modestbranding=1&showinfo=1&controls=1&loop=1&playlist=${video.playlist_id}&enablejsapi=1`}
                               title={video.title}
                               className="w-full h-full"
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                               allowFullScreen
                               frameBorder="0"
                               loading="lazy"
+                              referrerPolicy="strict-origin-when-cross-origin"
                             ></iframe>
-                            {/* Fallback for playlist */}
-                            <div className="absolute inset-0 bg-gray-800/90 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                              <div className="text-center">
-                                <p className="text-white text-sm mb-3">إذا لم يعمل الـ Playlist</p>
-                                <a
-                                  href={video.playlist_url || `https://www.youtube.com/playlist?list=${video.playlist_id}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition-colors duration-300 flex items-center gap-2"
-                                >
-                                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                  </svg>
-                                  فتح Playlist على YouTube
-                                </a>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                        <iframe
-                            src={`https://www.youtube.com/embed/${video.youtube_id}?autoplay=0&rel=0&modestbranding=1&showinfo=1`}
-                          title={video.title}
-                          className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                            frameBorder="0"
-                        ></iframe>
-                        )}
-                      </div>
-                      
-                      {/* Playlist Info */}
-                      {video.is_playlist && video.playlist_id && (
-                        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                          <p className="text-blue-300 text-sm text-center">
-                            📺 هذا playlist يحتوي على عدة فيديوهات - استخدم أزرار التحكم للتنقل
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Video Info */}
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">{video.title}</h3>
-                          {video.is_playlist && (
-                            <span className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full text-xs font-medium border border-blue-500/30">
-                              📺 Playlist
-                            </span>
-                          )}
+                          </div>
+                          
+                          {/* Playlist Info */}
+                          <div className="mt-3 p-3 bg-blue-500/10 border border-yellow-500/30 rounded-lg">
+                            <p className="text-blue-300 text-sm text-center">
+                              📺 هذا playlist يحتوي على عدة فيديوهات - استخدم أزرار التحكم للتنقل
+                            </p>
+                          </div>
                         </div>
                         
-                      </div>
-                      
-                      <div className="space-y-2 text-sm text-gray-400">
-                        <div className="flex items-center justify-between">
-                          <span>المدة:</span>
-                          <span className="text-white font-medium">
-                            {video.is_playlist ? 'Playlist' : video.duration}
-                          </span>
+                        {/* Video Info */}
+                        <div className="space-y-4">
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors">{video.title}</h3>
+                              <span className="bg-yellow-500/20 text-blue-300 px-2 py-1 rounded-full text-xs font-medium border border-yellow-500/30">
+                                📺 Playlist
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm text-gray-400">
+                            <div className="flex items-center justify-between">
+                              <span>النوع:</span>
+                              <span className="text-white font-medium">Playlist</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span>تاريخ الرفع:</span>
+                              <span className="text-white font-medium">{video.uploadedAt}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="pt-4">
+                            <a
+                              href={video.playlist_url || `https://www.youtube.com/playlist?list=${video.playlist_id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-center py-3 px-4 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                              <span className="hidden sm:inline">مشاهدة Playlist</span>
+                              <span className="sm:hidden">مشاهدة</span>
+                            </a>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span>المشاهدات:</span>
-                          <span className="text-white font-medium">
-                            {video.is_playlist ? 'متعدد' : (video.views?.toLocaleString() || '0')}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span>تاريخ الرفع:</span>
-                          <span className="text-white font-medium">{video.uploadedAt}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="pt-4">
-                        <a
-                          href={video.is_playlist && video.playlist_url 
-                            ? video.playlist_url 
-                            : (video.youtube_url || `https://www.youtube.com/watch?v=${video.youtube_id}`)
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-center py-3 px-4 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                          <span className="hidden sm:inline">مشاهدة على يوتيوب</span>
-                          <span className="sm:hidden">مشاهدة</span>
-                        </a>
                       </div>
                     </div>
-                  </div>
-                </div>
-                );
+                  );
+                } else {
+                  // New design for regular videos - numbered rectangles
+                  return <VideoCard key={video.id} video={video} index={index + 1} />;
+                }
               })}
             </div>
           )}
@@ -481,14 +427,18 @@ export default async function MaterialPage({
   } catch (error) {
     console.error('Error loading material page:', error);
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
-        <div className="text-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden flex items-center justify-center">
+          {/* Golden Light Effects */}
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+        <div className="text-center relative z-10">
           <div className="text-6xl mb-6">⚠️</div>
           <h1 className="text-4xl font-bold text-white mb-4">خطأ في تحميل الصفحة</h1>
           <p className="text-gray-300 mb-6">حدث خطأ أثناء تحميل بيانات المادة</p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>

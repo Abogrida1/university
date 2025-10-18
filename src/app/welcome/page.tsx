@@ -81,9 +81,9 @@ export default function WelcomePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-300">جاري التحميل...</p>
         </div>
       </div>
@@ -92,9 +92,9 @@ export default function WelcomePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-300">جاري التحميل...</p>
         </div>
       </div>
@@ -102,12 +102,12 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Animation */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
       
       <div className={`max-w-md w-full bg-gray-800/60 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-gray-700/50 transition-all duration-1000 relative z-10 ${
@@ -116,10 +116,14 @@ export default function WelcomePage() {
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-cyan-500/30">
-            <span className="text-4xl">🎓</span>
+          <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-yellow-500/30">
+            <img 
+              src="/assets/icons/main-icon.png" 
+              alt="University Materials" 
+              className="w-12 h-12"
+            />
           </div>
-          <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+          <h1 className="text-3xl font-black bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             مرحباً بك في University Planner
           </h1>
           <p className="text-gray-300" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
@@ -146,7 +150,7 @@ export default function WelcomePage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="مثال: أحمد، فاطمة، محمد..."
-                className="w-full px-4 py-3 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-center"
+                className="w-full px-4 py-3 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-center"
                 style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                 required
                 disabled={success}
@@ -170,14 +174,14 @@ export default function WelcomePage() {
                 <span className="font-bold">تم حفظ اسمك بنجاح!</span>
               </div>
               <p className="text-sm">جاري توجيهك إلى الصفحة الرئيسية...</p>
-              <div className="w-5 h-5 border-2 border-green-300 border-t-transparent rounded-full animate-spin mx-auto mt-2"></div>
+              <div className="w-5 h-5 border-2 border-yellow-300 border-t-transparent rounded-full animate-spin mx-auto mt-2"></div>
             </div>
           )}
 
           <button
             type="submit"
             disabled={isSubmitting || success}
-            className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
           >
             {isSubmitting ? (
@@ -194,7 +198,7 @@ export default function WelcomePage() {
         </form>
 
         {/* Features */}
-        <div className="mt-8 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 rounded-xl p-4 border border-cyan-500/30">
+        <div className="mt-8 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 rounded-xl p-4 border border-yellow-500/30">
           <h3 className="text-sm font-bold text-white mb-3 text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             ما ينتظرك في منصتنا:
           </h3>

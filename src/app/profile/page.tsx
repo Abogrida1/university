@@ -78,7 +78,11 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
         <div className="text-center max-w-md mx-auto">
           <div className="text-4xl sm:text-6xl mb-4">🔒</div>
           <h1 className="text-xl sm:text-2xl font-bold text-white mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
@@ -89,7 +93,7 @@ export default function ProfilePage() {
           </p>
           <button
             onClick={() => router.push('/')}
-            className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base"
             style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -103,15 +107,23 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
-              <span className="text-2xl sm:text-3xl lg:text-4xl">👤</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-yellow-500/25">
+              <img 
+                src="/assets/icons/main-icon.png" 
+                alt="University Materials" 
+                className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"
+              />
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               الملف الشخصي
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
@@ -141,7 +153,7 @@ export default function ProfilePage() {
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 text-sm sm:text-base w-full sm:w-auto"
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base w-full sm:w-auto"
                       style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                     >
                       تعديل
@@ -159,7 +171,7 @@ export default function ProfilePage() {
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
                     </div>
@@ -171,7 +183,7 @@ export default function ProfilePage() {
                       <select
                         value={formData.department}
                         onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         {departments.map(dept => (
@@ -190,7 +202,7 @@ export default function ProfilePage() {
                         <select
                           value={formData.year}
                           onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                          className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                          className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                           style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                         >
                           {[1,2,3,4].map(year => (
@@ -208,7 +220,7 @@ export default function ProfilePage() {
                         <select
                           value={formData.term}
                           onChange={(e) => setFormData({ ...formData, term: e.target.value as 'FIRST' | 'SECOND' })}
-                          className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                          className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                           style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                         >
                           {terms.map(term => (
@@ -224,7 +236,7 @@ export default function ProfilePage() {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="px-4 sm:px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
+                        className="px-4 sm:px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         {loading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
@@ -321,7 +333,7 @@ export default function ProfilePage() {
                         type="password"
                         value={passwordData.currentPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
@@ -334,7 +346,7 @@ export default function ProfilePage() {
                         type="password"
                         value={passwordData.newPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
@@ -347,7 +359,7 @@ export default function ProfilePage() {
                         type="password"
                         value={passwordData.confirmPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-cyan-500 transition-colors text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
@@ -356,7 +368,7 @@ export default function ProfilePage() {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
+                        className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
                         تغيير

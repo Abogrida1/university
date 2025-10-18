@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { UserService } from '@/lib/userService';
 
 export default function AdminLoginPage() {
@@ -57,14 +58,18 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-red-500 to-red-600 rounded-2xl mb-6 shadow-2xl shadow-red-500/25">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl mb-6 shadow-2xl shadow-yellow-500/25">
             <span className="text-3xl">🔐</span>
           </div>
-          <h1 className="text-4xl font-black bg-gradient-to-r from-red-400 via-red-400 to-red-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl font-black text-white mb-4 drop-shadow-2xl">
             Super Admin
           </h1>
           <p className="text-xl text-gray-300">
@@ -134,7 +139,7 @@ export default function AdminLoginPage() {
 
         {/* Back to Home */}
         <div className="text-center mt-6">
-          <a 
+          <Link 
             href="/" 
             className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
           >
@@ -142,7 +147,7 @@ export default function AdminLoginPage() {
               <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
             </svg>
             العودة للصفحة الرئيسية
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -95,18 +95,22 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-16">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-cyan-500/25">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-yellow-500/25">
             <img 
-              src="/assets/icons/chat.png" 
-              alt="أيقونة التواصل" 
+              src="/assets/icons/main-icon.png" 
+              alt="University Materials" 
               className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"
             />
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-4 sm:mb-6" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4 sm:mb-6 drop-shadow-2xl" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             تواصل معنا
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
@@ -121,7 +125,7 @@ export default function ContactPage() {
               onClick={() => setActiveTab('contact')}
               className={`flex-1 py-2 sm:py-3 lg:py-4 px-3 sm:px-4 lg:px-6 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 ${
                 activeTab === 'contact'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-lg'
                   : 'text-gray-300 hover:text-white'
               }`}
               style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -132,7 +136,7 @@ export default function ContactPage() {
               onClick={() => setActiveTab('join')}
               className={`flex-1 py-2 sm:py-3 lg:py-4 px-3 sm:px-4 lg:px-6 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 ${
                 activeTab === 'join'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-lg'
                   : 'text-gray-300 hover:text-white'
               }`}
               style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -161,7 +165,7 @@ export default function ContactPage() {
                       name="firstName"
                       value={contactData.firstName}
                       onChange={handleContactChange}
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
                       placeholder="أدخل اسمك الأول"
                       required
                       style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -177,7 +181,7 @@ export default function ContactPage() {
                       name="email"
                       value={contactData.email}
                       onChange={handleContactChange}
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
                       placeholder="example@gmail.com"
                       required
                       style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -194,7 +198,7 @@ export default function ContactPage() {
                     name="subject"
                     value={contactData.subject}
                     onChange={handleContactChange}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
                     placeholder="ما هو موضوع رسالتك؟"
                     required
                     style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -210,7 +214,7 @@ export default function ContactPage() {
                     value={contactData.message}
                     onChange={handleContactChange}
                     rows={4}
-                    className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg resize-none"
+                    className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg resize-none"
                     placeholder="اكتب رسالتك هنا..."
                     required
                     style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -221,11 +225,11 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group relative px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 overflow-hidden w-full sm:w-auto"
+                    className="group relative px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 overflow-hidden w-full sm:w-auto"
                     style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                   >
                     {/* Background Animation */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     
                     {/* Button Content */}
                     <div className="relative z-10 flex items-center justify-center gap-2">
@@ -256,12 +260,12 @@ export default function ContactPage() {
         {/* Join Form */}
         {activeTab === 'join' && (
           <div className="max-w-5xl mx-auto">
-            <div className="bg-gradient-to-br from-gray-800/60 via-gray-700/40 to-gray-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-10 shadow-2xl border border-cyan-500/30">
+            <div className="bg-gradient-to-br from-gray-800/60 via-gray-700/40 to-gray-800/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-10 shadow-2xl border border-yellow-500/30">
               <div className="text-center mb-6 sm:mb-8 lg:mb-10">
-                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-emerald-500/25">
+                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-yellow-500/25">
                   <span className="text-2xl sm:text-3xl">👥</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                   انضم إلى فريق الإدارة
                 </h2>
                 <p className="text-base sm:text-lg lg:text-xl text-gray-300 mb-4 sm:mb-6 max-w-3xl mx-auto leading-relaxed px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
@@ -269,15 +273,15 @@ export default function ContactPage() {
                 </p>
                 <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-400">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                    <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
                     <span style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>إدارة المحتوى</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-teal-400 rounded-full"></span>
+                    <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
                     <span style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>دعم الطلاب</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                    <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
                     <span style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>تطوير المنصة</span>
                   </div>
                 </div>
@@ -287,7 +291,7 @@ export default function ContactPage() {
                 {/* Personal Info Section */}
                 <div className="bg-gray-800/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-600/30">
                   <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center text-xs sm:text-sm">👤</span>
+                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center text-xs sm:text-sm">👤</span>
                     المعلومات الشخصية
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
@@ -300,7 +304,7 @@ export default function ContactPage() {
                         name="firstName"
                         value={joinData.firstName}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-emerald-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
                         placeholder="أدخل اسمك الأول"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -316,7 +320,7 @@ export default function ContactPage() {
                         name="email"
                         value={joinData.email}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-emerald-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
                         placeholder="example@gmail.com"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -328,7 +332,7 @@ export default function ContactPage() {
                 {/* Academic Info Section */}
                 <div className="bg-gray-800/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-600/30">
                   <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center text-xs sm:text-sm">🎓</span>
+                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center text-xs sm:text-sm">🎓</span>
                     المعلومات الأكاديمية
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -340,7 +344,7 @@ export default function ContactPage() {
                         name="department"
                         value={joinData.department}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-emerald-500 transition-all duration-300 text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
@@ -359,7 +363,7 @@ export default function ContactPage() {
                         name="year"
                         value={joinData.year}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-emerald-500 transition-all duration-300 text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
@@ -379,7 +383,7 @@ export default function ContactPage() {
                         name="term"
                         value={joinData.term}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-emerald-500 transition-all duration-300 text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
@@ -394,7 +398,7 @@ export default function ContactPage() {
                 {/* Contact Info Section */}
                 <div className="bg-gray-800/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-600/30">
                   <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center text-xs sm:text-sm">📱</span>
+                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center text-xs sm:text-sm">📱</span>
                     معلومات التواصل
                   </h3>
                   <div>
@@ -406,7 +410,7 @@ export default function ContactPage() {
                       name="whatsapp"
                       value={joinData.whatsapp}
                       onChange={handleJoinChange}
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-emerald-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-700/50 border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-500 transition-all duration-300 text-white placeholder-gray-400 text-base sm:text-lg"
                       placeholder="+20 10 1234 5678"
                       required
                       style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -418,7 +422,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Submit Section */}
-                <div className="text-center bg-gradient-to-r from-emerald-900/20 to-teal-900/20 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-emerald-500/30">
+                <div className="text-center bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border border-yellow-500/30 shadow-2xl shadow-yellow-500/20">
                   <div className="mb-4 sm:mb-6">
                     <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                       جاهز للانضمام؟
@@ -431,11 +435,11 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group relative px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white rounded-xl sm:rounded-2xl font-black text-base sm:text-lg lg:text-xl hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-emerald-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 overflow-hidden w-full sm:w-auto"
+                    className="group relative px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-xl sm:rounded-2xl font-black text-base sm:text-lg lg:text-xl hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-yellow-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 overflow-hidden w-full sm:w-auto"
                     style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                   >
                     {/* Background Animation */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     
                     {/* Button Content */}
                     <div className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
@@ -446,9 +450,8 @@ export default function ContactPage() {
                         </>
                       ) : (
                         <>
-                          <span className="text-base sm:text-lg lg:text-xl">🚀</span>
                           <span className="text-sm sm:text-base">إرسال طلب الانضمام</span>
-                          <span className="text-base sm:text-lg lg:text-xl">✨</span>
+                          <span className="text-base sm:text-lg lg:text-xl">🚀</span>
                         </>
                       )}
                     </div>
@@ -459,8 +462,9 @@ export default function ContactPage() {
                     </div>
                   </button>
                   
-                  <p className="text-xs sm:text-sm text-gray-400 mt-3 sm:mt-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                    ⏱️ متوسط وقت الرد: 24-48 ساعة
+                  <p className="text-xs sm:text-sm text-yellow-400 mt-3 sm:mt-4 flex items-center justify-center gap-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                    <span>⏱️</span>
+                    <span>متوسط وقت الرد: 24-48 ساعة</span>
                   </p>
                 </div>
               </form>

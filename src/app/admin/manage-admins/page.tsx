@@ -256,7 +256,7 @@ export default function ManageAdminsPage() {
 
   if (!currentUser || currentUser.role !== 'super_admin') {
   return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#FAFAD2'}}>
         <div className="text-center text-white">
           <div className="text-6xl mb-4">🔒</div>
           <h2 className="text-2xl font-bold mb-2">جاري التحميل...</h2>
@@ -266,9 +266,13 @@ export default function ManageAdminsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
         {/* Header */}
-      <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700/50 sticky top-0 z-10">
+      <div className="bg-black/95 backdrop-blur-sm sticky top-0 z-10 relative">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 space-x-reverse">
@@ -279,7 +283,7 @@ export default function ManageAdminsPage() {
                 <span className="text-2xl">←</span>
             </button>
               <div>
-                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
                   إدارة الأدمنز والصلاحيات
                 </h1>
                 <p className="text-gray-400 text-sm mt-1">إضافة وإدارة المديرين وصلاحياتهم</p>
@@ -287,7 +291,7 @@ export default function ManageAdminsPage() {
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-bold hover:from-cyan-600 hover:to-blue-700 transition-all shadow-lg shadow-cyan-500/30"
+              className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/30"
             >
               + إضافة أدمن جديد
             </button>
@@ -298,7 +302,7 @@ export default function ManageAdminsPage() {
       {/* Messages */}
       {successMessage && (
         <div className="container mx-auto px-4 mt-4">
-          <div className="bg-green-900/30 border border-green-500/50 rounded-lg p-4 text-green-300">
+          <div className="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-4 text-yellow-300">
             {successMessage}
             </div>
           </div>
@@ -331,7 +335,7 @@ export default function ManageAdminsPage() {
                       onClick={() => handleSelectAdmin(admin)}
                       className={`p-4 rounded-lg cursor-pointer transition-all ${
                         selectedAdmin?.id === admin.id
-                          ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/50'
+                          ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/50'
                           : 'bg-gray-700/50 hover:bg-gray-700 border border-gray-600/50'
                       }`}
                     >
@@ -342,14 +346,14 @@ export default function ManageAdminsPage() {
                           <div className="flex items-center gap-2 mt-2">
                             <span className={`px-2 py-1 rounded text-xs font-bold ${
                             admin.role === 'super_admin' 
-                                ? 'bg-purple-500/20 text-purple-300'
-                                : 'bg-blue-500/20 text-blue-300'
+                                ? 'bg-yellow-500/20 text-yellow-300'
+                                : 'bg-yellow-500/20 text-yellow-300'
                           }`}>
                               {admin.role === 'super_admin' ? 'مدير رئيسي' : 'أدمن'}
                           </span>
                             <span className={`px-2 py-1 rounded text-xs ${
                             admin.isActive 
-                                ? 'bg-green-500/20 text-green-300'
+                                ? 'bg-yellow-500/20 text-yellow-300'
                                 : 'bg-red-500/20 text-red-300'
                           }`}>
                             {admin.isActive ? 'نشط' : 'غير نشط'}
@@ -385,14 +389,14 @@ export default function ManageAdminsPage() {
                       <div className="flex items-center gap-2 mt-3">
                         <span className={`px-3 py-1 rounded-lg text-sm font-bold ${
                           selectedAdmin.role === 'super_admin'
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/50'
-                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/50'
+                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50'
+                            : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50'
                         }`}>
                           {selectedAdmin.role === 'super_admin' ? '👑 مدير رئيسي' : '⚡ أدمن'}
                         </span>
                         <span className={`px-3 py-1 rounded-lg text-sm ${
                           selectedAdmin.isActive
-                            ? 'bg-green-500/20 text-green-300 border border-green-500/50'
+                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50'
                             : 'bg-red-500/20 text-red-300 border border-red-500/50'
                         }`}>
                           {selectedAdmin.isActive ? '✓ نشط' : '✗ غير نشط'}
@@ -429,7 +433,7 @@ export default function ManageAdminsPage() {
                     {selectedAdmin.role !== 'super_admin' && (
                       <button
                         onClick={() => setShowScopeModal(true)}
-                        className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg shadow-green-500/30"
+                        className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/30"
                       >
                         + إضافة صلاحية
                       </button>
@@ -447,7 +451,7 @@ export default function ManageAdminsPage() {
                       <p className="text-gray-400">لا توجد صلاحيات محددة لهذا الأدمن</p>
                       <button
                         onClick={() => setShowScopeModal(true)}
-                        className="mt-4 px-4 py-2 bg-cyan-500/20 text-cyan-300 rounded-lg hover:bg-cyan-500/30 transition-all border border-cyan-500/50"
+                        className="mt-4 px-4 py-2 bg-yellow-500/20 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-all border border-yellow-500/50"
                       >
                         إضافة أول صلاحية
                       </button>
@@ -507,7 +511,7 @@ export default function ManageAdminsPage() {
                       type="text"
                   value={adminForm.name}
                   onChange={(e) => setAdminForm({ ...adminForm, name: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                       required
                     />
                   </div>
@@ -518,7 +522,7 @@ export default function ManageAdminsPage() {
                       type="email"
                   value={adminForm.email}
                   onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                       required
                     />
                   </div>
@@ -529,7 +533,7 @@ export default function ManageAdminsPage() {
                       type="password"
                   value={adminForm.password}
                   onChange={(e) => setAdminForm({ ...adminForm, password: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                       required
                   minLength={6}
                     />
@@ -540,7 +544,7 @@ export default function ManageAdminsPage() {
                     <select
                   value={adminForm.role}
                   onChange={(e) => setAdminForm({ ...adminForm, role: e.target.value as 'admin' | 'super_admin' })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                 >
                   <option value="admin">أدمن</option>
                   <option value="super_admin">مدير رئيسي</option>
@@ -550,7 +554,7 @@ export default function ManageAdminsPage() {
               <div className="flex gap-3 mt-6">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-bold hover:from-cyan-600 hover:to-blue-700 transition-all"
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all"
                 >
                   إنشاء
                 </button>
@@ -584,7 +588,7 @@ export default function ManageAdminsPage() {
                         <select
                     value={scopeForm.department}
                     onChange={(e) => setScopeForm({ ...scopeForm, department: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                   >
                     {departments.map(dept => (
                       <option key={dept.value} value={dept.value}>{dept.label}</option>
@@ -597,7 +601,7 @@ export default function ManageAdminsPage() {
                         <select
                     value={scopeForm.year}
                     onChange={(e) => setScopeForm({ ...scopeForm, year: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                   >
                     {years.map(year => (
                       <option key={year.value} value={year.value}>{year.label}</option>
@@ -610,7 +614,7 @@ export default function ManageAdminsPage() {
                           <select
                     value={scopeForm.term}
                     onChange={(e) => setScopeForm({ ...scopeForm, term: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                   >
                     {terms.map(term => (
                       <option key={term.value} value={term.value}>{term.label}</option>
@@ -638,7 +642,7 @@ export default function ManageAdminsPage() {
                         type="checkbox"
                         checked={scopeForm[perm.key as keyof typeof scopeForm] as boolean}
                         onChange={(e) => setScopeForm({ ...scopeForm, [perm.key]: e.target.checked })}
-                        className="w-5 h-5 text-cyan-500 focus:ring-cyan-500"
+                        className="w-5 h-5 text-yellow-500 focus:ring-yellow-500"
                       />
                       <span className="text-white text-sm">{perm.label}</span>
                     </label>
@@ -652,7 +656,7 @@ export default function ManageAdminsPage() {
                 <textarea
                   value={scopeForm.description}
                   onChange={(e) => setScopeForm({ ...scopeForm, description: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                   rows={3}
                   placeholder="مثال: مسؤول عن الأمن السيبراني - السنة الثانية"
                 />
@@ -661,7 +665,7 @@ export default function ManageAdminsPage() {
               <div className="flex gap-3 mt-6">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold hover:from-green-600 hover:to-emerald-700 transition-all"
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all"
                 >
                   إضافة الصلاحية
                 </button>

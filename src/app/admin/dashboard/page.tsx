@@ -222,19 +222,19 @@ export default function AdminDashboardPage() {
             console.log('🔐 Loading admin scopes for:', admin.id, admin.email);
             // const { AdminService } = await import('@/lib/adminService');
             // const scopes = await AdminService.getAdminScopes(admin.id);
-            const scopes = []; // Temporary fix - return empty scopes
+            const scopes: string[] = []; // Temporary fix - return empty scopes
             console.log('🔐 Loaded scopes:', scopes);
-            console.log('🔐 Scopes with canManageSchedules:', scopes.filter(s => s.canManageSchedules && s.isActive));
+            console.log('🔐 Scopes with canManageSchedules:', scopes.filter(s => s.includes('canManageSchedules')));
             
             // تجميع الصلاحيات من جميع النطاقات
             const permissions = {
-              canManageMaterials: scopes.some(s => s.canManageMaterials && s.isActive),
-              canManagePdfs: scopes.some(s => s.canManagePdfs && s.isActive),
-              canManageVideos: scopes.some(s => s.canManageVideos && s.isActive),
-              canManageSchedules: scopes.some(s => s.canManageSchedules && s.isActive),
-              canManageMessages: scopes.some(s => s.canManageMessages && s.isActive),
-              canViewAnalytics: scopes.some(s => s.canViewAnalytics && s.isActive),
-              canManageUsers: scopes.some(s => s.canManageUsers && s.isActive),
+              canManageMaterials: scopes.some(s => s.includes('canManageMaterials')),
+              canManagePdfs: scopes.some(s => s.includes('canManagePdfs')),
+              canManageVideos: scopes.some(s => s.includes('canManageVideos')),
+              canManageSchedules: scopes.some(s => s.includes('canManageSchedules')),
+              canManageMessages: scopes.some(s => s.includes('canManageMessages')),
+              canViewAnalytics: scopes.some(s => s.includes('canViewAnalytics')),
+              canManageUsers: scopes.some(s => s.includes('canManageUsers')),
               scopes: scopes // حفظ النطاقات للتحقق التفصيلي
             };
             setUserPermissions(permissions);
@@ -1083,9 +1083,9 @@ export default function AdminDashboardPage() {
 
   if (!superAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#FAFAD2'}}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
           <p className="text-white">جاري التحقق من الصلاحيات...</p>
         </div>
       </div>
@@ -1093,14 +1093,18 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="container mx-auto px-4 py-10">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-red-500 to-red-600 rounded-2xl mb-6 shadow-2xl shadow-red-500/25">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl mb-6 shadow-2xl shadow-yellow-500/25">
             <span className="text-3xl">⚙️</span>
           </div>
-          <h1 className="text-5xl font-black bg-gradient-to-r from-red-400 via-red-400 to-red-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-black text-white mb-4 drop-shadow-2xl">
             لوحة تحكم Super Admin
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-4">
@@ -1109,7 +1113,7 @@ export default function AdminDashboardPage() {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleLogout}
-              className="bg-red-500/20 border border-red-500/30 text-red-300 px-4 py-2 rounded-xl hover:bg-red-500/30 transition-colors"
+              className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-4 py-2 rounded-xl hover:bg-red-500/30 transition-colors"
             >
               تسجيل الخروج
             </button>
@@ -1121,7 +1125,7 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
           {successMessage && (
-            <div className="mt-4 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl max-w-md mx-auto">
+            <div className="mt-4 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl max-w-md mx-auto">
               {successMessage}
             </div>
           )}
@@ -1135,7 +1139,7 @@ export default function AdminDashboardPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
                 activeTab === tab.id
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/30'
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/30'
                   : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-600/50'
               }`}
             >
@@ -1151,40 +1155,40 @@ export default function AdminDashboardPage() {
             <h2 className="text-3xl font-black text-white mb-8">نظرة عامة على النظام</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 border border-blue-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-blue-300 text-sm">إجمالي المواد</p>
+                    <p className="text-yellow-300 text-sm">إجمالي المواد</p>
                     <p className="text-white text-3xl font-bold">{materials.length}</p>
                   </div>
                   <span className="text-4xl">📚</span>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-red-500/20 to-red-600/20 border border-red-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-red-500/20 to-red-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-red-300 text-sm">ملفات PDF</p>
+                    <p className="text-yellow-300 text-sm">ملفات PDF</p>
                     <p className="text-white text-3xl font-bold">{pdfs.length}</p>
                   </div>
                   <span className="text-4xl">📄</span>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 border border-green-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-green-300 text-sm">الفيديوهات</p>
+                    <p className="text-yellow-300 text-sm">الفيديوهات</p>
                     <p className="text-white text-3xl font-bold">{videos.length}</p>
                   </div>
                   <span className="text-4xl">🎥</span>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-purple-300 text-sm">المستخدمين</p>
+                    <p className="text-yellow-300 text-sm">المستخدمين</p>
                     <p className="text-white text-3xl font-bold">{users.length}</p>
                   </div>
                   <span className="text-4xl">👥</span>
@@ -1194,40 +1198,40 @@ export default function AdminDashboardPage() {
 
             {/* Messages Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border border-cyan-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-cyan-300 text-sm">إجمالي الرسائل</p>
+                    <p className="text-yellow-300 text-sm">إجمالي الرسائل</p>
                     <p className="text-white text-3xl font-bold">{messageStats.total}</p>
                   </div>
                   <span className="text-4xl">💬</span>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-orange-300 text-sm">رسائل جديدة</p>
+                    <p className="text-yellow-300 text-sm">رسائل جديدة</p>
                     <p className="text-white text-3xl font-bold">{messageStats.new}</p>
                   </div>
                   <span className="text-4xl">🆕</span>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-pink-500/20 to-pink-600/20 border border-pink-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-pink-300 text-sm">طلبات انضمام</p>
+                    <p className="text-yellow-300 text-sm">طلبات انضمام</p>
                     <p className="text-white text-3xl font-bold">{messageStats.join}</p>
                   </div>
                   <span className="text-4xl">👋</span>
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-indigo-500/20 to-indigo-600/20 border border-indigo-500/30 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-indigo-300 text-sm">رسائل تواصل</p>
+                    <p className="text-yellow-300 text-sm">رسائل تواصل</p>
                     <p className="text-white text-3xl font-bold">{messageStats.contact}</p>
                   </div>
                   <span className="text-4xl">📧</span>
@@ -1279,12 +1283,12 @@ export default function AdminDashboardPage() {
 
               {/* Success/Error Messages */}
               {successMessage && (
-                <div className="mx-6 mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
+                <div className="mx-6 mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
                 </div>
               )}
               {errorMessage && (
-                <div className="mx-6 mb-6 bg-red-500/20 border border-red-500/30 text-red-300 px-6 py-3 rounded-xl">
+                <div className="mx-6 mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ❌ {errorMessage}
                 </div>
               )}
@@ -1325,8 +1329,8 @@ export default function AdminDashboardPage() {
                     ))}
                   </select>
                   {!scheduleForm.department && (
-                    <div className="mt-2 p-2 bg-red-500/20 border border-red-500/30 rounded-lg">
-                      <p className="text-red-300 text-xs">⚠️ يجب اختيار القسم</p>
+                    <div className="mt-2 p-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+                      <p className="text-yellow-300 text-xs">⚠️ يجب اختيار القسم</p>
                     </div>
                   )}
                 </div>
@@ -1430,13 +1434,13 @@ export default function AdminDashboardPage() {
                   {scheduleFile ? (
                     <div className={`mt-2 p-3 rounded-lg border ${
                       scheduleFile.size > 2 * 1024 * 1024 
-                        ? 'bg-orange-500/20 border-orange-500/30' 
-                        : 'bg-green-500/20 border-green-500/30'
+                        ? 'bg-orange-500/20 border-yellow-500/30' 
+                        : 'bg-yellow-500/20 border-yellow-500/30'
                     }`}>
                       <p className={`text-sm ${
                         scheduleFile.size > 2 * 1024 * 1024 
-                          ? 'text-orange-300' 
-                          : 'text-green-300'
+                          ? 'text-yellow-300' 
+                          : 'text-yellow-300'
                       }`}>
                         {scheduleFile.size > 2 * 1024 * 1024 ? '⚠️' : '✅'} 
                         الملف المحدد: {scheduleFile.name} ({scheduleForm.size})
@@ -1656,24 +1660,24 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border border-cyan-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">💬</div>
-                <p className="text-cyan-300 font-semibold">إجمالي الرسائل</p>
+                <p className="text-yellow-300 font-semibold">إجمالي الرسائل</p>
                 <p className="text-white text-2xl font-bold">{messageStats.total}</p>
               </div>
-              <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">🆕</div>
-                <p className="text-orange-300 font-semibold">جديدة</p>
+                <p className="text-yellow-300 font-semibold">جديدة</p>
                 <p className="text-white text-2xl font-bold">{messageStats.new}</p>
               </div>
-              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 border border-green-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">👁️</div>
-                <p className="text-green-300 font-semibold">مقروءة</p>
+                <p className="text-yellow-300 font-semibold">مقروءة</p>
                 <p className="text-white text-2xl font-bold">{messageStats.read}</p>
               </div>
-              <div className="bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">✅</div>
-                <p className="text-purple-300 font-semibold">مردود عليها</p>
+                <p className="text-yellow-300 font-semibold">مردود عليها</p>
                 <p className="text-white text-2xl font-bold">{messageStats.replied}</p>
               </div>
             </div>
@@ -1686,18 +1690,18 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center gap-3 mb-3">
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                           message.type === 'contact' 
-                            ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' 
-                            : 'bg-green-500/20 text-green-300 border border-green-500/30'
+                            ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30' 
+                            : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                         }`}>
                           {message.type === 'contact' ? 'رسالة تواصل' : 'طلب انضمام'}
                         </span>
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                           message.status === 'new' 
-                            ? 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
+                            ? 'bg-orange-500/20 text-yellow-300 border border-yellow-500/30'
                             : message.status === 'read'
-                            ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                            ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30'
                             : message.status === 'replied'
-                            ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                             : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
                         }`}>
                           {message.status === 'new' ? 'جديدة' : 
@@ -1761,7 +1765,7 @@ export default function AdminDashboardPage() {
                             showMessage('حدث خطأ في تحديث حالة الرسالة', true);
                           }
                         }}
-                        className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center hover:bg-green-500/30 transition-colors"
+                        className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-green-500/30 transition-colors"
                       >
                         <span className="text-green-400">✅</span>
                       </button>
@@ -1781,7 +1785,7 @@ export default function AdminDashboardPage() {
                             }
                           }
                         }}
-                        className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                        className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                       >
                         <span className="text-red-400">🗑️</span>
                       </button>
@@ -1832,14 +1836,14 @@ export default function AdminDashboardPage() {
                       </button>
                       <button 
                         onClick={() => handleDeleteMaterial(material.id)}
-                        className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                        className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                       >
                         <span className="text-red-400 text-sm">🗑️</span>
                       </button>
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-1">{material.title}</h3>
-                  <p className="text-lg text-cyan-300 font-bold mb-2">{material.titleAr}</p>
+                  <p className="text-lg text-yellow-300 font-bold mb-2">{material.titleAr}</p>
                   <p className="text-cyan-400 font-medium mb-2">{material.code}</p>
                   <p className="text-gray-300 text-sm mb-1">{material.department}</p>
                   <p className="text-xs text-gray-500 mb-2">{material.departmentAr}</p>
@@ -1880,18 +1884,18 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-r from-blue-500/20 to-blue-600/20 border border-blue-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">📚</div>
-                <p className="text-blue-300 font-semibold">إجمالي الجداول</p>
+                <p className="text-yellow-300 font-semibold">إجمالي الجداول</p>
                 <p className="text-white text-2xl font-bold">{(() => {
                   const filtered = schedules.filter(sch => canEditItem(sch.department, sch.year, sch.term));
                   console.log('📊 Stats - Total schedules:', { total: schedules.length, filtered: filtered.length });
                   return filtered.length;
                 })()}</p>
               </div>
-              <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 border border-green-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">🏛️</div>
-                <p className="text-green-300 font-semibold">الأقسام</p>
+                <p className="text-yellow-300 font-semibold">الأقسام</p>
                 <p className="text-white text-2xl font-bold">{(() => {
                   const filtered = schedules.filter(sch => canEditItem(sch.department, sch.year, sch.term));
                   const departments = new Set(filtered.map(s => s.department));
@@ -1899,18 +1903,18 @@ export default function AdminDashboardPage() {
                   return departments.size;
                 })()}</p>
               </div>
-              <div className="bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">📅</div>
-                <p className="text-purple-300 font-semibold">الترم الأول</p>
+                <p className="text-yellow-300 font-semibold">الترم الأول</p>
                 <p className="text-white text-2xl font-bold">{(() => {
                   const filtered = schedules.filter(sch => canEditItem(sch.department, sch.year, sch.term) && sch.term === 'FIRST');
                   console.log('📊 Stats - First Term:', { count: filtered.length });
                   return filtered.length;
                 })()}</p>
               </div>
-              <div className="bg-gradient-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 rounded-2xl p-6 text-center">
+              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
                 <div className="text-3xl mb-2">📅</div>
-                <p className="text-orange-300 font-semibold">الترم الثاني</p>
+                <p className="text-yellow-300 font-semibold">الترم الثاني</p>
                 <p className="text-white text-2xl font-bold">{(() => {
                   const filtered = schedules.filter(sch => canEditItem(sch.department, sch.year, sch.term) && sch.term === 'SECOND');
                   console.log('📊 Stats - Second Term:', { count: filtered.length });
@@ -1955,7 +1959,7 @@ export default function AdminDashboardPage() {
                       </td>
                       <td className="px-6 py-4 text-center text-white border-b border-white/10">
                         {sch.fileUrl ? (
-                          <a href={sch.fileUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline">عرض</a>
+                          <a href={sch.fileUrl} target="_blank" rel="noopener noreferrer" className="text-yellow-300 underline">عرض</a>
                         ) : (
                           <span className="text-gray-400">لا يوجد</span>
                         )}
@@ -1987,7 +1991,7 @@ export default function AdminDashboardPage() {
                                 schedulesService.delete(sch.id).then(() => schedulesService.getAll().then(setSchedules));
                               }
                             }}
-                            className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                            className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                           >
                             <span className="text-red-400">🗑️</span>
                           </button>
@@ -2029,7 +2033,7 @@ export default function AdminDashboardPage() {
               <h2 className="text-3xl font-black text-white">إدارة الـ Material</h2>
               <button 
                 onClick={() => setShowPdfModal(true)}
-                className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-red-500/30"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30"
               >
                 + رفع ملف PDF جديد
               </button>
@@ -2043,10 +2047,10 @@ export default function AdminDashboardPage() {
                   return material && canEditItem(material.department, material.year, material.term);
                 })
                 .map(pdf => (
-                <div key={pdf.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-red-500/50 transition-all duration-300">
+                <div key={pdf.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-yellow-500/50 transition-all duration-300">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center border border-red-500/30">
+                      <div className="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/30">
                         <span className="text-red-400 font-bold text-2xl">📄</span>
                       </div>
                       <div>
@@ -2068,7 +2072,7 @@ export default function AdminDashboardPage() {
                       </button>
                       <button 
                         onClick={() => handleDeletePdf(pdf.id)}
-                        className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                        className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                       >
                         <span className="text-red-400">🗑️</span>
                       </button>
@@ -2122,7 +2126,7 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-xl font-bold text-white">{video.title}</h3>
                         {video.is_playlist && (
-                          <span className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full text-xs font-medium border border-blue-500/30">
+                          <span className="bg-blue-500/20 text-yellow-300 px-2 py-1 rounded-full text-xs font-medium border border-yellow-500/30">
                             📺 Playlist
                           </span>
                         )}
@@ -2145,7 +2149,7 @@ export default function AdminDashboardPage() {
                         </button>
                         <button 
                           onClick={() => handleDeleteVideo(video.id)}
-                          className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                          className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                         >
                           <span className="text-red-400">🗑️</span>
                         </button>
@@ -2201,15 +2205,15 @@ export default function AdminDashboardPage() {
                         <div className="flex items-center space-x-4 text-sm">
                           <span className={`px-2 py-1 rounded-full ${
                             user.role === 'أستاذ' 
-                              ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' 
-                              : 'bg-green-500/20 text-green-300 border border-green-500/30'
+                              ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30' 
+                              : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                           }`}>
                             {user.role}
                           </span>
                           <span className={`px-2 py-1 rounded-full ${
                             (user as any).status === 'نشط' 
                               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
-                              : 'bg-red-500/20 text-red-300 border border-red-500/30'
+                              : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                           }`}>
                             {(user as any).status}
                           </span>
@@ -2225,7 +2229,7 @@ export default function AdminDashboardPage() {
                       </button>
                       <button 
                         onClick={() => handleDeleteUser(user.id)}
-                        className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                        className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                       >
                         <span className="text-red-400">🗑️</span>
                       </button>
@@ -2259,12 +2263,12 @@ export default function AdminDashboardPage() {
 
               {/* Success/Error Messages */}
               {successMessage && (
-                <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
                 </div>
               )}
               {errorMessage && (
-                <div className="mb-6 bg-red-500/20 border border-red-500/30 text-red-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ❌ {errorMessage}
                 </div>
               )}
@@ -2616,12 +2620,12 @@ export default function AdminDashboardPage() {
 
               {/* Success/Error Messages */}
               {successMessage && (
-                <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
                 </div>
               )}
               {errorMessage && (
-                <div className="mb-6 bg-red-500/20 border border-red-500/30 text-red-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ❌ {errorMessage}
                 </div>
               )}
@@ -2633,7 +2637,7 @@ export default function AdminDashboardPage() {
                     type="text"
                     value={pdfFormData.title}
                     onChange={(e) => setPdfFormData({...pdfFormData, title: e.target.value})}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500"
                     placeholder="كتاب المقرر - الفصل الأول"
                   />
                 </div>
@@ -2643,7 +2647,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={pdfFormData.materialId}
                     onChange={(e) => setPdfFormData({...pdfFormData, materialId: e.target.value})}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500"
                   >
                     <option value="">اختر المادة</option>
                     {materials
@@ -2668,7 +2672,7 @@ export default function AdminDashboardPage() {
                         setPdfFormData({...pdfFormData, size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`});
                       }
                     }}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-red-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-500 file:text-white hover:file:bg-red-600"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-500 file:text-white hover:file:bg-red-600"
                   />
                   {pdfFile && (
                     <p className="text-sm text-gray-400 mt-2">
@@ -2683,7 +2687,7 @@ export default function AdminDashboardPage() {
                     value={pdfFormData.description}
                     onChange={(e) => setPdfFormData({...pdfFormData, description: e.target.value})}
                     rows={3}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500"
                     placeholder="وصف الملف..."
                   />
                 </div>
@@ -2692,7 +2696,7 @@ export default function AdminDashboardPage() {
                   <button
                     onClick={editingItem ? handleUpdatePdf : handleAddPdf}
                     disabled={loadingPdf}
-                    className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-6 rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3 px-6 rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {loadingPdf ? (
                       <>
@@ -2741,12 +2745,12 @@ export default function AdminDashboardPage() {
 
               {/* Success/Error Messages */}
               {successMessage && (
-                <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
                 </div>
               )}
               {errorMessage && (
-                <div className="mb-6 bg-red-500/20 border border-red-500/30 text-red-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ❌ {errorMessage}
                 </div>
               )}
@@ -2854,7 +2858,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {/* Playlist Section */}
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
+                <div className="bg-blue-500/10 border border-yellow-500/30 rounded-xl p-6">
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <span>📺</span>
                     YouTube Playlist (اختياري)
@@ -2968,12 +2972,12 @@ export default function AdminDashboardPage() {
 
               {/* Success/Error Messages */}
               {successMessage && (
-                <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
                 </div>
               )}
               {errorMessage && (
-                <div className="mb-6 bg-red-500/20 border border-red-500/30 text-red-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
                   ❌ {errorMessage}
                 </div>
               )}

@@ -20,6 +20,8 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [scheduleRefreshTrigger, setScheduleRefreshTrigger] = useState(0);
 
+  console.log('🏠 HomePage component loaded');
+
   // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود
   useEffect(() => {
     if (user) {
@@ -249,7 +251,7 @@ export default function HomePage() {
     }
   }, [user]);
 
-  const isReady = program && year && term;
+  const isReady = program !== '' && year !== '' && term !== '' && program !== null && year !== null && term !== null;
 
   const filtered = isReady
     ? materials.filter(c => {
@@ -293,7 +295,7 @@ export default function HomePage() {
     : [];
 
   console.log('📊 Filtering results:', {
-    isReady,
+    isReady: Boolean(isReady),
     program,
     year,
     term,
@@ -303,6 +305,7 @@ export default function HomePage() {
   });
 
   const resetSelections = () => {
+    console.log('🔄 Reset selections called');
     setProgram('');
     setYear('');
     setTerm('');
@@ -311,6 +314,7 @@ export default function HomePage() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('lastMaterialSelection');
     }
+    console.log('✅ Reset completed');
   };
 
   // Save selections to localStorage when they change
@@ -325,26 +329,34 @@ export default function HomePage() {
   }, [program, year, term]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
+      {/* Golden Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5 pointer-events-none"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-10 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-cyan-500/25">
-            <span className="text-2xl sm:text-3xl md:text-4xl">📚</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 bg-clip-text text-transparent mb-2 sm:mb-4 px-2">
+               <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-yellow-500/25">
+                 <img 
+                   src="/assets/icons/main-icon.png" 
+                   alt="University Materials" 
+                   className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
+                 />
+               </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-2 sm:mb-4 px-2 drop-shadow-2xl">
             University Materials
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2 font-medium">
             منصة المواد الدراسية لطلاب كلية الحاسبات والمعلومات - جامعة الزقازيق
           </p>
           
           
           {/* User Welcome */}
           {user && (
-            <div className="bg-gradient-to-r from-green-900/30 via-emerald-900/30 to-teal-900/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto border border-green-500/30 shadow-2xl shadow-green-500/20 mb-4 sm:mb-6">
+            <div className="bg-gradient-to-r from-gray-800/80 via-gray-900/80 to-black/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto border border-yellow-500/30 shadow-2xl shadow-yellow-500/20 mb-4 sm:mb-6">
               <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">👋</div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4">مرحباً {user.name}</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400 mb-3 sm:mb-4">مرحباً {user.name}</h2>
               <p className="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg">
                 {user.department && user.year && user.term 
                   ? `${user.department} - السنة ${user.year} - ${user.term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}`
@@ -352,8 +364,8 @@ export default function HomePage() {
                 }
               </p>
               {user.department && user.year && user.term && (
-                <div className="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-4 mb-6">
-                  <p className="text-emerald-300 text-sm font-medium">
+                <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-xl p-4 mb-6">
+                  <p className="text-yellow-400 text-sm font-medium">
                     ✅ تم تحميل موادك الدراسية تلقائياً
                   </p>
                 </div>
@@ -361,7 +373,7 @@ export default function HomePage() {
               <div className="flex gap-4 justify-center">
                 <Link
                   href="/profile"
-                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-cyan-500/30"
+                  className="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-2xl font-bold text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30"
                 >
                   حسابي الشخصي
                 </Link>
@@ -412,8 +424,8 @@ export default function HomePage() {
         {!program && (
           <section className="mb-6 sm:mb-8">
             <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 px-2">اختر برنامجك الدراسي</h2>
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg px-2">اختر البرنامج الذي تدرس فيه لعرض المواد المناسبة</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 px-2 drop-shadow-2xl">اختر برنامجك الدراسي</h2>
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg px-2 font-medium">اختر البرنامج الذي تدرس فيه لعرض المواد المناسبة</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto px-2">
               {programCards.map(card => (
@@ -423,9 +435,9 @@ export default function HomePage() {
                   disabled={card.disabled}
                   className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center transition-all duration-500 ${
                     card.disabled 
-                      ? 'opacity-60 cursor-not-allowed' 
-                      : 'transform hover:scale-105 hover:shadow-2xl'
-                  } ${card.bgColor} backdrop-blur-sm border ${card.borderColor} hover:border-opacity-100`}
+                      ? 'opacity-60 cursor-not-allowed bg-gray-800 border-gray-600' 
+                      : 'transform hover:scale-105 hover:shadow-2xl bg-gradient-to-br from-gray-800 to-black border-2 border-yellow-500/30 hover:border-yellow-400 hover:shadow-yellow-500/30'
+                  } backdrop-blur-sm`}
                 >
                   {/* Coming Soon Badge */}
                   {card.disabled && (
@@ -444,15 +456,15 @@ export default function HomePage() {
                       card.disabled ? '' : 'group-hover:scale-110'
                     } transition-transform duration-500`}>{card.icon}</div>
                     <h3 className={`text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-white ${
-                      card.disabled ? '' : 'group-hover:text-cyan-300'
+                      card.disabled ? '' : 'group-hover:text-yellow-400'
                     } transition-colors duration-300`}>{card.title}</h3>
                     <p className="text-sm sm:text-base md:text-lg text-gray-300 mb-3 sm:mb-4 font-medium">{card.subtitle}</p>
                     <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">{card.desc}</p>
                     <div className="mt-6 flex justify-center">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                         card.disabled 
-                          ? 'bg-gray-500/20' 
-                          : 'bg-white/10 group-hover:bg-white/20 group-hover:scale-110'
+                          ? 'bg-gray-400 text-gray-600' 
+                          : 'bg-yellow-400 text-black group-hover:bg-yellow-500 group-hover:scale-110 shadow-lg'
                       }`}>
                         <span className="text-xl">{card.disabled ? '⏳' : '→'}</span>
                       </div>
@@ -465,7 +477,7 @@ export default function HomePage() {
         )}
 
         {/* Step 2: Year and Term Selection */}
-        {program && !isReady && (
+        {program !== '' && !isReady && (
           <section className="mb-6 sm:mb-8">
             <div className="text-center mb-6 sm:mb-8">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 px-2">اختر السنة والفصل الدراسي</h2>
@@ -477,8 +489,8 @@ export default function HomePage() {
             <div className="max-w-6xl mx-auto px-2">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
                 {/* Year Selection */}
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-700/50">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-6 sm:mb-8 text-center">السنة الدراسية</h3>
+                <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-yellow-500/30">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-400 mb-6 sm:mb-8 text-center">السنة الدراسية</h3>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                     {[1,2,3,4].map(y => (
                       <button
@@ -486,15 +498,15 @@ export default function HomePage() {
                         onClick={() => setYear(y)}
                         className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center transition-all duration-500 ${
                           year === y 
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-2xl shadow-cyan-500/30 scale-105' 
-                            : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white hover:shadow-lg border border-gray-600/50'
+                            ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-2xl shadow-yellow-500/30 scale-105' 
+                            : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white hover:shadow-lg border border-yellow-500/30 hover:border-yellow-400'
                         }`}
                       >
                         <div className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">السنة {y}</div>
                         <div className="text-xs sm:text-sm opacity-80 font-medium">Year {y}</div>
                         {year === y && (
-                          <div className="absolute top-3 right-3 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                            <span className="text-lg">✓</span>
+                          <div className="absolute top-3 right-3 w-8 h-8 bg-black/20 rounded-full flex items-center justify-center">
+                            <span className="text-lg text-black">✓</span>
                           </div>
                         )}
                       </button>
@@ -503,22 +515,22 @@ export default function HomePage() {
                 </div>
 
                 {/* Term Selection */}
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-700/50">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-6 sm:mb-8 text-center">الفصل الدراسي</h3>
+                <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-yellow-500/30">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-400 mb-6 sm:mb-8 text-center">الفصل الدراسي</h3>
                   <div className="space-y-4 sm:space-y-6">
                     <button
                       onClick={() => setTerm('FIRST')}
                       className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 w-full text-center transition-all duration-500 ${
                         term === 'FIRST' 
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-2xl shadow-emerald-500/30 scale-105' 
-                          : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white hover:shadow-lg border border-gray-600/50'
+                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-2xl shadow-yellow-500/30 scale-105' 
+                          : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white hover:shadow-lg border border-yellow-500/30 hover:border-yellow-400'
                       }`}
                     >
                       <div className="text-xl sm:text-2xl md:text-3xl font-black mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">الترم الأول</div>
                       <div className="text-xs sm:text-sm opacity-80 font-medium">First Semester</div>
                       {term === 'FIRST' && (
-                        <div className="absolute top-3 right-3 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                          <span className="text-lg">✓</span>
+                        <div className="absolute top-3 right-3 w-8 h-8 bg-black/20 rounded-full flex items-center justify-center">
+                          <span className="text-lg text-black">✓</span>
                         </div>
                       )}
                     </button>
@@ -526,15 +538,15 @@ export default function HomePage() {
                       onClick={() => setTerm('SECOND')}
                       className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 w-full text-center transition-all duration-500 ${
                         term === 'SECOND' 
-                          ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-2xl shadow-orange-500/30 scale-105' 
-                          : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white hover:shadow-lg border border-gray-600/50'
+                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black shadow-2xl shadow-yellow-500/30 scale-105' 
+                          : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 hover:text-white hover:shadow-lg border border-yellow-500/30 hover:border-yellow-400'
                       }`}
                     >
                       <div className="text-xl sm:text-2xl md:text-3xl font-black mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">الترم الثاني</div>
                       <div className="text-xs sm:text-sm opacity-80 font-medium">Second Semester</div>
                       {term === 'SECOND' && (
-                        <div className="absolute top-3 right-3 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                          <span className="text-lg">✓</span>
+                        <div className="absolute top-3 right-3 w-8 h-8 bg-black/20 rounded-full flex items-center justify-center">
+                          <span className="text-lg text-black">✓</span>
                         </div>
                       )}
                     </button>
@@ -542,17 +554,17 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Reset Button - Only for guests */}
-              {!user && (
-                <div className="text-center mt-10">
-                  <button
-                    onClick={resetSelections}
-                    className="px-8 py-3 text-gray-400 hover:text-white transition-colors font-medium text-lg"
-                  >
-                    ← تغيير البرنامج
-                  </button>
-                </div>
-              )}
+              {/* Back Button */}
+              <div className="text-center mt-8 sm:mt-10">
+                <button
+                  type="button"
+                  onClick={resetSelections}
+                  className="px-8 py-3 text-gray-300 hover:text-yellow-400 transition-colors font-medium text-lg cursor-pointer border border-gray-600 rounded-lg hover:border-yellow-400 relative z-20"
+                  style={{ pointerEvents: 'auto' }}
+                >
+                  ← تغيير البرنامج
+                </button>
+              </div>
             </div>
           </section>
         )}
@@ -560,12 +572,12 @@ export default function HomePage() {
         {/* Step 3: Results */}
         {isReady && (
           <section>
-            <div className="text-center mb-8">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 px-2">المواد المتاحة</h2>
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg px-2">
-                {programCards.find(p => p.key === program)?.title} - السنة {year} - {term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
-              </p>
-            </div>
+             <div className="text-center mb-8">
+               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4 px-2 drop-shadow-2xl">المواد المتاحة</h2>
+               <p className="text-gray-300 text-sm sm:text-base md:text-lg px-2">
+                 {programCards.find(p => p.key === program)?.title} - السنة {year} - {term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
+               </p>
+             </div>
 
             {/* Search Bar */}
             <div className="max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
@@ -575,9 +587,9 @@ export default function HomePage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="ابحث عن مادة أو كود المادة..."
-                  className="w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl bg-gray-800/50 backdrop-blur-sm border-2 border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-cyan-500 transition-all duration-300 text-white placeholder-gray-400"
+                  className="w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl bg-gray-800/50 backdrop-blur-sm border-2 border-yellow-500/30 rounded-xl sm:rounded-2xl focus:outline-none focus:border-yellow-400 transition-all duration-300 text-white placeholder-gray-400"
                 />
-                <div className="absolute right-3 sm:right-4 md:right-6 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg sm:text-xl md:text-2xl">
+                <div className="absolute right-3 sm:right-4 md:right-6 top-1/2 transform -translate-y-1/2 text-yellow-400 text-lg sm:text-xl md:text-2xl">
                   🔍
                 </div>
               </div>
@@ -586,7 +598,7 @@ export default function HomePage() {
             {/* Loading State */}
             {loading && (
               <div className="text-center py-20">
-                <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-500 mb-4"></div>
+                <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-yellow-500 mb-4"></div>
                 <p className="text-gray-300 text-xl">جاري تحميل البيانات...</p>
               </div>
             )}
@@ -633,28 +645,28 @@ export default function HomePage() {
                 <div className="text-8xl mb-8">📝</div>
                 <h3 className="text-3xl font-black text-white mb-4">لا توجد مواد متاحة</h3>
                 <p className="text-gray-300 mb-8 text-lg">لا توجد مواد مطابقة لاختياراتك حالياً</p>
-                {!user && (
-                  <button
-                    onClick={resetSelections}
-                    className="px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-bold text-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/30"
-                  >
-                    اختيار جديد
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={resetSelections}
+                  className="px-10 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-2xl font-bold text-lg hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 shadow-lg shadow-yellow-500/30 cursor-pointer relative z-20"
+                  style={{ pointerEvents: 'auto' }}
+                >
+                  اختيار جديد
+                </button>
               </div>
             ) : null}
 
-            {/* Reset Button - Only for guests */}
-            {!user && (
-              <div className="text-center mt-12">
-                <button
-                  onClick={resetSelections}
-                  className="px-8 py-3 text-gray-400 hover:text-white transition-colors font-medium text-lg"
-                >
-                  ← اختيار جديد
-                </button>
-              </div>
-            )}
+            {/* Reset Button */}
+            <div className="text-center mt-12">
+              <button
+                type="button"
+                onClick={resetSelections}
+                className="px-8 py-3 text-gray-300 hover:text-yellow-400 transition-colors font-medium text-lg cursor-pointer border border-gray-600 rounded-lg hover:border-yellow-400 relative z-20"
+                style={{ pointerEvents: 'auto' }}
+              >
+                ← اختيار جديد
+              </button>
+            </div>
           </section>
         )}
 
