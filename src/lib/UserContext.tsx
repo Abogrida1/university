@@ -54,6 +54,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 setUser({ ...userProfile, is_active: false });
                 return;
               }
+            } else {
+              // الحساب نشط - التحقق من وجود بيانات أكاديمية
+              if (!userProfile.department || !userProfile.year || !userProfile.term) {
+                console.log('⚠️ Active user missing academic data, redirecting to register...');
+                window.location.href = '/auth/register?step=1&google=true';
+                return;
+              }
             }
             
             console.log('✅ User loaded successfully:', userProfile);

@@ -32,10 +32,10 @@ export default function RegisterPage() {
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [tempUserData, setTempUserData] = useState<any>(null);
 
-  // إعادة توجيه المستخدمين المسجلين (فقط إذا كان الحساب نشط)
+  // إعادة توجيه المستخدمين المسجلين (فقط إذا كان الحساب نشط وله بيانات أكاديمية)
   useEffect(() => {
-    if (user && user.is_active) {
-      console.log('✅ Active user detected, redirecting to home...');
+    if (user && user.is_active && user.department && user.year && user.term) {
+      console.log('✅ Active user with academic data detected, redirecting to home...');
       router.push('/');
     }
   }, [user, router]);
@@ -224,8 +224,11 @@ export default function RegisterPage() {
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
 
+      // تحديث UserContext أولاً ثم التوجيه
+      console.log('🔄 Updating UserContext and redirecting to welcome...');
+      
       // إعادة تحميل الصفحة لتحديث UserContext
-      window.location.href = '/welcome';
+      window.location.reload();
     } catch (error) {
       console.error('❌ Error updating Google user:', error);
       setError('خطأ في تحديث البيانات');

@@ -21,12 +21,12 @@ export default function WelcomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // إعادة توجيه المستخدمين غير المسجلين أو غير النشطين
+  // إعادة توجيه المستخدمين غير المسجلين أو غير النشطين أو بدون بيانات أكاديمية
   useEffect(() => {
     // انتظار قليل للتأكد من تحميل بيانات المستخدم
     const timer = setTimeout(() => {
-      if ((!user || (user && !user.is_active)) && !hasRedirected) {
-        console.log('No active user found after timeout, redirecting to login...');
+      if ((!user || (user && !user.is_active) || (user && (!user.department || !user.year || !user.term))) && !hasRedirected) {
+        console.log('No valid user found after timeout, redirecting to login...');
         setHasRedirected(true);
         window.location.href = '/login';
       }

@@ -17,10 +17,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect logged-in users (only if active)
+  // Redirect logged-in users (only if active and has academic data)
   useEffect(() => {
-    if (user && user.is_active) {
-      console.log('✅ Active user detected on login page, redirecting to home...');
+    if (user && user.is_active && user.department && user.year && user.term) {
+      console.log('✅ Active user with academic data detected on login page, redirecting to home...');
       router.push('/');
     }
   }, [user, router]);

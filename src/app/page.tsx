@@ -22,9 +22,9 @@ export default function HomePage() {
 
   console.log('🏠 HomePage component loaded');
 
-  // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود ونشط
+  // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود ونشط وله بيانات أكاديمية
   useEffect(() => {
-    if (user && user.is_active) {
+    if (user && user.is_active && user.department && user.year && user.term) {
       const emailPrefix = user.email?.split('@')[0] || '';
       const isNewUser = !user.name || 
                        user.name === emailPrefix || 
@@ -37,6 +37,7 @@ export default function HomePage() {
       console.log('Email prefix:', emailPrefix);
       console.log('Is new user:', isNewUser);
       console.log('Is active:', user.is_active);
+      console.log('Has academic data:', !!(user.department && user.year && user.term));
       console.log('============================');
       
       if (isNewUser) {
@@ -46,9 +47,9 @@ export default function HomePage() {
           window.location.href = '/welcome';
         }, 500);
       }
-    } else if (user && !user.is_active) {
-      console.log('Inactive user detected, redirecting to register page...');
-      // توجيه المستخدم غير النشط لصفحة إنشاء الحساب
+    } else if (user && (!user.is_active || !user.department || !user.year || !user.term)) {
+      console.log('Invalid user detected, redirecting to register page...');
+      // توجيه المستخدم غير النشط أو بدون بيانات أكاديمية لصفحة إنشاء الحساب
       setTimeout(() => {
         window.location.href = '/auth/register?step=1&google=true';
       }, 500);
