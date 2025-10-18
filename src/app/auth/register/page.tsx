@@ -37,8 +37,10 @@ export default function RegisterPage() {
   useEffect(() => {
     if (user && user.is_active && user.department && user.year && user.term) {
       console.log('✅ Active user with academic data detected, redirecting to welcome...');
-      // توجيه للويلكم بدلاً من الصفحة الرئيسية
-      window.location.href = '/welcome';
+      // تأخير قصير للتأكد من تحديث UserContext
+      setTimeout(() => {
+        window.location.href = '/welcome';
+      }, 1000);
     }
   }, [user, router]);
 
@@ -226,12 +228,37 @@ export default function RegisterPage() {
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
 
+      // تحديث UserContext محلياً
+      console.log('🔄 Updating UserContext with new data...');
+      const updatedUser = {
+        ...user,
+        department: selectedData.department,
+        year: parseInt(selectedData.year),
+        term: selectedData.term,
+        is_active: true
+      };
+      setUser(updatedUser);
+
+      // تحديث الجلسة في قاعدة البيانات
+      console.log('🔄 Updating session in database...');
+      try {
+        await supabase
+          .from('user_sessions')
+          .update({
+            last_activity: new Date().toISOString()
+          })
+          .eq('user_id', tempUserData.id);
+        console.log('✅ Session updated successfully');
+      } catch (sessionError) {
+        console.error('❌ Error updating session:', sessionError);
+      }
+
       // إظهار رسالة نجاح
       setError('');
       setSuccess(true);
       console.log('🎉 Registration completed successfully!');
 
-      // التوجيه المباشر للويلكم بدون تحديث UserContext محلياً
+      // التوجيه المباشر للويلكم
       console.log('🔄 Redirecting to welcome page...');
       
       // تأخير قصير لإظهار رسالة النجاح
