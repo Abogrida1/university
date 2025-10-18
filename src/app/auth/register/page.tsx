@@ -31,13 +31,34 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [tempUserData, setTempUserData] = useState<any>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [isGoogleFlow, setIsGoogleFlow] = useState(false);
 
-  // إعادة توجيه المستخدمين المسجلين
+  // إعادة توجيه المستخدمين المسجلين (عدا المستخدمين الجدد من جوجل)
   useEffect(() => {
-    if (user) {
+    // تحقق من وجود بيانات جوجل مؤقتة
+    const googleData = localStorage.getItem('google_user_data');
+    if (googleData) {
+      console.log('🔍 Google user data detected - preventing redirect');
+      setIsGoogleFlow(true);
+      return;
+    }
+    
+    // تحقق من URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const isGoogle = urlParams.get('google') === 'true';
+    if (isGoogle) {
+      console.log('🔍 Google parameter detected - preventing redirect');
+      setIsGoogleFlow(true);
+      return;
+    }
+    
+    if (user && !isGoogleFlow) {
+      console.log('👤 Regular user detected - redirecting to home');
       router.push('/');
     }
-  }, [user, router]);
+  }, [user, router, isGoogleFlow]);
 
   // التحقق من المستخدمين من Google
   useEffect(() => {
@@ -45,20 +66,50 @@ export default function RegisterPage() {
     const isGoogle = urlParams.get('google') === 'true';
     
     if (isGoogle) {
-      console.log('🔍 Google user detected, checking temp data...');
+      console.log('🔍 Google user detected, checking data...');
+      
+      // أولاً: تحقق من البيانات المؤقتة (للمستخدمين الموجودين)
       const tempData = localStorage.getItem('temp_user_data');
       if (tempData && tempData.trim() !== '') {
         try {
           const userData = JSON.parse(tempData);
-          console.log('👤 Temp user data found:', userData);
+          console.log('👤 Temp user data found (existing user):', userData);
           setTempUserData(userData);
           setIsGoogleUser(true);
           setFormData(prev => ({
             ...prev,
             email: userData.email
           }));
+          return;
         } catch (error) {
           console.error('❌ Error parsing temp user data:', error);
+        }
+      }
+      
+      // ثانياً: تحقق من بيانات جوجل (للمستخدمين الجدد)
+      const googleData = localStorage.getItem('google_user_data');
+      if (googleData && googleData.trim() !== '') {
+        try {
+          const userData = JSON.parse(googleData);
+          console.log('👤 Google user data found (new user):', userData);
+          setTempUserData({
+            id: null, // لا يوجد ID بعد
+            email: userData.email,
+            name: userData.name
+          });
+          setIsGoogleUser(true);
+          setFormData(prev => ({
+            ...prev,
+            email: userData.email
+          }));
+          
+          // تنظيف أي جلسة موجودة للمستخدمين الجدد
+          localStorage.removeItem('session_token');
+          
+          // منع أي توجيه تلقائي
+          console.log('🚫 Preventing auto-redirect for Google user');
+        } catch (error) {
+          console.error('❌ Error parsing google user data:', error);
         }
       }
     }
@@ -194,41 +245,153 @@ export default function RegisterPage() {
       return;
     }
 
+    setIsUpdating(true);
+    setError('');
+
     try {
-      console.log('🔄 Updating Google user academic data...');
+      console.log('🔄 Processing Google user academic data...');
       console.log('User ID:', tempUserData.id);
       console.log('Academic data:', selectedData);
 
-      // تحديث بيانات المستخدم في قاعدة البيانات
-      const { data, error } = await supabase
-        .from('users')
-        .update({
+      let userProfile;
+
+      if (tempUserData.id) {
+        // مستخدم موجود - تحديث البيانات
+        console.log('👤 Updating existing user...');
+        const { data, error } = await supabase
+          .from('users')
+          .update({
+            department: selectedData.department,
+            year: parseInt(selectedData.year),
+            term: selectedData.term
+          })
+          .eq('id', tempUserData.id)
+          .select()
+          .single();
+
+        if (error) {
+          console.error('❌ Error updating user:', error);
+          setError('خطأ في تحديث البيانات');
+          return;
+        }
+
+        userProfile = data;
+      } else {
+        // مستخدم جديد - إنشاء حساب جديد
+        console.log('🆕 Creating new user...');
+        const googleData = localStorage.getItem('google_user_data');
+        if (!googleData) {
+          setError('خطأ في البيانات المحفوظة');
+          return;
+        }
+
+        const googleUserData = JSON.parse(googleData);
+        const newUserData = {
+          email: googleUserData.email,
+          name: googleUserData.name,
+          password_hash: 'google_oauth_user',
           department: selectedData.department,
           year: parseInt(selectedData.year),
-          term: selectedData.term
-        })
-        .eq('id', tempUserData.id)
-        .select()
-        .single();
+          term: selectedData.term,
+          role: 'student',
+          is_active: true,
+          last_login: new Date().toISOString()
+        };
 
-      if (error) {
-        console.error('❌ Error updating user:', error);
-        setError('خطأ في تحديث البيانات');
-        return;
+        const { data: newUser, error: createError } = await supabase
+          .from('users')
+          .insert([newUserData])
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('❌ Error creating user:', createError);
+          setError('خطأ في إنشاء الحساب');
+          return;
+        }
+
+        userProfile = newUser;
       }
 
-      console.log('✅ User updated successfully:', data);
+      console.log('✅ User processed successfully:', userProfile);
+
+      // إنشاء جلسة جديدة للمستخدم
+      try {
+        const { UserService } = await import('@/lib/userService');
+        const sessionResult = await UserService.createSession(userProfile.id);
+        
+        if (sessionResult) {
+          console.log('✅ Session created for Google user:', sessionResult);
+          localStorage.setItem('session_token', sessionResult.sessionToken);
+        }
+      } catch (sessionError) {
+        console.error('❌ Error creating session:', sessionError);
+      }
 
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
+      localStorage.removeItem('google_user_data');
+
+      // إظهار رسالة النجاح
+      setUpdateSuccess(true);
+      console.log('✅ Google user data processed successfully!');
 
       // إعادة تحميل الصفحة لتحديث UserContext
-      window.location.href = '/welcome';
+      console.log('🔄 Redirecting to welcome page...');
+      setTimeout(() => {
+        window.location.href = '/welcome';
+      }, 2000);
     } catch (error) {
-      console.error('❌ Error updating Google user:', error);
-      setError('خطأ في تحديث البيانات');
+      console.error('❌ Error processing Google user:', error);
+      setError('خطأ في معالجة البيانات');
+    } finally {
+      setIsUpdating(false);
     }
   };
+
+  // منع التوجيه للمستخدمين الجدد من جوجل
+  if (isGoogleFlow && !isGoogleUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-300">جاري تحضير صفحة التسجيل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // منع التوجيه إذا كان المستخدم موجود ولكن من جوجل
+  if (user && isGoogleUser) {
+    console.log('🚫 User exists but is Google user - preventing redirect');
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-300">جاري تحضير صفحة التسجيل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // منع التوجيه إذا كان هناك بيانات جوجل مؤقتة
+  if (typeof window !== 'undefined') {
+    const googleData = localStorage.getItem('google_user_data');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isGoogle = urlParams.get('google') === 'true';
+    
+    if (googleData || isGoogle) {
+      console.log('🚫 Google flow detected - preventing redirect');
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-300">جاري تحضير صفحة التسجيل...</p>
+          </div>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="min-h-screen py-6 sm:py-8 lg:py-12 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
@@ -257,12 +420,26 @@ export default function RegisterPage() {
         {/* Step 1: Academic Selection */}
         {step === 1 && (
           <div className="max-w-7xl mx-auto">
-            {isGoogleUser && (
+            {isGoogleUser && !updateSuccess && (
               <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-blue-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-base sm:text-lg lg:text-xl">🎓</span>
                   <span className="font-medium text-xs sm:text-sm lg:text-base">
                     مرحباً {tempUserData?.name}! يرجى اختيار بياناتك الأكاديمية لإكمال التسجيل
+                  </span>
+                </div>
+                <div className="mt-2 text-xs text-blue-200">
+                  سيتم إنشاء حسابك بعد اختيار البيانات الأكاديمية
+                </div>
+              </div>
+            )}
+
+            {isGoogleUser && updateSuccess && (
+              <div className="bg-green-900/30 border border-green-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-green-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
+                <div className="flex items-center justify-center space-x-2">
+                  <span className="text-base sm:text-lg lg:text-xl">✅</span>
+                  <span className="font-medium text-xs sm:text-sm lg:text-base">
+                    تم حفظ بياناتك بنجاح! جاري توجيهك لصفحة الترحيب...
                   </span>
                 </div>
               </div>
@@ -374,7 +551,14 @@ export default function RegisterPage() {
                     <span>جاري الحفظ...</span>
                   </div>
                 ) : isGoogleUser ? (
-                  'إكمال التسجيل'
+                  isUpdating ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>جاري الحفظ...</span>
+                    </div>
+                  ) : (
+                    'إكمال التسجيل'
+                  )
                 ) : (
                   'التالي'
                 )}
