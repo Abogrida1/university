@@ -205,7 +205,8 @@ export default function RegisterPage() {
         .update({
           department: selectedData.department,
           year: parseInt(selectedData.year),
-          term: selectedData.term
+          term: selectedData.term,
+          is_active: true // تفعيل الحساب بعد اختيار البيانات
         })
         .eq('id', tempUserData.id)
         .select()
@@ -258,7 +259,7 @@ export default function RegisterPage() {
           {isGoogleUser && (
             <div className="mt-4 p-3 bg-green-900/30 border border-green-500/50 rounded-lg">
               <p className="text-green-300 text-sm text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-                ✅ تم تسجيل الدخول بجوجل بنجاح! يرجى اختيار بياناتك الأكاديمية
+                ✅ تم تسجيل الدخول بجوجل بنجاح! يرجى اختيار بياناتك الأكاديمية لإكمال إنشاء حسابك
               </p>
             </div>
           )}

@@ -108,31 +108,62 @@ export default function AuthCallbackPage() {
           // مستخدم جديد، إنشاء حساب
           console.log('🆕 New user - creating account');
           isNewUser = true;
-          const newUserData = {
-            email: googleUser.email!,
-            name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
-            password_hash: 'google_oauth_user', // قيمة افتراضية لحسابات Google
-            department: academicData?.department || 'General Program',
-            year: academicData ? parseInt(academicData.year) : 1,
-            term: academicData?.term || 'FIRST',
-            role: 'student',
-            is_active: true,
-            last_login: new Date().toISOString()
-          };
+          
+          if (academicData) {
+            // مستخدم جديد مع بيانات أكاديمية - إنشاء حساب كامل
+            const newUserData = {
+              email: googleUser.email!,
+              name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
+              password_hash: 'google_oauth_user', // قيمة افتراضية لحسابات Google
+              department: academicData.department,
+              year: parseInt(academicData.year),
+              term: academicData.term,
+              role: 'student',
+              is_active: true,
+              last_login: new Date().toISOString()
+            };
 
-          const { data: newUser, error: createError } = await supabase
-            .from('users')
-            .insert([newUserData])
-            .select()
-            .maybeSingle();
+            const { data: newUser, error: createError } = await supabase
+              .from('users')
+              .insert([newUserData])
+              .select()
+              .maybeSingle();
 
-          if (createError) {
-            console.error('خطأ في إنشاء المستخدم:', createError);
-            setError('خطأ في إنشاء الحساب');
-            return;
+            if (createError) {
+              console.error('خطأ في إنشاء المستخدم:', createError);
+              setError('خطأ في إنشاء الحساب');
+              return;
+            }
+
+            userProfile = newUser;
+          } else {
+            // مستخدم جديد بدون بيانات أكاديمية - إنشاء حساب مؤقت
+            const tempUserData = {
+              email: googleUser.email!,
+              name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
+              password_hash: 'google_oauth_user',
+              department: null, // لا نضع قيم افتراضية
+              year: null,
+              term: null,
+              role: 'student',
+              is_active: false, // غير نشط حتى يكمل البيانات
+              last_login: new Date().toISOString()
+            };
+
+            const { data: newUser, error: createError } = await supabase
+              .from('users')
+              .insert([tempUserData])
+              .select()
+              .maybeSingle();
+
+            if (createError) {
+              console.error('خطأ في إنشاء المستخدم:', createError);
+              setError('خطأ في إنشاء الحساب');
+              return;
+            }
+
+            userProfile = newUser;
           }
-
-          userProfile = newUser;
         }
 
         // إنشاء جلسة جديدة
@@ -160,9 +191,13 @@ export default function AuthCallbackPage() {
           
            // توجيه فوري بدون انتظار
            if (isNewUser) {
-             if (isFromLoginPage) {
-               // مستخدم جديد من صفحة تسجيل الدخول - توجيه لإنشاء الحساب
-               console.log('🆕 New user from login page - redirecting to register page...');
+             if (academicData) {
+               // مستخدم جديد مع بيانات أكاديمية - توجيه للترحيب
+               console.log('🆕 New user with academic data - redirecting to welcome...');
+               window.location.href = '/welcome';
+             } else {
+               // مستخدم جديد بدون بيانات أكاديمية - توجيه لإنشاء الحساب
+               console.log('🆕 New user without academic data - redirecting to register page...');
                // حفظ بيانات المستخدم مؤقتاً
                localStorage.setItem('temp_user_data', JSON.stringify({
                  id: userProfile.id,
@@ -170,10 +205,6 @@ export default function AuthCallbackPage() {
                  name: userProfile.name
                }));
                window.location.href = '/auth/register?step=1&google=true';
-             } else {
-               // مستخدم جديد من صفحة إنشاء الحساب مع بيانات أكاديمية - توجيه للترحيب
-               console.log('🆕 New user from register page with academic data - redirecting to welcome...');
-               window.location.href = '/welcome';
              }
            } else {
              // مستخدم موجود - توجيه مباشر للصفحة الرئيسية

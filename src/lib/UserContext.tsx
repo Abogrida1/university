@@ -39,6 +39,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
           console.log('👤 User profile from session:', userProfile);
           
           if (userProfile) {
+            // التحقق من أن الحساب نشط
+            if (!userProfile.is_active) {
+              console.log('⚠️ User account is not active, redirecting to complete registration...');
+              // توجيه المستخدم لإكمال التسجيل
+              window.location.href = '/auth/register?step=1&google=true';
+              return;
+            }
+            
             console.log('✅ User loaded successfully:', userProfile);
             setUser(userProfile);
             

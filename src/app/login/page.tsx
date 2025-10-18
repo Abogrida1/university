@@ -208,7 +208,7 @@ export default function LoginPage() {
           {/* Info Message */}
           <div className="mt-3 p-3 bg-blue-900/30 border border-blue-500/50 rounded-lg">
             <p className="text-blue-300 text-xs text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
-              💡 إذا لم يكن لديك حساب، سيتم توجيهك لإنشاء حساب جديد
+              💡 إذا لم يكن لديك حساب، سيتم توجيهك لإنشاء حساب جديد واختيار بياناتك الأكاديمية
             </p>
           </div>
 
