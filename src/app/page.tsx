@@ -53,6 +53,9 @@ export default function HomePage() {
       setTimeout(() => {
         window.location.href = '/auth/register?step=1&google=true';
       }, 500);
+    } else if (user && user.is_active && user.department && user.year && user.term) {
+      console.log('Valid user with academic data detected, staying on home page...');
+      // المستخدم صالح وله بيانات أكاديمية، يبقى في الصفحة الرئيسية
     }
   }, [user]);
 

@@ -36,8 +36,9 @@ export default function RegisterPage() {
   // إعادة توجيه المستخدمين المسجلين (فقط إذا كان الحساب نشط وله بيانات أكاديمية)
   useEffect(() => {
     if (user && user.is_active && user.department && user.year && user.term) {
-      console.log('✅ Active user with academic data detected, redirecting to home...');
-      router.push('/');
+      console.log('✅ Active user with academic data detected, redirecting to welcome...');
+      // توجيه للويلكم بدلاً من الصفحة الرئيسية
+      window.location.href = '/welcome';
     }
   }, [user, router]);
 
@@ -225,22 +226,12 @@ export default function RegisterPage() {
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
 
-      // تحديث UserContext محلياً
-      console.log('🔄 Updating local user context...');
-      setUser({
-        ...user,
-        department: selectedData.department,
-        year: parseInt(selectedData.year),
-        term: selectedData.term,
-        is_active: true
-      });
-
       // إظهار رسالة نجاح
       setError('');
       setSuccess(true);
       console.log('🎉 Registration completed successfully!');
 
-      // التوجيه المباشر للويلكم
+      // التوجيه المباشر للويلكم بدون تحديث UserContext محلياً
       console.log('🔄 Redirecting to welcome page...');
       
       // تأخير قصير لإظهار رسالة النجاح

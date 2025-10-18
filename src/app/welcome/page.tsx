@@ -26,9 +26,9 @@ export default function WelcomePage() {
     // انتظار قليل للتأكد من تحميل بيانات المستخدم
     const timer = setTimeout(() => {
       if ((!user || (user && !user.is_active) || (user && (!user.department || !user.year || !user.term))) && !hasRedirected) {
-        console.log('No valid user found after timeout, redirecting to login...');
+        console.log('No valid user found after timeout, redirecting to register...');
         setHasRedirected(true);
-        window.location.href = '/login';
+        window.location.href = '/auth/register?step=1&google=true';
       }
     }, 3000);
 
