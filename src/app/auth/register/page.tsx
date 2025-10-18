@@ -31,6 +31,7 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [tempUserData, setTempUserData] = useState<any>(null);
+  const [success, setSuccess] = useState(false);
 
   // إعادة توجيه المستخدمين المسجلين (فقط إذا كان الحساب نشط وله بيانات أكاديمية)
   useEffect(() => {
@@ -224,11 +225,28 @@ export default function RegisterPage() {
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
 
-      // تحديث UserContext أولاً ثم التوجيه
-      console.log('🔄 Updating UserContext and redirecting to welcome...');
+      // تحديث UserContext محلياً
+      console.log('🔄 Updating local user context...');
+      setUser({
+        ...user,
+        department: selectedData.department,
+        year: parseInt(selectedData.year),
+        term: selectedData.term,
+        is_active: true
+      });
+
+      // إظهار رسالة نجاح
+      setError('');
+      setSuccess(true);
+      console.log('🎉 Registration completed successfully!');
+
+      // التوجيه المباشر للويلكم
+      console.log('🔄 Redirecting to welcome page...');
       
-      // إعادة تحميل الصفحة لتحديث UserContext
-      window.location.reload();
+      // تأخير قصير لإظهار رسالة النجاح
+      setTimeout(() => {
+        window.location.href = '/welcome';
+      }, 2000);
     } catch (error) {
       console.error('❌ Error updating Google user:', error);
       setError('خطأ في تحديث البيانات');
@@ -288,6 +306,17 @@ export default function RegisterPage() {
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-base sm:text-lg lg:text-xl">⚠️</span>
                   <span className="font-medium text-xs sm:text-sm lg:text-base">{error}</span>
+                </div>
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-900/30 border border-green-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-green-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
+                <div className="flex items-center justify-center space-x-2">
+                  <span className="text-base sm:text-lg lg:text-xl">🎉</span>
+                  <span className="font-medium text-xs sm:text-sm lg:text-base">
+                    تم إكمال التسجيل بنجاح! جاري التوجيه لصفحة الترحيب...
+                  </span>
                 </div>
               </div>
             )}
