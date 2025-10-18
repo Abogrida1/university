@@ -39,7 +39,6 @@ export default function AuthCallbackPage() {
         
         // الحصول على البيانات الأكاديمية المحفوظة
         const pendingAuthData = localStorage.getItem('pendingGoogleAuth');
-        const loginSource = localStorage.getItem('loginSource');
         let academicData = null;
         
         if (pendingAuthData) {
@@ -51,10 +50,9 @@ export default function AuthCallbackPage() {
           }
         }
         
-        // تنظيف loginSource
-        if (loginSource) {
-          localStorage.removeItem('loginSource');
-        }
+        // تحديد مصدر تسجيل الدخول (من صفحة تسجيل الدخول أم إنشاء الحساب)
+        const isFromLoginPage = !academicData;
+        console.log('🔍 Login source:', isFromLoginPage ? 'Login Page' : 'Register Page');
 
         // التحقق من وجود المستخدم في قاعدة البيانات
         console.log('🔍 Searching for existing user with email:', googleUser.email);
@@ -107,17 +105,16 @@ export default function AuthCallbackPage() {
           userProfile = updatedUser;
           isNewUser = false;
         } else {
-          // مستخدم جديد - إنشاء حساب مؤقت مع بيانات معلقة
-          console.log('🆕 New user - creating temporary account with pending data');
+          // مستخدم جديد، إنشاء حساب
+          console.log('🆕 New user - creating account');
           isNewUser = true;
-          
           const newUserData = {
             email: googleUser.email!,
             name: googleUser.user_metadata?.full_name || googleUser.email?.split('@')[0],
-            password_hash: 'google_oauth_user',
-            department: 'PENDING', // معلق حتى يختار المستخدم
-            year: 0, // معلق حتى يختار المستخدم
-            term: 'PENDING', // معلق حتى يختار المستخدم
+            password_hash: 'google_oauth_user', // قيمة افتراضية لحسابات Google
+            department: academicData?.department || 'General Program',
+            year: academicData ? parseInt(academicData.year) : 1,
+            term: academicData?.term || 'FIRST',
             role: 'student',
             is_active: true,
             last_login: new Date().toISOString()
@@ -163,19 +160,10 @@ export default function AuthCallbackPage() {
           
            // توجيه فوري بدون انتظار
            if (isNewUser) {
-             // مستخدم جديد - توجيه لاختيار البيانات الأكاديمية
-             console.log('🆕 New user - redirecting to academic selection...');
-             localStorage.setItem('temp_user_data', JSON.stringify({
-               id: userProfile.id,
-               email: userProfile.email,
-               name: userProfile.name
-             }));
-             window.location.href = '/auth/register?step=1&google=true';
-           } else {
-             // مستخدم موجود - التحقق من اكتمال البيانات الأكاديمية
-             if (userProfile.department === 'PENDING' || userProfile.year === 0 || userProfile.term === 'PENDING') {
-               // بيانات أكاديمية غير مكتملة - توجيه لاختيار البيانات
-               console.log('👤 Existing user with incomplete academic data - redirecting to academic selection...');
+             if (isFromLoginPage) {
+               // مستخدم جديد من صفحة تسجيل الدخول - توجيه لإنشاء الحساب
+               console.log('🆕 New user from login page - redirecting to register page...');
+               // حفظ بيانات المستخدم مؤقتاً
                localStorage.setItem('temp_user_data', JSON.stringify({
                  id: userProfile.id,
                  email: userProfile.email,
@@ -183,10 +171,14 @@ export default function AuthCallbackPage() {
                }));
                window.location.href = '/auth/register?step=1&google=true';
              } else {
-               // بيانات أكاديمية مكتملة - توجيه مباشر للصفحة الرئيسية
-               console.log('👤 Existing user with complete data - redirecting to home page...');
-               window.location.href = '/';
+               // مستخدم جديد من صفحة إنشاء الحساب مع بيانات أكاديمية - توجيه للترحيب
+               console.log('🆕 New user from register page with academic data - redirecting to welcome...');
+               window.location.href = '/welcome';
              }
+           } else {
+             // مستخدم موجود - توجيه مباشر للصفحة الرئيسية
+             console.log('👤 Existing user - redirecting to home page...');
+             window.location.href = '/';
            }
           } else {
             console.error('فشل في إنشاء الجلسة');

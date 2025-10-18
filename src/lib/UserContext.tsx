@@ -30,8 +30,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const loadUserFromSession = async () => {
       try {
         console.log('🔄 UserContext: Loading user from session...');
-        
-        
         const sessionToken = localStorage.getItem('session_token');
         console.log('🔑 Session token found:', sessionToken ? 'Yes' : 'No');
         

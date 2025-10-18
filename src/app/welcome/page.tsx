@@ -90,6 +90,17 @@ export default function WelcomePage() {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-300">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Animation */}
@@ -118,6 +129,11 @@ export default function WelcomePage() {
           <p className="text-gray-300" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             منصة المواد الدراسية لطلاب كلية الحاسبات والمعلومات
           </p>
+          <div className="mt-4 p-3 bg-green-900/30 border border-green-500/50 rounded-lg">
+            <p className="text-green-300 text-sm text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+              🎉 تم إنشاء حسابك بنجاح! مرحباً بك في منصتنا
+            </p>
+          </div>
         </div>
 
         {/* Form */}

@@ -53,6 +53,8 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
+      // تسجيل الدخول بجوجل بدون بيانات أكاديمية
+      // سيتم توجيه المستخدم إلى صفحة إنشاء الحساب إذا لم يكن لديه حساب
       const success = await loginWithGoogle();
       if (!success) {
         setError('خطأ في تسجيل الدخول بجوجل');
@@ -202,6 +204,13 @@ export default function LoginPage() {
             </svg>
             تسجيل الدخول بجوجل
           </button>
+          
+          {/* Info Message */}
+          <div className="mt-3 p-3 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+            <p className="text-blue-300 text-xs text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+              💡 إذا لم يكن لديك حساب، سيتم توجيهك لإنشاء حساب جديد
+            </p>
+          </div>
 
           {/* Links */}
           <div className="mt-6 space-y-3">

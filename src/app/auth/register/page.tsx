@@ -31,26 +31,13 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [tempUserData, setTempUserData] = useState<any>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [isGoogleFlow, setIsGoogleFlow] = useState(false);
 
-  // إعادة توجيه المستخدمين المسجلين (عدا المستخدمين الجدد من جوجل)
+  // إعادة توجيه المستخدمين المسجلين
   useEffect(() => {
-    // تحقق من URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const isGoogle = urlParams.get('google') === 'true';
-    if (isGoogle) {
-      console.log('🔍 Google parameter detected - preventing redirect');
-      setIsGoogleFlow(true);
-      return;
-    }
-    
-    if (user && !isGoogleFlow) {
-      console.log('👤 Regular user detected - redirecting to home');
+    if (user) {
       router.push('/');
     }
-  }, [user, router, isGoogleFlow]);
+  }, [user, router]);
 
   // التحقق من المستخدمين من Google
   useEffect(() => {
@@ -58,9 +45,7 @@ export default function RegisterPage() {
     const isGoogle = urlParams.get('google') === 'true';
     
     if (isGoogle) {
-      console.log('🔍 Google user detected, checking data...');
-      
-      // تحقق من البيانات المؤقتة
+      console.log('🔍 Google user detected, checking temp data...');
       const tempData = localStorage.getItem('temp_user_data');
       if (tempData && tempData.trim() !== '') {
         try {
@@ -209,9 +194,6 @@ export default function RegisterPage() {
       return;
     }
 
-    setIsUpdating(true);
-    setError('');
-
     try {
       console.log('🔄 Updating Google user academic data...');
       console.log('User ID:', tempUserData.id);
@@ -240,34 +222,13 @@ export default function RegisterPage() {
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
 
-      // إظهار رسالة النجاح
-      setUpdateSuccess(true);
-      console.log('✅ Google user data updated successfully!');
-
       // إعادة تحميل الصفحة لتحديث UserContext
-      console.log('🔄 Redirecting to welcome page...');
-      setTimeout(() => {
-        window.location.href = '/welcome';
-      }, 2000);
+      window.location.href = '/welcome';
     } catch (error) {
       console.error('❌ Error updating Google user:', error);
       setError('خطأ في تحديث البيانات');
-    } finally {
-      setIsUpdating(false);
     }
   };
-
-  // منع التوجيه للمستخدمين من جوجل
-  if (isGoogleFlow && !isGoogleUser) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-300">جاري تحضير صفحة التسجيل...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen py-6 sm:py-8 lg:py-12 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
@@ -286,36 +247,32 @@ export default function RegisterPage() {
             />
           </div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent mb-2 sm:mb-3 lg:mb-4">
-            إنشاء حساب جديد
+            {isGoogleUser ? 'إكمال إنشاء الحساب' : 'إنشاء حساب جديد'}
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2 sm:px-4">
-            {step === 1 ? 'اختر معلوماتك الأكاديمية' : 'أدخل بياناتك الشخصية'}
+            {isGoogleUser 
+              ? 'مرحباً! يرجى اختيار بياناتك الأكاديمية لإكمال إنشاء حسابك'
+              : (step === 1 ? 'اختر معلوماتك الأكاديمية' : 'أدخل بياناتك الشخصية')
+            }
           </p>
+          {isGoogleUser && (
+            <div className="mt-4 p-3 bg-green-900/30 border border-green-500/50 rounded-lg">
+              <p className="text-green-300 text-sm text-center" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                ✅ تم تسجيل الدخول بجوجل بنجاح! يرجى اختيار بياناتك الأكاديمية
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Step 1: Academic Selection */}
         {step === 1 && (
           <div className="max-w-7xl mx-auto">
-            {isGoogleUser && !updateSuccess && (
+            {isGoogleUser && (
               <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-blue-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-base sm:text-lg lg:text-xl">🎓</span>
                   <span className="font-medium text-xs sm:text-sm lg:text-base">
                     مرحباً {tempUserData?.name}! يرجى اختيار بياناتك الأكاديمية لإكمال التسجيل
-                  </span>
-                </div>
-                <div className="mt-2 text-xs text-blue-200">
-                  سيتم إنشاء حسابك بعد اختيار البيانات الأكاديمية
-                </div>
-              </div>
-            )}
-
-            {isGoogleUser && updateSuccess && (
-              <div className="bg-green-900/30 border border-green-500/50 rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 text-green-300 text-center mb-4 sm:mb-6 lg:mb-8 mx-2 sm:mx-4 lg:mx-0">
-                <div className="flex items-center justify-center space-x-2">
-                  <span className="text-base sm:text-lg lg:text-xl">✅</span>
-                  <span className="font-medium text-xs sm:text-sm lg:text-base">
-                    تم حفظ بياناتك بنجاح! جاري توجيهك لصفحة الترحيب...
                   </span>
                 </div>
               </div>
@@ -427,14 +384,7 @@ export default function RegisterPage() {
                     <span>جاري الحفظ...</span>
                   </div>
                 ) : isGoogleUser ? (
-                  isUpdating ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>جاري الحفظ...</span>
-                    </div>
-                  ) : (
-                    'إكمال التسجيل'
-                  )
+                  'إكمال التسجيل'
                 ) : (
                   'التالي'
                 )}
