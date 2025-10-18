@@ -43,10 +43,8 @@ export default function RegisterPage() {
         year: user.year,
         term: user.term
       });
-      // تأخير قصير للتأكد من تحديث UserContext
-      setTimeout(() => {
-        window.location.href = '/welcome';
-      }, 1000);
+      // توجيه فوري للويلكم
+      window.location.href = '/welcome';
     }
   }, [user, router]);
 
@@ -239,37 +237,12 @@ export default function RegisterPage() {
       setSuccess(true);
       console.log('🎉 Registration completed successfully!');
 
-      // حذف الجلسة القديمة وإعادة إنشاء جلسة جديدة
-      console.log('🔄 Clearing old session and creating new one...');
-      localStorage.removeItem('session_token');
-      
-      // إنشاء جلسة جديدة
-      try {
-        const sessionResult = await supabase
-          .from('user_sessions')
-          .insert([{
-            user_id: tempUserData.id,
-            session_token: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-            last_activity: new Date().toISOString()
-          }])
-          .select()
-          .single();
-
-        if (sessionResult.data) {
-          localStorage.setItem('session_token', sessionResult.data.session_token);
-          console.log('✅ New session created successfully');
-        }
-      } catch (sessionError) {
-        console.error('❌ Error creating new session:', sessionError);
-      }
-
-      // التوجيه المباشر للويلكم
-      console.log('🔄 Redirecting to welcome page...');
+      // إعادة تحميل الصفحة بالكامل لضمان تحديث UserContext
+      console.log('🔄 Reloading page to refresh UserContext...');
       
       // تأخير قصير لإظهار رسالة النجاح
       setTimeout(() => {
-        window.location.href = '/welcome';
+        window.location.reload();
       }, 2000);
     } catch (error) {
       console.error('❌ Error updating Google user:', error);

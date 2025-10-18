@@ -23,7 +23,7 @@ export default function WelcomePage() {
 
   // إعادة توجيه المستخدمين غير المسجلين أو غير النشطين أو بدون بيانات أكاديمية
   useEffect(() => {
-    // انتظار أطول للتأكد من تحميل بيانات المستخدم
+    // انتظار قصير للتأكد من تحميل بيانات المستخدم
     const timer = setTimeout(() => {
       if ((!user || (user && !user.is_active) || (user && (!user.department || !user.year || !user.term))) && !hasRedirected) {
         console.log('No valid user found after timeout, redirecting to register...');
@@ -45,7 +45,7 @@ export default function WelcomePage() {
           term: user.term
         });
       }
-    }, 3000); // تقليل الوقت إلى 3 ثوانٍ
+    }, 1000); // تقليل الوقت إلى ثانية واحدة
 
     return () => clearTimeout(timer);
   }, [user, hasRedirected]);

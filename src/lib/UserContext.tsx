@@ -82,6 +82,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
             console.log('✅ User loaded successfully with all data:', userProfile);
             setUser(userProfile);
             
+            // إضافة تأخير قصير للتأكد من تحديث UserContext
+            setTimeout(() => {
+              console.log('🔄 UserContext updated, user should be available now');
+            }, 100);
+            
             // تحديث الجلسة
             console.log('🔄 Loading session data...');
             const { data: sessionData, error: sessionError } = await supabase
