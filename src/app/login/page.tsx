@@ -17,9 +17,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect logged-in users
+  // Redirect logged-in users (only if active)
   useEffect(() => {
-    if (user) {
+    if (user && user.is_active) {
+      console.log('✅ Active user detected on login page, redirecting to home...');
       router.push('/');
     }
   }, [user, router]);

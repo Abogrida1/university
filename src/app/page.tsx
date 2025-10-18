@@ -22,9 +22,9 @@ export default function HomePage() {
 
   console.log('🏠 HomePage component loaded');
 
-  // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود
+  // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود ونشط
   useEffect(() => {
-    if (user) {
+    if (user && user.is_active) {
       const emailPrefix = user.email?.split('@')[0] || '';
       const isNewUser = !user.name || 
                        user.name === emailPrefix || 
@@ -36,6 +36,7 @@ export default function HomePage() {
       console.log('User name:', user.name);
       console.log('Email prefix:', emailPrefix);
       console.log('Is new user:', isNewUser);
+      console.log('Is active:', user.is_active);
       console.log('============================');
       
       if (isNewUser) {
@@ -45,6 +46,12 @@ export default function HomePage() {
           window.location.href = '/welcome';
         }, 500);
       }
+    } else if (user && !user.is_active) {
+      console.log('Inactive user detected, redirecting to register page...');
+      // توجيه المستخدم غير النشط لصفحة إنشاء الحساب
+      setTimeout(() => {
+        window.location.href = '/auth/register?step=1&google=true';
+      }, 500);
     }
   }, [user]);
 

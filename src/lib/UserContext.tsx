@@ -41,10 +41,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
           if (userProfile) {
             // التحقق من أن الحساب نشط
             if (!userProfile.is_active) {
-              console.log('⚠️ User account is not active, redirecting to complete registration...');
-              // توجيه المستخدم لإكمال التسجيل
-              window.location.href = '/auth/register?step=1&google=true';
-              return;
+              console.log('⚠️ User account is not active, checking current page...');
+              // التحقق من الصفحة الحالية لتجنب التوجيه المستمر
+              const currentPath = window.location.pathname;
+              if (currentPath !== '/auth/register') {
+                console.log('Redirecting to complete registration...');
+                window.location.href = '/auth/register?step=1&google=true';
+                return;
+              } else {
+                console.log('Already on register page, setting user as inactive...');
+                // تعيين المستخدم كغير نشط ولكن لا نعيد التوجيه
+                setUser({ ...userProfile, is_active: false });
+                return;
+              }
             }
             
             console.log('✅ User loaded successfully:', userProfile);

@@ -21,12 +21,12 @@ export default function WelcomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // إعادة توجيه المستخدمين غير المسجلين فقط
+  // إعادة توجيه المستخدمين غير المسجلين أو غير النشطين
   useEffect(() => {
     // انتظار قليل للتأكد من تحميل بيانات المستخدم
     const timer = setTimeout(() => {
-      if (!user && !hasRedirected) {
-        console.log('No user found after timeout, redirecting to login...');
+      if ((!user || (user && !user.is_active)) && !hasRedirected) {
+        console.log('No active user found after timeout, redirecting to login...');
         setHasRedirected(true);
         window.location.href = '/login';
       }

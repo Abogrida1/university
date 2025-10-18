@@ -32,9 +32,10 @@ export default function RegisterPage() {
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [tempUserData, setTempUserData] = useState<any>(null);
 
-  // إعادة توجيه المستخدمين المسجلين
+  // إعادة توجيه المستخدمين المسجلين (فقط إذا كان الحساب نشط)
   useEffect(() => {
-    if (user) {
+    if (user && user.is_active) {
+      console.log('✅ Active user detected, redirecting to home...');
       router.push('/');
     }
   }, [user, router]);
