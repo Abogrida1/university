@@ -234,35 +234,35 @@ export default function RegisterPage() {
       // حذف البيانات المؤقتة
       localStorage.removeItem('temp_user_data');
 
-      // تحديث UserContext محلياً
-      console.log('🔄 Updating UserContext with new data...');
-      const updatedUser = {
-        ...user,
-        department: selectedData.department,
-        year: parseInt(selectedData.year),
-        term: selectedData.term,
-        is_active: true
-      };
-      setUser(updatedUser);
-
-      // تحديث الجلسة في قاعدة البيانات
-      console.log('🔄 Updating session in database...');
-      try {
-        await supabase
-          .from('user_sessions')
-          .update({
-            last_activity: new Date().toISOString()
-          })
-          .eq('user_id', tempUserData.id);
-        console.log('✅ Session updated successfully');
-      } catch (sessionError) {
-        console.error('❌ Error updating session:', sessionError);
-      }
-
       // إظهار رسالة نجاح
       setError('');
       setSuccess(true);
       console.log('🎉 Registration completed successfully!');
+
+      // حذف الجلسة القديمة وإعادة إنشاء جلسة جديدة
+      console.log('🔄 Clearing old session and creating new one...');
+      localStorage.removeItem('session_token');
+      
+      // إنشاء جلسة جديدة
+      try {
+        const sessionResult = await supabase
+          .from('user_sessions')
+          .insert([{
+            user_id: tempUserData.id,
+            session_token: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+            last_activity: new Date().toISOString()
+          }])
+          .select()
+          .single();
+
+        if (sessionResult.data) {
+          localStorage.setItem('session_token', sessionResult.data.session_token);
+          console.log('✅ New session created successfully');
+        }
+      } catch (sessionError) {
+        console.error('❌ Error creating new session:', sessionError);
+      }
 
       // التوجيه المباشر للويلكم
       console.log('🔄 Redirecting to welcome page...');

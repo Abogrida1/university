@@ -38,6 +38,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
           console.log('🔍 Validating session token...');
           const userProfile = await UserService.validateSession(sessionToken);
           console.log('👤 User profile from session:', userProfile);
+          console.log('👤 User profile details:', {
+            id: userProfile?.id,
+            email: userProfile?.email,
+            is_active: userProfile?.is_active,
+            department: userProfile?.department,
+            year: userProfile?.year,
+            term: userProfile?.term
+          });
           
           if (userProfile) {
             // التحقق من أن الحساب نشط

@@ -36,8 +36,16 @@ export default function WelcomePage() {
         });
         setHasRedirected(true);
         window.location.href = '/auth/register?step=1&google=true';
+      } else if (user && user.is_active && user.department && user.year && user.term) {
+        console.log('✅ Valid user detected on welcome page, staying here...');
+        console.log('User data:', {
+          is_active: user.is_active,
+          department: user.department,
+          year: user.year,
+          term: user.term
+        });
       }
-    }, 5000); // زيادة الوقت إلى 5 ثوانٍ
+    }, 3000); // تقليل الوقت إلى 3 ثوانٍ
 
     return () => clearTimeout(timer);
   }, [user, hasRedirected]);
