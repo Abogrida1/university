@@ -78,22 +78,22 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
-      {/* Golden Light Effects */}
-      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-black dark:to-gray-800 relative overflow-hidden">
+      {/* Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-blue-500/10 dark:from-yellow-500/5 dark:via-transparent dark:to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/30 dark:bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/30 dark:bg-yellow-500/10 rounded-full blur-3xl"></div>
         <div className="text-center max-w-md mx-auto">
           <div className="text-4xl sm:text-6xl mb-4">🔒</div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             غير مصرح لك بالوصول
           </h1>
-          <p className="text-gray-400 mb-6 text-sm sm:text-base" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+          <p className="text-slate-700 dark:text-gray-400 mb-6 text-sm sm:text-base font-medium" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
             يرجى تسجيل الدخول أولاً
           </p>
           <button
             onClick={() => router.push('/')}
-            className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 dark:hover:from-yellow-600 dark:hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base shadow-lg shadow-blue-500/40"
             style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -107,26 +107,26 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
-      {/* Golden Light Effects */}
-      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-black dark:to-gray-800 relative overflow-hidden">
+      {/* Light Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-blue-500/10 dark:from-yellow-500/5 dark:via-transparent dark:to-yellow-500/5"></div>
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/30 dark:bg-yellow-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/30 dark:bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-yellow-500/25">
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-yellow-400 dark:to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/25">
               <img 
                 src="/assets/icons/main-icon.png" 
                 alt="University Materials" 
                 className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"
               />
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-700 to-blue-900 dark:from-yellow-400 dark:to-yellow-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               الملف الشخصي
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-300 px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+            <p className="text-base sm:text-lg lg:text-xl text-slate-700 dark:text-gray-300 px-2 font-medium" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               إدارة حسابك ومعلوماتك الشخصية
             </p>
           </div>
@@ -135,8 +135,8 @@ export default function ProfilePage() {
           {message && (
             <div className={`mb-6 sm:mb-8 p-3 sm:p-4 rounded-xl text-center text-sm sm:text-base ${
               message.includes('نجاح') 
-                ? 'bg-green-900/30 border border-green-500/50 text-green-300' 
-                : 'bg-red-900/30 border border-red-500/50 text-red-300'
+                ? 'bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-500/50 text-green-700 dark:text-green-300' 
+                : 'bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-500/50 text-red-700 dark:text-red-300'
             }`} style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
               {message}
             </div>
@@ -145,15 +145,15 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Profile Info */}
             <div className="lg:col-span-2">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-gray-700/50">
+              <div className="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border-2 border-blue-200 dark:border-gray-700/50">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                     معلومات الحساب
                   </h2>
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base w-full sm:w-auto"
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 dark:hover:from-yellow-600 dark:hover:to-yellow-700 transition-all duration-300 text-sm sm:text-base w-full sm:w-auto shadow-lg shadow-blue-500/40"
                       style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                     >
                       تعديل
@@ -164,14 +164,14 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <form onSubmit={handleUpdateProfile} className="space-y-4 sm:space-y-6">
                     <div>
-                      <label className="block text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         الاسم الكامل
                       </label>
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-3 sm:px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl focus:outline-none focus:border-yellow-500 transition-colors text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 bg-gray-100 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600/50 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-colors text-gray-900 dark:text-white text-base sm:text-lg"
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       />
                     </div>

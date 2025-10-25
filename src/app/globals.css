@@ -4,6 +4,211 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme Variables */
+:root {
+  /* Light mode variables - Enhanced */
+  --light-bg: #ffffff;
+  --light-bg-secondary: #f8fafc;
+  --light-bg-tertiary: #f1f5f9;
+  --light-bg-card: #ffffff;
+  --light-bg-hover: #f0f9ff;
+  --light-text: #0f172a;
+  --light-text-secondary: #334155;
+  --light-text-muted: #64748b;
+  --light-text-accent: #1e40af;
+  --light-border: #e2e8f0;
+  --light-border-secondary: #cbd5e1;
+  --light-border-accent: #3b82f6;
+  --light-accent: #3b82f6;
+  --light-accent-secondary: #1d4ed8;
+  --light-accent-light: #60a5fa;
+  --light-accent-bg: #dbeafe;
+  --light-success: #059669;
+  --light-success-bg: #d1fae5;
+  --light-warning: #d97706;
+  --light-warning-bg: #fef3c7;
+  --light-error: #dc2626;
+  --light-error-bg: #fee2e2;
+  --light-purple: #7c3aed;
+  --light-purple-bg: #ede9fe;
+  --light-cyan: #0891b2;
+  --light-cyan-bg: #cffafe;
+  --light-emerald: #059669;
+  --light-emerald-bg: #d1fae5;
+  
+  /* Dark mode variables - Gold/Yellow accent theme */
+  --dark-bg: #0f172a;
+  --dark-bg-secondary: #1e293b;
+  --dark-bg-tertiary: #334155;
+  --dark-text: #f8fafc;
+  --dark-text-secondary: #cbd5e1;
+  --dark-text-muted: #94a3b8;
+  --dark-border: #475569;
+  --dark-border-secondary: #64748b;
+  --dark-accent: #eab308;
+  --dark-accent-secondary: #fbbf24;
+  --dark-success: #10b981;
+  --dark-warning: #f59e0b;
+  --dark-error: #ef4444;
+}
+
+/* Default to dark mode */
+html {
+  --bg: var(--dark-bg);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  --text: var(--dark-text);
+  --text-secondary: var(--dark-text-secondary);
+  --text-muted: var(--dark-text-muted);
+  --border: var(--dark-border);
+  --border-secondary: var(--dark-border-secondary);
+  --accent: var(--dark-accent);
+  --accent-secondary: var(--dark-accent-secondary);
+  --success: var(--dark-success);
+  --warning: var(--dark-warning);
+  --error: var(--dark-error);
+}
+
+/* Light mode */
+html.light {
+  --bg: var(--light-bg);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-tertiary: var(--light-bg-tertiary);
+  --bg-card: var(--light-bg-card);
+  --bg-hover: var(--light-bg-hover);
+  --text: var(--light-text);
+  --text-secondary: var(--light-text-secondary);
+  --text-muted: var(--light-text-muted);
+  --text-accent: var(--light-text-accent);
+  --border: var(--light-border);
+  --border-secondary: var(--light-border-secondary);
+  --border-accent: var(--light-border-accent);
+  --accent: var(--light-accent);
+  --accent-secondary: var(--light-accent-secondary);
+  --accent-light: var(--light-accent-light);
+  --accent-bg: var(--light-accent-bg);
+  --success: var(--light-success);
+  --success-bg: var(--light-success-bg);
+  --warning: var(--light-warning);
+  --warning-bg: var(--light-warning-bg);
+  --error: var(--light-error);
+  --error-bg: var(--light-error-bg);
+  --purple: var(--light-purple);
+  --purple-bg: var(--light-purple-bg);
+  --cyan: var(--light-cyan);
+  --cyan-bg: var(--light-cyan-bg);
+  --emerald: var(--light-emerald);
+  --emerald-bg: var(--light-emerald-bg);
+}
+
+/* Enhanced Light Mode Animations */
+@keyframes lightGradientShift {
+  0%, 100% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+}
+
+@keyframes lightFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  33% { 
+    transform: translateY(-10px) rotate(1deg); 
+  }
+  66% { 
+    transform: translateY(5px) rotate(-1deg); 
+  }
+}
+
+@keyframes lightPulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes lightShimmer {
+  0% { 
+    background-position: -200% 0; 
+  }
+  100% { 
+    background-position: 200% 0; 
+  }
+}
+
+@keyframes lightBounce {
+  0%, 20%, 50%, 80%, 100% { 
+    transform: translateY(0); 
+  }
+  40% { 
+    transform: translateY(-10px); 
+  }
+  60% { 
+    transform: translateY(-5px); 
+  }
+}
+
+/* Light Mode Specific Classes */
+.light-gradient-bg {
+  background: linear-gradient(-45deg, #f0f9ff, #dbeafe, #e0f2fe, #f0fdf4);
+  background-size: 400% 400%;
+  animation: lightGradientShift 8s ease infinite;
+}
+
+/* Ensure Dark Mode is not affected by Light Mode classes */
+.dark .light-gradient-bg {
+  background: none !important;
+  animation: none !important;
+}
+
+.light-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light-card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+}
+
+.light-button-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.light-button-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.light-button-hover:hover::before {
+  left: 100%;
+}
+
+.light-text-gradient {
+  background: linear-gradient(135deg, #1e40af, #3b82f6, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.light-border-gradient {
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd) 1;
+}
+
 /* Custom Animations */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -54,13 +259,9 @@ body {
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--text);
+  background: var(--bg);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -268,4 +469,43 @@ h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, select, label {
     font-size: 16px;
     border-radius: 12px;
   }
+}
+
+/* Force Dark Mode Colors for Register Page - NO LIGHT MODE INTERFERENCE */
+.dark .register-card-unselected {
+  background-color: rgba(31, 41, 55, 0.5) !important;
+  border-color: rgba(75, 85, 99, 0.5) !important;
+  color: white !important;
+}
+
+.dark .register-card-unselected:hover {
+  border-color: rgba(107, 114, 128, 0.5) !important;
+  box-shadow: none !important;
+}
+
+.dark .register-form {
+  background-color: rgba(31, 41, 55, 0.5) !important;
+  border-color: rgba(75, 85, 99, 0.5) !important;
+}
+
+/* Light Mode Only - Forced */
+.register-card-unselected:not(.dark *) {
+  background-color: rgb(191, 219, 254) !important;
+  border-color: rgb(96, 165, 250) !important;
+  color: rgb(15, 23, 42) !important;
+}
+
+.register-card-unselected-indigo:not(.dark *) {
+  background-color: rgb(199, 210, 254) !important;
+  border-color: rgb(129, 140, 248) !important;
+}
+
+.register-card-unselected-purple:not(.dark *) {
+  background-color: rgb(233, 213, 255) !important;
+  border-color: rgb(192, 132, 252) !important;
+}
+
+.register-form:not(.dark *) {
+  background-color: rgb(219, 234, 254) !important;
+  border-color: rgb(96, 165, 250) !important;
 }

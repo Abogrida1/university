@@ -50,7 +50,7 @@ export default function MaterialNavigation({
         <button
           type="button"
           onClick={handleBackToMaterials}
-          className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-lg sm:rounded-xl font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30 text-sm sm:text-base cursor-pointer relative z-20"
+          className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black rounded-lg sm:rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 dark:hover:from-yellow-600 dark:hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/40 dark:shadow-yellow-500/30 text-sm sm:text-base cursor-pointer relative z-20"
           style={{ pointerEvents: 'auto' }}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@ export default function MaterialNavigation({
             }
             router.push('/');
           }}
-          className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 text-white hover:text-yellow-400 transition-colors font-medium text-sm sm:text-base cursor-pointer relative z-20"
+          className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-3 bg-blue-100 dark:bg-transparent text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-yellow-400 border-2 border-blue-300 dark:border-transparent rounded-lg transition-all duration-300 font-semibold text-sm sm:text-base cursor-pointer relative z-20 hover:bg-blue-200 dark:hover:bg-transparent hover:shadow-lg hover:shadow-blue-500/20"
           style={{ pointerEvents: 'auto' }}
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

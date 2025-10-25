@@ -5,6 +5,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import SimpleHeader from '@/components/SimpleHeader';
 import Footer from '@/components/Footer';
 import { UserProvider } from '@/lib/UserContext';
+import { ThemeProvider } from '@/lib/ThemeContext';
 import FirstVisitDisclaimer from '@/components/FirstVisitDisclaimer';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -22,16 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <UserProvider>
-          <div className="min-h-screen flex flex-col relative">
-            <SimpleHeader />
-            <main className="flex-1 pb-16 lg:pb-0">
-              {children}
-            </main>
-            <Footer />
-            <FirstVisitDisclaimer />
-          </div>
-        </UserProvider>
+        <ThemeProvider>
+          <UserProvider>
+            <div className="min-h-screen flex flex-col relative">
+              <SimpleHeader />
+              <main className="flex-1 pb-16 lg:pb-0">
+                {children}
+              </main>
+              <Footer />
+              <FirstVisitDisclaimer />
+            </div>
+          </UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

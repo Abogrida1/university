@@ -265,9 +265,9 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
 
       {/* Courses Table */}
       <div className="overflow-x-auto">
-        <table className="w-full bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden">
+        <table className="w-full bg-blue-100/30 dark:bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden">
           <thead>
-            <tr className="bg-gradient-to-r from-yellow-600/50 to-yellow-700/50">
+            <tr className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-600/50 dark:to-yellow-700/50">
               <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
                 كود المادة
               </th>
@@ -292,33 +292,33 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
             {courses.map((course, index) => (
               <tr 
                 key={course.id} 
-                className={`hover:bg-white/10 transition-all duration-300 ${
-                  index % 2 === 0 ? 'bg-white/5' : 'bg-white/10'
+                className={`hover:bg-blue-200/40 dark:hover:bg-white/10 transition-all duration-300 ${
+                  index % 2 === 0 ? 'bg-blue-100/20 dark:bg-white/5' : 'bg-blue-100/30 dark:bg-white/10'
                 }`}
               >
-                <td className="px-6 py-4 text-right text-white font-semibold border-b border-white/10">
-                  <span className="bg-yellow-500/30 px-3 py-1 rounded-lg text-sm">
+                <td className="px-6 py-4 text-right text-slate-900 dark:text-white font-semibold border-b border-blue-300/30 dark:border-white/10">
+                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm text-blue-900 dark:text-white">
                     {course.code}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right text-white border-b border-white/10">
+                <td className="px-6 py-4 text-right text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
                   <div>
                     <p className="font-semibold text-lg">{course.titleAr}</p>
-                    <p className="text-gray-300 text-sm">{course.title}</p>
+                    <p className="text-slate-700 dark:text-gray-300 text-sm">{course.title}</p>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-right text-white border-b border-white/10">
-                  <span className="bg-yellow-500/30 px-3 py-1 rounded-lg text-sm">
+                <td className="px-6 py-4 text-right text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
+                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm text-blue-900 dark:text-white">
                     {course.departmentAr}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-center text-white border-b border-white/10">
-                  <span className="bg-yellow-500/30 px-3 py-1 rounded-lg text-sm font-semibold">
+                <td className="px-6 py-4 text-center text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
+                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm font-semibold text-blue-900 dark:text-white">
                     السنة {course.year}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-center text-white border-b border-white/10">
-                  <span className="bg-yellow-500/30 px-3 py-1 rounded-lg text-sm font-semibold">
+                <td className="px-6 py-4 text-center text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
+                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm font-semibold text-blue-900 dark:text-white">
                     {course.termAr}
                   </span>
                 </td>
