@@ -28,7 +28,7 @@ npm run dev
 
 ### 2. **اختبار في الإنتاج:**
 ```bash
-# اذهب إلى: https://university-3-cuxd.onrender.com/login
+# اذهب إلى: https://university-l2nm.vercel.app/login
 # اضغط "تسجيل الدخول بجوجل"
 ```
 
@@ -47,7 +47,7 @@ npm run dev
 
 2. **تأكد من إعداد Redirect URLs في Google Console:**
    - `http://localhost:3000/auth/callback` (للبيئة المحلية)
-   - `https://university-3-cuxd.onrender.com/auth/callback` (للإنتاج)
+   - `https://university-l2nm.vercel.app/auth/callback` (للإنتاج)
 
 3. **تأكد من وجود جدول user_sessions في Supabase:**
    ```sql

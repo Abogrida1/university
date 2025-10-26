@@ -13,7 +13,7 @@ Google OAuth يوجه إلى `http://localhost:3000/auth/callback#` بدلاً �
 🚀 Starting Google OAuth...
 📍 Environment: production
 📍 Is Production: true
-📍 Redirect URL: https://university-3-cuxd.onrender.com/auth/callback
+📍 Redirect URL: https://university-l2nm.vercel.app/auth/callback
 ```
 
 ### 2. إذا كانت القيم خاطئة:
@@ -32,8 +32,8 @@ Google OAuth يوجه إلى `http://localhost:3000/auth/callback#` بدلاً �
 2. اختر مشروعك
 3. اذهب إلى "Authentication" → "URL Configuration"
 4. تأكد من:
-   - **Site URL**: `https://university-3-cuxd.onrender.com`
-   - **Redirect URLs**: `https://university-3-cuxd.onrender.com/auth/callback`
+   - **Site URL**: `https://university-l2nm.vercel.app`
+   - **Redirect URLs**: `https://university-l2nm.vercel.app/auth/callback`
 
 ### 4. تحقق من إعدادات Google Console:
 
@@ -42,7 +42,7 @@ Google OAuth يوجه إلى `http://localhost:3000/auth/callback#` بدلاً �
 3. اذهب إلى "APIs & Services" → "Credentials"
 4. اختر OAuth 2.0 Client ID
 5. تأكد من وجود:
-   - `https://university-3-cuxd.onrender.com/auth/callback`
+   - `https://university-l2nm.vercel.app/auth/callback`
    - `http://localhost:3000/auth/callback`
 
 ## الحلول المقترحة:

@@ -184,11 +184,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
       
       let redirectUrl;
       if (isProduction && !isLocalhost) {
-        redirectUrl = 'https://university-3-cuxd.onrender.com/auth/callback';
+        redirectUrl = 'https://university-l2nm.vercel.app/auth/callback';
       } else if (isLocalhost) {
         redirectUrl = 'http://localhost:3000/auth/callback';
       } else {
-        redirectUrl = 'https://university-3-cuxd.onrender.com/auth/callback';
+        redirectUrl = 'https://university-l2nm.vercel.app/auth/callback';
       }
       
       console.log('📍 Environment:', process.env.NODE_ENV);

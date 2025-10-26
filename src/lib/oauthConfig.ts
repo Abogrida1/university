@@ -14,7 +14,7 @@ export const getOAuthRedirectUrl = (): string => {
   // ثانياً: بناءً على البيئة
   if (process.env.NODE_ENV === 'production') {
     console.log('✅ Using production URL');
-    return 'https://university-3-cuxd.onrender.com/auth/callback';
+    return 'https://university-l2nm.vercel.app/auth/callback';
   }
   
   // أخيراً: البيئة المحلية

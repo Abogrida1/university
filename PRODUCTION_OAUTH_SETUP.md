@@ -13,7 +13,7 @@
 4. أضف المتغير التالي:
 
 ```
-NEXT_PUBLIC_OAUTH_REDIRECT_URL=https://university-3-cuxd.onrender.com/auth/callback
+NEXT_PUBLIC_OAUTH_REDIRECT_URL=https://university-l2nm.vercel.app/auth/callback
 ```
 
 ### 2. إعداد Google Console:
@@ -23,7 +23,7 @@ NEXT_PUBLIC_OAUTH_REDIRECT_URL=https://university-3-cuxd.onrender.com/auth/callb
 3. اذهب إلى "APIs & Services" → "Credentials"
 4. اختر OAuth 2.0 Client ID
 5. في "Authorized redirect URIs" أضف:
-   - `https://university-3-cuxd.onrender.com/auth/callback`
+   - `https://university-l2nm.vercel.app/auth/callback`
    - `http://localhost:3000/auth/callback` (للاختبار المحلي)
 
 ### 3. إعداد Supabase:
@@ -31,8 +31,8 @@ NEXT_PUBLIC_OAUTH_REDIRECT_URL=https://university-3-cuxd.onrender.com/auth/callb
 1. اذهب إلى [Supabase Dashboard](https://supabase.com/dashboard)
 2. اختر مشروعك
 3. اذهب إلى "Authentication" → "URL Configuration"
-4. في "Site URL" أضف: `https://university-3-cuxd.onrender.com`
-5. في "Redirect URLs" أضف: `https://university-3-cuxd.onrender.com/auth/callback`
+4. في "Site URL" أضف: `https://university-l2nm.vercel.app`
+5. في "Redirect URLs" أضف: `https://university-l2nm.vercel.app/auth/callback`
 
 ### 4. إعادة نشر التطبيق:
 
@@ -48,15 +48,15 @@ git push origin main
 
 ### 1. تحقق من متغيرات البيئة:
 ```bash
-# في Render Dashboard، تأكد من وجود:
-NEXT_PUBLIC_OAUTH_REDIRECT_URL=https://university-3-cuxd.onrender.com/auth/callback
+# في Vercel Dashboard، تأكد من وجود:
+NEXT_PUBLIC_OAUTH_REDIRECT_URL=https://university-l2nm.vercel.app/auth/callback
 ```
 
 ### 2. تحقق من Console:
 - افتح Developer Tools
 - اذهب إلى Console
 - اضغط "تسجيل الدخول بجوجل"
-- يجب أن ترى: `📍 Redirect URL: https://university-3-cuxd.onrender.com/auth/callback`
+- يجب أن ترى: `📍 Redirect URL: https://university-l2nm.vercel.app/auth/callback`
 
 ### 3. اختبار التدفق:
 1. اذهب إلى موقع الإنتاج

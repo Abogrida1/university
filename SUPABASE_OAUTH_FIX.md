@@ -17,9 +17,9 @@ Google OAuth يعمل في localhost لكن في الإنتاج يعود إلى 
 
 #### ب) تحديث الإعدادات:
 ```
-Site URL: https://university-3-cuxd.onrender.com
+Site URL: https://university-l2nm.vercel.app
 Redirect URLs: 
-  - https://university-3-cuxd.onrender.com/auth/callback
+  - https://university-l2nm.vercel.app/auth/callback
   - http://localhost:3000/auth/callback
 ```
 
@@ -37,11 +37,11 @@ Redirect URLs:
 #### ب) تحديث OAuth 2.0 Client ID:
 ```
 Authorized JavaScript origins:
-  - https://university-3-cuxd.onrender.com
+  - https://university-l2nm.vercel.app
   - http://localhost:3000
 
 Authorized redirect URIs:
-  - https://university-3-cuxd.onrender.com/auth/callback
+  - https://university-l2nm.vercel.app/auth/callback
   - http://localhost:3000/auth/callback
 ```
 
@@ -64,7 +64,7 @@ git push origin main
 ### 4. اختبار الحل:
 
 #### أ) اختبار في الإنتاج:
-1. اذهب إلى `https://university-3-cuxd.onrender.com/login`
+1. اذهب إلى `https://university-l2nm.vercel.app/login`
 2. اضغط **"تسجيل الدخول بجوجل"**
 3. يجب أن يتم توجيهك إلى Google
 4. بعد الموافقة، يجب أن تعود إلى موقع الإنتاج
@@ -75,7 +75,7 @@ git push origin main
 🚀 Starting Google OAuth...
 📍 Environment: production
 📍 Is Production: true
-📍 Redirect URL: https://university-3-cuxd.onrender.com/auth/callback
+📍 Redirect URL: https://university-l2nm.vercel.app/auth/callback
 ```
 
 ## استكشاف الأخطاء:

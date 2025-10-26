@@ -10,10 +10,10 @@
 1. اذهب إلى Authentication → URL Configuration
 2. اضبط الإعدادات التالية:
 
-Site URL: https://university-3-cuxd.onrender.com
+Site URL: https://university-l2nm.vercel.app
 
 Redirect URLs:
-- https://university-3-cuxd.onrender.com/auth/callback
+- https://university-l2nm.vercel.app/auth/callback
 - http://localhost:3000/auth/callback
 
 3. اذهب إلى Authentication → Providers
@@ -29,11 +29,11 @@ Redirect URLs:
 5. اضبط الإعدادات التالية:
 
 Authorized JavaScript origins:
-- https://university-3-cuxd.onrender.com
+- https://university-l2nm.vercel.app
 - http://localhost:3000
 
 Authorized redirect URIs:
-- https://university-3-cuxd.onrender.com/auth/callback
+- https://university-l2nm.vercel.app/auth/callback
 - http://localhost:3000/auth/callback
 
 ملاحظات مهمة:

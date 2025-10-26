@@ -17,8 +17,8 @@ Google OAuth يعمل لكن لا يتم تسجيل الحساب أو إنشاء
 📍 Environment: production
 📍 Is Production: true
 📍 Is Localhost: false
-📍 Hostname: university-3-cuxd.onrender.com
-📍 Redirect URL: https://university-3-cuxd.onrender.com/auth/callback
+📍 Hostname: university-l2nm.vercel.app
+📍 Redirect URL: https://university-l2nm.vercel.app/auth/callback
 ```
 
 #### ب) رسائل Callback:
