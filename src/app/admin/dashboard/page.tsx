@@ -11,7 +11,7 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const [superAdmin, setSuperAdmin] = useState<any>(null);
   const [userPermissions, setUserPermissions] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<string>('overview');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -220,26 +220,71 @@ export default function AdminDashboardPage() {
         if (admin.role === 'admin' && admin.id) {
           try {
             console.log('🔐 Loading admin scopes for:', admin.id, admin.email);
-            // const { AdminService } = await import('@/lib/adminService');
-            // const scopes = await AdminService.getAdminScopes(admin.id);
-            const scopes: string[] = []; // Temporary fix - return empty scopes
+            const { AdminService } = await import('@/lib/adminService');
+            const scopes = await AdminService.getAdminScopes(admin.id);
             console.log('🔐 Loaded scopes:', scopes);
-            console.log('🔐 Scopes with canManageSchedules:', scopes.filter(s => s.includes('canManageSchedules')));
+            console.log('🔐 Admin email:', admin.email);
+            console.log('🔐 Admin ID:', admin.id);
             
             // تجميع الصلاحيات من جميع النطاقات
             const permissions = {
-              canManageMaterials: scopes.some(s => s.includes('canManageMaterials')),
-              canManagePdfs: scopes.some(s => s.includes('canManagePdfs')),
-              canManageVideos: scopes.some(s => s.includes('canManageVideos')),
-              canManageSchedules: scopes.some(s => s.includes('canManageSchedules')),
-              canManageMessages: scopes.some(s => s.includes('canManageMessages')),
-              canViewAnalytics: scopes.some(s => s.includes('canViewAnalytics')),
-              canManageUsers: scopes.some(s => s.includes('canManageUsers')),
+              canManageMaterials: scopes.some(s => s.canManageMaterials),
+              canManagePdfs: scopes.some(s => s.canManagePdfs),
+              canManageVideos: scopes.some(s => s.canManageVideos),
+              canManageSchedules: scopes.some(s => s.canManageSchedules),
+              canManageMessages: scopes.some(s => s.canManageMessages),
+              canViewAnalytics: scopes.some(s => s.canViewAnalytics),
+              canManageUsers: scopes.some(s => s.canManageUsers),
               scopes: scopes // حفظ النطاقات للتحقق التفصيلي
             };
             setUserPermissions(permissions);
             console.log('✅ Admin permissions loaded:', permissions);
-            console.log('✅ Can manage schedules?', permissions.canManageSchedules);
+            console.log('✅ Detailed permissions:', {
+              canManageMaterials: permissions.canManageMaterials,
+              canManagePdfs: permissions.canManagePdfs,
+              canManageVideos: permissions.canManageVideos,
+              canManageSchedules: permissions.canManageSchedules,
+              canManageMessages: permissions.canManageMessages,
+              canViewAnalytics: permissions.canViewAnalytics,
+              canManageUsers: permissions.canManageUsers
+            });
+            console.log('✅ Admin scopes details:');
+            scopes.forEach((scope: any, index: number) => {
+              console.log(`   📋 Scope ${index + 1}:`, {
+                department: scope.department,
+                year: scope.year,
+                term: scope.term,
+                isActive: scope.isActive,
+                permissions: {
+                  materials: scope.canManageMaterials,
+                  pdfs: scope.canManagePdfs,
+                  videos: scope.canManageVideos,
+                  schedules: scope.canManageSchedules
+                }
+              });
+            });
+            
+            // ملخص واضح للصلاحيات
+            console.log('');
+            console.log('════════════════════════════════════════════');
+            console.log('📊 ADMIN PERMISSIONS SUMMARY');
+            console.log('════════════════════════════════════════════');
+            console.log('👤 Admin:', admin.email);
+            console.log('🔐 Role:', admin.role);
+            console.log('📝 Total Scopes:', scopes.length);
+            scopes.forEach((scope: any, index: number) => {
+              console.log(`\n   🎯 Scope ${index + 1}:`);
+              console.log(`      📍 Department: "${scope.department}"`);
+              console.log(`      📅 Year: ${scope.year}`);
+              console.log(`      📆 Term: "${scope.term}"`);
+              console.log(`      ✅ Active: ${scope.isActive}`);
+              console.log(`      🎓 Can Manage Materials: ${scope.canManageMaterials}`);
+              console.log(`      📄 Can Manage PDFs: ${scope.canManagePdfs}`);
+              console.log(`      🎥 Can Manage Videos: ${scope.canManageVideos}`);
+              console.log(`      📚 Can Manage Schedules: ${scope.canManageSchedules}`);
+            });
+            console.log('════════════════════════════════════════════');
+            console.log('');
           } catch (error) {
             console.error('خطأ في تحميل الصلاحيات:', error);
             setUserPermissions({
@@ -290,6 +335,38 @@ export default function AdminDashboardPage() {
           messagesService.getStats()
         ]);
         
+        console.log('');
+        console.log('════════════════════════════════════════════');
+        console.log('📚 MATERIALS DATABASE SUMMARY');
+        console.log('════════════════════════════════════════════');
+        console.log('📦 Total Materials Loaded:', materialsData.length);
+        
+        if (materialsData.length > 0) {
+          console.log('\n📋 Materials List:');
+          materialsData.forEach((material: any, index: number) => {
+            console.log(`   ${index + 1}. "${material.title}" (${material.code})`);
+            console.log(`      📍 Department: "${material.department}"`);
+            console.log(`      📅 Year: ${material.year}`);
+            console.log(`      📆 Term: "${material.term}"`);
+          });
+        } else {
+          console.log('⚠️  No materials found in database!');
+        }
+        console.log('════════════════════════════════════════════');
+        console.log('');
+        console.log('📦 All schedules loaded:', schedulesData.length, 'schedules');
+        if (schedulesData.length > 0) {
+          console.log('📦 Sample schedule:', schedulesData[0]);
+          console.log('📦 Schedule structure:', {
+            department: schedulesData[0].department,
+            departmentType: typeof schedulesData[0].department,
+            year: schedulesData[0].year,
+            yearType: typeof schedulesData[0].year,
+            term: schedulesData[0].term,
+            termType: typeof schedulesData[0].term
+          });
+        }
+        
         setMaterials(materialsData);
         setPdfs(pdfsData);
         setVideos(videosData);
@@ -322,86 +399,124 @@ export default function AdminDashboardPage() {
   };
 
   // بناء التبويبات بناءً على الصلاحيات
+  console.log('🔨 Building tabs with permissions:', userPermissions);
+  console.log('🔨 User role:', superAdmin?.role);
+  
   const tabs = [];
   
-  // نظرة عامة متاحة فقط لمن لديه صلاحية canViewAnalytics
-  if (userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') {
-    console.log('📊 Adding overview tab - canViewAnalytics:', userPermissions?.canViewAnalytics, 'isSuperAdmin:', superAdmin?.role === 'super_admin');
-    tabs.push({ id: 'overview', name: 'نظرة عامة', icon: '📊' });
-  } else {
-    console.log('❌ NOT adding overview tab - canViewAnalytics:', userPermissions?.canViewAnalytics, 'isSuperAdmin:', superAdmin?.role === 'super_admin');
-  }
+  // نظرة عامة - تُضاف كـ tab لو فيه صلاحيات تانية
+  // لو مفيش صلاحيات تانية، هتظهر فوق مباشرة
   
   // التبويبات بناءً على الصلاحيات
   if (userPermissions?.canManageMessages || superAdmin?.role === 'super_admin') {
+    console.log('✅ Adding messages tab - canManageMessages:', userPermissions?.canManageMessages);
     tabs.push({ id: 'messages', name: 'الرسائل والطلبات', icon: '💬' });
   }
   if (userPermissions?.canManageMaterials || superAdmin?.role === 'super_admin') {
+    console.log('✅ Adding materials tab - canManageMaterials:', userPermissions?.canManageMaterials);
     tabs.push({ id: 'materials', name: 'إدارة المواد', icon: '📚' });
   }
   if (userPermissions?.canManageSchedules || superAdmin?.role === 'super_admin') {
-    console.log('📅 Adding schedules tab - canManageSchedules:', userPermissions?.canManageSchedules, 'isSuperAdmin:', superAdmin?.role === 'super_admin');
+    console.log('✅ Adding schedules tab - canManageSchedules:', userPermissions?.canManageSchedules);
     tabs.push({ id: 'schedules', name: 'جداول المحاضرات (PDF)', icon: '📅' });
-  } else {
-    console.log('❌ NOT adding schedules tab - canManageSchedules:', userPermissions?.canManageSchedules, 'isSuperAdmin:', superAdmin?.role === 'super_admin');
   }
   if (userPermissions?.canManagePdfs || superAdmin?.role === 'super_admin') {
+    console.log('✅ Adding pdfs tab - canManagePdfs:', userPermissions?.canManagePdfs);
     tabs.push({ id: 'pdfs', name: 'إدارة الـ Material', icon: '📄' });
   }
   if (userPermissions?.canManageVideos || superAdmin?.role === 'super_admin') {
+    console.log('✅ Adding videos tab - canManageVideos:', userPermissions?.canManageVideos);
     tabs.push({ id: 'videos', name: 'إدارة الفيديوهات', icon: '🎥' });
   }
   if (userPermissions?.canManageUsers || superAdmin?.role === 'super_admin') {
+    console.log('✅ Adding users tab - canManageUsers:', userPermissions?.canManageUsers);
     tabs.push({ id: 'users', name: 'إدارة المستخدمين', icon: '👥' });
   }
+  
+  console.log('🔨 Final tabs built:', tabs.map(t => t.name));
 
   // Super Admin specific tabs
   const superAdminTabs = superAdmin?.role === 'super_admin' 
     ? [{ id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' }]
     : [];
 
+  // إضافة "نظرة عامة" كـ tab فقط لو فيه tabs تانية
+  // لو الأدمن عنده canViewAnalytics و فيه tabs تانية، نضيف overview كأول tab
+  if ((userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') && 
+      (tabs.length > 0 || superAdminTabs.length > 0)) {
+    tabs.unshift({ id: 'overview', name: 'نظرة عامة', icon: '📊' });
+  }
+
   const allTabs = [...tabs, ...superAdminTabs];
 
-  // تغيير الـ activeTab إذا لم يكن للأدمن صلاحية رؤية "نظرة عامة"
+  // تغيير الـ activeTab إذا لم يكن للأدمن صلاحية رؤية التبويب الحالي
   useEffect(() => {
-    if (activeTab === 'overview' && !userPermissions?.canViewAnalytics && superAdmin?.role !== 'super_admin') {
-      // البحث عن أول تبويب متاح
+    // انتظر حتى يتم تحميل المستخدم على الأقل
+    if (!superAdmin) return;
+    
+    // للسوبر أدمن، كل شيء متاح
+    if (superAdmin.role === 'super_admin') return;
+    
+    // للأدمن العادي، انتظر تحميل الصلاحيات
+    if (!userPermissions) return;
+    
+    // تحقق إذا كان التبويب الحالي متاح للأدمن
+    const isCurrentTabAvailable = allTabs.some(tab => tab.id === activeTab);
+    
+    if (!isCurrentTabAvailable && allTabs.length > 0) {
+      // التبويب الحالي غير متاح، الانتقال لأول تبويب متاح
       const firstAvailableTab = allTabs[0];
-      if (firstAvailableTab) {
-        console.log('🔄 Switching from overview to:', firstAvailableTab.id);
-        setActiveTab(firstAvailableTab.id);
-      }
+      console.log('🔄 Current tab not available. Switching to:', firstAvailableTab.id);
+      setActiveTab(firstAvailableTab.id);
     }
-  }, [activeTab, userPermissions, superAdmin, allTabs]);
+  }, [activeTab, userPermissions, superAdmin, allTabs.length]);
 
   // دالة للتحقق من صلاحية تعديل عنصر معين
   const canEditItem = (itemDepartment: string, itemYear: number, itemTerm: string) => {
     // السوبر أدمن يمكنه تعديل كل شيء
-    if (superAdmin?.role === 'super_admin') return true;
+    if (superAdmin?.role === 'super_admin') {
+      console.log('✅ Super admin - full access granted');
+      return true;
+    }
     
     // إذا لم تكن هناك صلاحيات محملة
     if (!userPermissions?.scopes || userPermissions.scopes.length === 0) {
-      console.log('❌ No permissions loaded for user:', superAdmin?.email);
+      console.log('❌ No permissions/scopes loaded');
       return false;
     }
     
     // تحويل term إلى صيغة موحدة للمقارنة
-    const normalizeTerm = (term: string) => {
+    const normalizeTerm = (term: string | null | undefined): string => {
       if (!term) return '';
-      const upperTerm = term.toUpperCase();
-      if (upperTerm === 'FIRST' || upperTerm.includes('FIRST')) return 'FIRST';
-      if (upperTerm === 'SECOND' || upperTerm.includes('SECOND')) return 'SECOND';
-      return term;
+      const upperTerm = String(term).toUpperCase().trim();
+      if (upperTerm === 'FIRST' || upperTerm.includes('FIRST') || upperTerm.includes('الأول')) return 'FIRST';
+      if (upperTerm === 'SECOND' || upperTerm.includes('SECOND') || upperTerm.includes('الثاني')) return 'SECOND';
+      return upperTerm;
     };
     
+    // تحويل department إلى صيغة موحدة للمقارنة
+    const normalizeDepartment = (dept: string | null | undefined): string => {
+      if (!dept) return '';
+      return String(dept).toLowerCase().trim().replace(/\s+/g, ' ');
+    };
+    
+    // تحويل year إلى رقم
+    const normalizeYear = (year: any): number => {
+      if (year === null || year === undefined) return 0;
+      return parseInt(String(year), 10) || 0;
+    };
+    
+    const normalizedItemDepartment = normalizeDepartment(itemDepartment);
+    const normalizedItemYear = normalizeYear(itemYear);
     const normalizedItemTerm = normalizeTerm(itemTerm);
     
-    console.log('🔍 Checking permission for item:', {
-      item: { department: itemDepartment, year: itemYear, term: itemTerm, normalized: normalizedItemTerm },
-      admin: { email: superAdmin?.email, role: superAdmin?.role },
-      availableScopes: userPermissions.scopes,
-      scopesCount: userPermissions.scopes.length
-    });
+    console.log('');
+    console.log('═══════════════════════════════════════');
+    console.log('🔍 Checking permission for item:');
+    console.log('   📍 Department:', itemDepartment, '→', normalizedItemDepartment);
+    console.log('   📅 Year:', itemYear, '→', normalizedItemYear);
+    console.log('   📆 Term:', itemTerm, '→', normalizedItemTerm);
+    console.log('   🔐 Available scopes:', userPermissions.scopes.length);
     
     // التحقق من وجود صلاحية مطابقة
     const hasPermission = userPermissions.scopes.some((scope: any) => {
@@ -410,36 +525,38 @@ export default function AdminDashboardPage() {
         return false;
       }
       
-      // التحقق من القسم
-      const departmentMatch = !scope.department || scope.department === itemDepartment;
-      // التحقق من السنة  
-      const yearMatch = !scope.year || scope.year === itemYear;
-      // التحقق من الترم
-      const termMatch = !scope.term || scope.term === normalizedItemTerm;
+      const normalizedScopeDepartment = normalizeDepartment(scope.department);
+      const normalizedScopeYear = normalizeYear(scope.year);
+      const normalizedScopeTerm = normalizeTerm(scope.term);
+      
+      // التحقق من المطابقة
+      const departmentMatch = normalizedScopeDepartment === normalizedItemDepartment;
+      const yearMatch = normalizedScopeYear === normalizedItemYear;
+      const termMatch = normalizedScopeTerm === normalizedItemTerm;
       
       const matches = departmentMatch && yearMatch && termMatch;
       
-      console.log('🧪 Testing scope:', {
-        scope: { 
-          department: scope.department, 
-          year: scope.year, 
-          term: scope.term,
-          isActive: scope.isActive 
-        },
-        item: { 
-          department: itemDepartment, 
-          year: itemYear, 
-          term: itemTerm,
-          normalized: normalizedItemTerm 
-        },
-        checks: { departmentMatch, yearMatch, termMatch },
-        result: matches
-      });
+      console.log('🧪 Testing scope:');
+      console.log('   📍 Scope Dept:', `"${scope.department}"`, '→', `"${normalizedScopeDepartment}"`);
+      console.log('   📍 Item Dept:', `"${itemDepartment}"`, '→', `"${normalizedItemDepartment}"`);
+      console.log('   ✓ Dept Match:', departmentMatch);
+      console.log('');
+      console.log('   📅 Scope Year:', scope.year, '→', normalizedScopeYear);
+      console.log('   📅 Item Year:', itemYear, '→', normalizedItemYear);
+      console.log('   ✓ Year Match:', yearMatch);
+      console.log('');
+      console.log('   📆 Scope Term:', `"${scope.term}"`, '→', `"${normalizedScopeTerm}"`);
+      console.log('   📆 Item Term:', `"${itemTerm}"`, '→', `"${normalizedItemTerm}"`);
+      console.log('   ✓ Term Match:', termMatch);
+      console.log('');
+      console.log('   🎯 FINAL RESULT:', matches ? '✅ MATCH' : '❌ NO MATCH');
       
       return matches;
     });
     
-    console.log(hasPermission ? '✅ ACCESS GRANTED' : '❌ ACCESS DENIED');
+    console.log('');
+    console.log(hasPermission ? '✅✅✅ ACCESS GRANTED ✅✅✅' : '❌❌❌ ACCESS DENIED ❌❌❌');
+    console.log('═══════════════════════════════════════');
     
     return hasPermission;
   };
@@ -1091,6 +1208,18 @@ export default function AdminDashboardPage() {
       </div>
     );
   }
+  
+  // للأدمن العادي، انتظر تحميل الصلاحيات قبل عرض الصفحة
+  if (superAdmin.role === 'admin' && !userPermissions) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-yellow-300">جاري تحميل الصلاحيات...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
@@ -1098,9 +1227,9 @@ export default function AdminDashboardPage() {
       <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
-      <div className="container mx-auto px-4 py-10">
+      <div className="container mx-auto px-4 py-10 relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 relative z-20">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl mb-6 shadow-2xl shadow-yellow-500/25">
             <span className="text-3xl">⚙️</span>
           </div>
@@ -1110,18 +1239,18 @@ export default function AdminDashboardPage() {
           <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-4">
             مرحباً {superAdmin.name} - إدارة شاملة لمنصة المواد الدراسية
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 relative z-30">
             <button
               onClick={handleLogout}
-              className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-4 py-2 rounded-xl hover:bg-red-500/30 transition-colors"
+              className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl hover:bg-red-500/30 hover:border-red-500/50 transition-all duration-200 font-bold cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              تسجيل الخروج
+              🚪 تسجيل الخروج
             </button>
             <Link
               href="/"
-              className="bg-gray-500/20 border border-gray-500/30 text-gray-300 px-4 py-2 rounded-xl hover:bg-gray-500/30 transition-colors"
+              className="inline-block bg-gray-500/20 border border-gray-500/30 text-gray-300 px-6 py-3 rounded-xl hover:bg-gray-500/30 hover:border-gray-400/50 transition-all duration-200 font-bold cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              العودة للموقع
+              🏠 العودة للموقع
             </Link>
           </div>
           {successMessage && (
@@ -1131,35 +1260,46 @@ export default function AdminDashboardPage() {
           )}
         </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {allTabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/30'
-                  : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-600/50'
-              }`}
-            >
-              <span className="text-2xl">{tab.icon}</span>
-              {tab.name}
-            </button>
-          ))}
-        </div>
+        {/* Tabs - Only show if there are management tabs */}
+        {allTabs.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {allTabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/30'
+                    : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-600/50'
+                }`}
+              >
+                <span className="text-2xl">{tab.icon}</span>
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {/* Overview Tab */}
-        {activeTab === 'overview' && (
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
-            <h2 className="text-3xl font-black text-white mb-8">نظرة عامة على النظام</h2>
+        {/* Overview Section - Only visible when no other tabs OR active */}
+        {(userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') && 
+         (allTabs.length === 0 || activeTab === 'overview') && (
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-700/50 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-6 sm:mb-8">📊 نظرة عامة على النظام</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-yellow-300 text-sm">إجمالي المواد</p>
-                    <p className="text-white text-3xl font-bold">{materials.length}</p>
+                    <p className="text-white text-3xl font-bold">
+                      {(() => {
+                        const filtered = materials.filter(m => canEditItem(m.department, m.year, m.term));
+                        console.log('📊 Overview - Total materials:', materials.length);
+                        console.log('📊 Overview - Filtered materials:', filtered.length);
+                        console.log('📊 Overview - User permissions:', userPermissions);
+                        return filtered.length;
+                      })()}
+                    </p>
                   </div>
                   <span className="text-4xl">📚</span>
                 </div>
@@ -1169,7 +1309,13 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-yellow-300 text-sm">ملفات PDF</p>
-                    <p className="text-white text-3xl font-bold">{pdfs.length}</p>
+                    <p className="text-white text-3xl font-bold">
+                      {pdfs.filter(pdf => {
+                        const pdfAny = pdf as any;
+                        const material = materials.find(m => m.id === pdfAny.materialId || m.id === pdfAny.material_id);
+                        return material && canEditItem(material.department, material.year, material.term);
+                      }).length}
+                    </p>
                   </div>
                   <span className="text-4xl">📄</span>
                 </div>
@@ -1179,7 +1325,13 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-yellow-300 text-sm">الفيديوهات</p>
-                    <p className="text-white text-3xl font-bold">{videos.length}</p>
+                    <p className="text-white text-3xl font-bold">
+                      {videos.filter(video => {
+                        const videoAny = video as any;
+                        const material = materials.find(m => m.id === videoAny.materialId || m.id === videoAny.material_id);
+                        return material && canEditItem(material.department, material.year, material.term);
+                      }).length}
+                    </p>
                   </div>
                   <span className="text-4xl">🎥</span>
                 </div>
@@ -1243,12 +1395,15 @@ export default function AdminDashboardPage() {
               <div>
                 <h3 className="text-xl font-bold text-white mb-4">أحدث المواد</h3>
                 <div className="space-y-3">
-                  {materials.slice(0, 5).map(material => (
-                    <div key={material.id} className="bg-gray-700/30 rounded-xl p-4">
-                      <h4 className="text-white font-medium">{material.title}</h4>
-                      <p className="text-gray-400 text-sm">{material.code} - {material.department}</p>
-                    </div>
-                  ))}
+                  {materials
+                    .filter(m => canEditItem(m.department, m.year, m.term))
+                    .slice(0, 5)
+                    .map(material => (
+                      <div key={material.id} className="bg-gray-700/30 rounded-xl p-4">
+                        <h4 className="text-white font-medium">{material.title}</h4>
+                        <p className="text-gray-400 text-sm">{material.code} - {material.department}</p>
+                      </div>
+                    ))}
                 </div>
               </div>
               
@@ -1819,9 +1974,11 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {materials
-                .filter(material => canEditItem(material.department, material.year, material.term))
-                .map(material => (
+              {(() => {
+                const filteredMaterials = materials.filter(material => canEditItem(material.department, material.year, material.term));
+                console.log('📚 Materials Tab - Total:', materials.length, 'Filtered:', filteredMaterials.length);
+                return filteredMaterials;
+              })().map(material => (
                 <div key={material.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-cyan-500/50 transition-all duration-300">
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">

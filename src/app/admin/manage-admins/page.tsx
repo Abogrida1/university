@@ -576,19 +576,26 @@ export default function ManageAdminsPage() {
 
       {/* Create Scope Modal */}
       {showScopeModal && selectedAdmin && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-gray-800 rounded-2xl p-6 max-w-2xl w-full border border-gray-700 my-8">
-            <h2 className="text-2xl font-bold text-white mb-4">إضافة صلاحية لـ {selectedAdmin.name}</h2>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-3xl w-full border-2 border-gray-700 my-4 sm:my-8 shadow-2xl">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+              <span className="text-2xl">🔐</span>
+              إضافة صلاحية لـ {selectedAdmin.name}
+            </h2>
             
-            <form onSubmit={handleCreateScope} className="space-y-4">
+            <form onSubmit={handleCreateScope} className="space-y-4 sm:space-y-6">
               {/* Scope Selection */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-gray-700/50 rounded-xl p-3 sm:p-4 border border-gray-600">
+                <h3 className="text-sm font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                  🎯 نطاق الصلاحية
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                       <div>
-                  <label className="block text-gray-300 text-sm font-bold mb-2">القسم</label>
+                    <label className="block text-gray-300 text-xs sm:text-sm font-bold mb-2">📚 القسم</label>
                         <select
                     value={scopeForm.department}
                     onChange={(e) => setScopeForm({ ...scopeForm, department: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                   >
                     {departments.map(dept => (
                       <option key={dept.value} value={dept.value}>{dept.label}</option>
@@ -597,11 +604,11 @@ export default function ManageAdminsPage() {
                       </div>
                       
                       <div>
-                  <label className="block text-gray-300 text-sm font-bold mb-2">السنة</label>
+                    <label className="block text-gray-300 text-xs sm:text-sm font-bold mb-2">🎓 السنة</label>
                         <select
                     value={scopeForm.year}
                     onChange={(e) => setScopeForm({ ...scopeForm, year: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                   >
                     {years.map(year => (
                       <option key={year.value} value={year.value}>{year.label}</option>
@@ -609,42 +616,118 @@ export default function ManageAdminsPage() {
                         </select>
                       </div>
                       
-                <div>
-                  <label className="block text-gray-300 text-sm font-bold mb-2">الترم</label>
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <label className="block text-gray-300 text-xs sm:text-sm font-bold mb-2">📅 الترم</label>
                           <select
                     value={scopeForm.term}
                     onChange={(e) => setScopeForm({ ...scopeForm, term: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all"
                   >
                     {terms.map(term => (
                       <option key={term.value} value={term.value}>{term.label}</option>
                             ))}
                           </select>
+                  </div>
                 </div>
                         </div>
                         
               {/* Permissions */}
               <div>
-                <label className="block text-gray-300 text-sm font-bold mb-3">الصلاحيات</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                  <label className="block text-gray-300 text-sm font-bold flex items-center gap-2">
+                    <span>⚙️</span> الصلاحيات
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setScopeForm({
+                          ...scopeForm,
+                          canManageMaterials: true,
+                          canManagePdfs: true,
+                          canManageVideos: true,
+                          canManageSchedules: true,
+                          canManageMessages: true,
+                          canViewAnalytics: true,
+                          canManageUsers: true,
+                          canManageAdmins: true
+                        });
+                      }}
+                      className="flex-1 sm:flex-none text-xs sm:text-sm px-3 sm:px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-all font-bold"
+                    >
+                      ✅ اختيار الكل
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setScopeForm({
+                          ...scopeForm,
+                          canManageMaterials: false,
+                          canManagePdfs: false,
+                          canManageVideos: false,
+                          canManageSchedules: false,
+                          canManageMessages: false,
+                          canViewAnalytics: false,
+                          canManageUsers: false,
+                          canManageAdmins: false
+                        });
+                      }}
+                      className="flex-1 sm:flex-none text-xs sm:text-sm px-3 sm:px-4 py-2 bg-gray-600 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-500 transition-all font-bold"
+                    >
+                      ❌ إلغاء الكل
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Read-only Permission - Highlighted */}
+                <div className="mb-4">
+                  <div className="bg-gradient-to-r from-blue-900/40 to-blue-800/30 border-2 border-blue-500/50 rounded-xl p-3 sm:p-4 shadow-lg">
+                    <label className="flex items-start sm:items-center space-x-3 space-x-reverse cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={scopeForm.canViewAnalytics}
+                        onChange={(e) => setScopeForm({ ...scopeForm, canViewAnalytics: e.target.checked })}
+                        className="w-5 h-5 sm:w-6 sm:h-6 mt-0.5 sm:mt-0 text-blue-500 focus:ring-blue-500 flex-shrink-0"
+                      />
+                      <div className="flex-1">
+                        <span className="text-blue-300 text-sm sm:text-base font-bold block">📊 عرض الإحصائيات (قراءة فقط)</span>
+                        <p className="text-blue-400 text-xs sm:text-sm mt-1">
+                          يسمح بمشاهدة نظرة عامة على النظام فقط - بدون صلاحيات تعديل
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                
+                {/* Management Permissions */}
+                <div className="bg-gradient-to-r from-yellow-900/30 to-orange-900/20 border border-yellow-500/30 rounded-xl p-3 sm:p-4 mb-3 shadow-lg">
+                  <p className="text-yellow-300 text-xs sm:text-sm font-bold flex items-center gap-2">
+                    <span className="text-lg">🔐</span>
+                    صلاحيات الإدارة والتعديل
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   {[
-                    { key: 'canManageMaterials', label: '📚 إدارة المواد' },
-                    { key: 'canManagePdfs', label: '📄 إدارة PDF' },
-                    { key: 'canManageVideos', label: '🎥 إدارة الفيديو' },
-                    { key: 'canManageSchedules', label: '📅 إدارة الجداول' },
-                    { key: 'canManageMessages', label: '💬 إدارة الرسائل' },
-                    { key: 'canViewAnalytics', label: '📊 عرض الإحصائيات' },
-                    { key: 'canManageUsers', label: '👥 إدارة المستخدمين' },
-                    { key: 'canManageAdmins', label: '👑 إدارة الأدمنز' }
+                    { key: 'canManageMaterials', label: '📚 إدارة المواد', desc: 'إضافة وتعديل وحذف' },
+                    { key: 'canManagePdfs', label: '📄 إدارة PDF', desc: 'رفع وحذف ملفات PDF' },
+                    { key: 'canManageVideos', label: '🎥 إدارة الفيديو', desc: 'إضافة وحذف فيديوهات' },
+                    { key: 'canManageSchedules', label: '📅 إدارة الجداول', desc: 'رفع وتعديل الجداول' },
+                    { key: 'canManageMessages', label: '💬 إدارة الرسائل', desc: 'عرض والرد على الرسائل' },
+                    { key: 'canManageUsers', label: '👥 إدارة المستخدمين', desc: 'إدارة حسابات الطلاب' },
+                    { key: 'canManageAdmins', label: '👑 إدارة الأدمنز', desc: 'إضافة وحذف مديرين' }
                   ].map(perm => (
-                    <label key={perm.key} className="flex items-center space-x-3 space-x-reverse p-3 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-700 transition-all">
+                    <label key={perm.key} className="flex items-start space-x-2 sm:space-x-3 space-x-reverse p-2.5 sm:p-3 bg-gray-700/50 border border-gray-600 rounded-lg cursor-pointer hover:bg-gray-700 hover:border-yellow-500/30 transition-all">
                       <input
                         type="checkbox"
                         checked={scopeForm[perm.key as keyof typeof scopeForm] as boolean}
                         onChange={(e) => setScopeForm({ ...scopeForm, [perm.key]: e.target.checked })}
-                        className="w-5 h-5 text-yellow-500 focus:ring-yellow-500"
+                        className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 text-yellow-500 focus:ring-yellow-500 flex-shrink-0"
                       />
-                      <span className="text-white text-sm">{perm.label}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-white text-xs sm:text-sm block font-semibold">{perm.label}</span>
+                        <span className="text-gray-400 text-xs block mt-0.5">{perm.desc}</span>
+                      </div>
                     </label>
                   ))}
                       </div>
@@ -652,22 +735,24 @@ export default function ManageAdminsPage() {
 
               {/* Description */}
                       <div>
-                <label className="block text-gray-300 text-sm font-bold mb-2">وصف الصلاحية (اختياري)</label>
+                <label className="block text-gray-300 text-xs sm:text-sm font-bold mb-2 flex items-center gap-2">
+                  <span>📝</span> وصف الصلاحية (اختياري)
+                </label>
                 <textarea
                   value={scopeForm.description}
                   onChange={(e) => setScopeForm({ ...scopeForm, description: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white text-sm sm:text-base focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all resize-none"
                   rows={3}
                   placeholder="مثال: مسؤول عن الأمن السيبراني - السنة الثانية"
                 />
                 </div>
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all"
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-lg sm:rounded-xl font-bold text-sm sm:text-base shadow-lg shadow-yellow-500/30 hover:shadow-xl transition-all transform hover:scale-105"
                 >
-                  إضافة الصلاحية
+                  ✅ إضافة الصلاحية
                 </button>
                   <button
                     type="button"
@@ -675,9 +760,9 @@ export default function ManageAdminsPage() {
                     setShowScopeModal(false);
                     resetScopeForm();
                   }}
-                  className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-600 transition-all"
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-3.5 bg-gray-700 hover:bg-gray-600 border-2 border-gray-600 text-white rounded-lg sm:rounded-xl font-bold text-sm sm:text-base transition-all transform hover:scale-105"
                   >
-                    إلغاء
+                  ❌ إلغاء
                   </button>
                 </div>
               </form>

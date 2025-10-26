@@ -25,7 +25,7 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
   const effectiveTerm = termOverride || user?.term;
   
   // تحويل term إلى التنسيق الصحيح للقاعدة
-  const normalizedTerm = effectiveTerm === 'FIRST' || effectiveTerm === 'First Semester' ? 'FIRST' : 'SECOND';
+  const normalizedTerm = effectiveTerm === 'FIRST' ? 'FIRST' : 'SECOND';
 
   useEffect(() => {
     const loadCourses = async () => {
@@ -247,109 +247,18 @@ export default function LectureSchedule({ user, departmentOverride, yearOverride
     );
   }
 
+  // إذا لم يتم العثور على جدول PDF، نعرض رسالة بسيطة
   return (
-    <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-3xl p-8 max-w-6xl mx-auto border border-yellow-500/30 shadow-2xl shadow-yellow-500/20 mb-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="text-6xl mb-4">📅</div>
-        <h2 className="text-3xl font-bold text-white mb-4">جدول المحاضرات</h2>
-        <p className="text-yellow-300 text-lg">
+    <div className="bg-gradient-to-br from-gray-800/80 to-black/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-6xl mx-auto border border-yellow-500/30 shadow-2xl shadow-yellow-500/20 mb-6 sm:mb-8">
+      <div className="text-center">
+        <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">📅</div>
+        <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">جدول المحاضرات</h3>
+        <p className="text-yellow-300 text-sm sm:text-base md:text-lg mb-4 sm:mb-6">
           {effectiveDepartment} - السنة {effectiveYear} - {effectiveTerm === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
         </p>
-        <div className="mt-4 bg-yellow-500/20 border border-yellow-500/30 rounded-xl p-3 inline-block">
-          <p className="text-yellow-300 text-sm font-medium">
-            📊 إجمالي المواد: {courses.length} مادة
-          </p>
-        </div>
-      </div>
-
-      {/* Courses Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full bg-blue-100/30 dark:bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden">
-          <thead>
-            <tr className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-600/50 dark:to-yellow-700/50">
-              <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
-                كود المادة
-              </th>
-              <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
-                اسم المادة
-              </th>
-              <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
-                القسم
-              </th>
-              <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
-                السنة
-              </th>
-              <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
-                الترم
-              </th>
-              <th className="px-6 py-4 text-right text-white font-bold text-lg border-b border-yellow-400/30">
-                الإجراءات
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((course, index) => (
-              <tr 
-                key={course.id} 
-                className={`hover:bg-blue-200/40 dark:hover:bg-white/10 transition-all duration-300 ${
-                  index % 2 === 0 ? 'bg-blue-100/20 dark:bg-white/5' : 'bg-blue-100/30 dark:bg-white/10'
-                }`}
-              >
-                <td className="px-6 py-4 text-right text-slate-900 dark:text-white font-semibold border-b border-blue-300/30 dark:border-white/10">
-                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm text-blue-900 dark:text-white">
-                    {course.code}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
-                  <div>
-                    <p className="font-semibold text-lg">{course.titleAr}</p>
-                    <p className="text-slate-700 dark:text-gray-300 text-sm">{course.title}</p>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-right text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
-                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm text-blue-900 dark:text-white">
-                    {course.departmentAr}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-center text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
-                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm font-semibold text-blue-900 dark:text-white">
-                    السنة {course.year}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-center text-slate-900 dark:text-white border-b border-blue-300/30 dark:border-white/10">
-                  <span className="bg-blue-300 dark:bg-yellow-500/30 px-3 py-1 rounded-lg text-sm font-semibold text-blue-900 dark:text-white">
-                    {course.termAr}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-center border-b border-white/10">
-                  <button className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-black px-4 py-2 rounded-lg font-semibold hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30">
-                    عرض التفاصيل
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Summary */}
-      <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-        <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
-          <div className="text-2xl sm:text-3xl mb-2">📚</div>
-          <p className="text-yellow-300 font-semibold text-sm sm:text-base">إجمالي المواد</p>
-          <p className="text-white text-xl sm:text-2xl font-bold">{courses.length}</p>
-        </div>
-        <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
-          <div className="text-2xl sm:text-3xl mb-2">🏛️</div>
-          <p className="text-yellow-300 font-semibold text-sm sm:text-base">القسم</p>
-          <p className="text-white text-base sm:text-lg font-bold">{effectiveDepartment}</p>
-        </div>
-        <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
-          <div className="text-2xl sm:text-3xl mb-2">📅</div>
-          <p className="text-yellow-300 font-semibold text-sm sm:text-base">الترم</p>
-          <p className="text-white text-base sm:text-lg font-bold">
-            {effectiveTerm === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
+        <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 max-w-md mx-auto">
+          <p className="text-yellow-300 text-xs sm:text-sm font-medium">
+            💡 سيتم إضافة جدول المحاضرات (PDF) قريباً من قبل الإدارة
           </p>
         </div>
       </div>

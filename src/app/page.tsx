@@ -61,9 +61,6 @@ export default function HomePage() {
 
   // Get unique departments from materials
   const getUniqueDepartments = () => {
-    const departments = materials.map(material => material.department);
-    const uniqueDepartments = Array.from(new Set(departments));
-    
     // Department mapping from English to Arabic
     const departmentMap: { [key: string]: { title: string; subtitle: string; icon: string; disabled?: boolean } } = {
       'General Program': { title: 'General Program', subtitle: 'البرنامج العام', icon: '🎓', disabled: true },
@@ -71,8 +68,11 @@ export default function HomePage() {
       'Artificial Intelligence': { title: 'AI', subtitle: 'الذكاء الاصطناعي', icon: '🤖' }
     };
     
-    return uniqueDepartments.map((dept, index) => {
-      const deptInfo = departmentMap[dept] || { title: dept, subtitle: dept, icon: '🎓' };
+    // عرض الأقسام المعروفة فقط (إخفاء أي قسم غريب)
+    const allowedDepartments = Object.keys(departmentMap);
+    
+    return allowedDepartments.map((dept, index) => {
+      const deptInfo = departmentMap[dept];
       const gradients = [
         'from-slate-600 via-slate-700 to-slate-800',
         'from-blue-600 via-blue-700 to-blue-800', 
