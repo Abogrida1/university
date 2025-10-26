@@ -31,8 +31,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const loadUserFromSession = async () => {
       try {
         console.log('🔄 UserContext: Loading user from session...');
+        console.log('📍 Current path:', typeof window !== 'undefined' ? window.location.pathname : 'unknown');
         const sessionToken = localStorage.getItem('session_token');
         console.log('🔑 Session token found:', sessionToken ? 'Yes' : 'No');
+        console.log('📏 Session token length:', sessionToken?.length || 0);
         
         if (sessionToken) {
           console.log('🔍 Validating session token...');

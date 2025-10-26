@@ -14,15 +14,22 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        console.log('🔄 Starting auth callback handler...');
+        console.log('📍 Current URL:', window.location.href);
+        
         // انتظار قصير للتأكد من تحميل الجلسة
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         // الحصول على الجلسة
+        console.log('🔍 Getting session from Supabase...');
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        console.log('📊 Session data:', session);
+        console.log('❌ Session error:', sessionError);
         
         if (sessionError) {
           console.error('خطأ في الجلسة:', sessionError);
-          setError('خطأ في تسجيل الدخول');
+          setError('خطأ في تسجيل الدخول: ' + sessionError.message);
           return;
         }
 
@@ -168,14 +175,27 @@ export default function AuthCallbackPage() {
 
         // إنشاء جلسة جديدة
         console.log('🔑 Creating session for user:', userProfile.id);
+        console.log('🔑 User profile object:', userProfile);
+        
         try {
+          console.log('📞 Calling UserService.createSession...');
           const sessionResult = await UserService.createSession(userProfile.id);
           console.log('✅ Session created successfully:', sessionResult);
+          console.log('🔍 Session result details:', {
+            hasResult: !!sessionResult,
+            hasToken: !!(sessionResult?.sessionToken),
+            tokenLength: sessionResult?.sessionToken?.length
+          });
           
-          if (sessionResult) {
+          if (sessionResult && sessionResult.sessionToken) {
             // حفظ الجلسة في localStorage
+            console.log('💾 Saving session token to localStorage...');
             localStorage.setItem('session_token', sessionResult.sessionToken);
-            console.log('💾 Session token saved to localStorage');
+            
+            // التحقق من الحفظ
+            const savedToken = localStorage.getItem('session_token');
+            console.log('✅ Session token saved successfully:', savedToken ? 'Yes' : 'No');
+            console.log('📏 Token length:', savedToken?.length);
           
           // إعادة توجيه إلى الصفحة الرئيسية أو صفحة الترحيب
           console.log('تم تسجيل الدخول بنجاح، إعادة التوجيه...');
@@ -212,12 +232,17 @@ export default function AuthCallbackPage() {
              window.location.href = '/';
            }
           } else {
-            console.error('فشل في إنشاء الجلسة');
-            setError('خطأ في إنشاء الجلسة');
+            console.error('❌ فشل في إنشاء الجلسة - sessionResult is null/undefined');
+            console.error('❌ Session result:', sessionResult);
+            setError('خطأ في إنشاء الجلسة - لم يتم إرجاع بيانات الجلسة');
           }
         } catch (sessionError) {
-          console.error('خطأ في إنشاء الجلسة:', sessionError);
-          setError('خطأ في إنشاء الجلسة');
+          console.error('❌ خطأ في إنشاء الجلسة (Exception):', sessionError);
+          console.error('❌ Error details:', {
+            message: sessionError instanceof Error ? sessionError.message : 'Unknown error',
+            stack: sessionError instanceof Error ? sessionError.stack : 'No stack trace',
+          });
+          setError('خطأ في إنشاء الجلسة: ' + (sessionError instanceof Error ? sessionError.message : 'Unknown error'));
         }
 
       } catch (error) {
