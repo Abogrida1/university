@@ -1,11 +1,37 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import Link from 'next/link';
 import { materialsService, Material } from '@/lib/supabaseServiceFixed';
 import { useUser } from '@/lib/UserContext';
-import LectureSchedule from '@/components/LectureSchedule';
-// Diagnostics removed - using fixed service
+
+// تحميل المكونات بشكل كسول
+const LectureSchedule = lazy(() => import('@/components/LectureSchedule'));
+
+// مكون تحميل سريع
+const QuickLoadingSkeleton = () => (
+  <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-200 dark:from-gray-900 dark:via-black dark:to-gray-800 relative overflow-hidden">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-10 relative z-10">
+      {/* Hero Section Skeleton */}
+      <div className="text-center mb-6 sm:mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-300 dark:bg-gray-700 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 animate-pulse"></div>
+        <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mx-auto mb-4 animate-pulse"></div>
+        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/2 mx-auto mb-6 animate-pulse"></div>
+      </div>
+      
+      {/* Program Cards Skeleton */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto px-2">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="bg-gray-200 dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 animate-pulse">
+            <div className="h-16 bg-gray-300 dark:bg-gray-700 rounded mb-4"></div>
+            <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 type ProgramKey = 'General' | 'Cyber Security' | 'Artificial Intelligence';
 
@@ -401,17 +427,19 @@ export default function HomePage() {
 
         {/* Lecture Schedule - show when user profile is complete OR when selections are made */}
         {(user && (user.department && user.year && user.term)) || (program && year && term) ? (
-          <LectureSchedule
-            user={user || null}
-            departmentOverride={program ? ({
-              'General': 'General Program',
-              'Cyber Security': 'Cyber Security',
-              'Artificial Intelligence': 'Artificial Intelligence'
-            } as const)[program] : undefined}
-            yearOverride={typeof year === 'number' ? year : undefined}
-            termOverride={term || undefined}
-            refreshTrigger={scheduleRefreshTrigger}
-          />
+          <Suspense fallback={<div className="h-32 bg-blue-100 dark:bg-gray-800 rounded-xl animate-pulse mb-8"></div>}>
+            <LectureSchedule
+              user={user || null}
+              departmentOverride={program ? ({
+                'General': 'General Program',
+                'Cyber Security': 'Cyber Security',
+                'Artificial Intelligence': 'Artificial Intelligence'
+              } as const)[program] : undefined}
+              yearOverride={typeof year === 'number' ? year : undefined}
+              termOverride={term || undefined}
+              refreshTrigger={scheduleRefreshTrigger}
+            />
+          </Suspense>
         ) : null}
 
         {/* Progress Indicator */}

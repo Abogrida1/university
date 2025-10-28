@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { UserProvider } from '@/lib/UserContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import FirstVisitDisclaimer from '@/components/FirstVisitDisclaimer';
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
               </main>
               <Footer />
               <FirstVisitDisclaimer />
+              <ServiceWorkerRegistration />
             </div>
           </UserProvider>
         </ThemeProvider>

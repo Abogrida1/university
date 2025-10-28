@@ -2,6 +2,7 @@
 // Radical Supabase Solution - Without Storage
 
 import { supabase } from './supabase';
+import { withCache, CACHE_KEYS, invalidateMaterialCache } from './cache';
 
 export interface Material {
   id: string;
@@ -90,56 +91,68 @@ export function base64ToUrl(base64: string, mimeType: string = 'application/pdf'
 // خدمة المواد
 export const materialsService = {
   async getAll(): Promise<Material[]> {
-    const { data, error } = await supabase
-      .from('materials')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (error) throw error;
-    
-    // تحويل أسماء الحقول من snake_case إلى camelCase
-    return (data || []).map((item: any) => ({
-      ...item,
-      titleAr: item.title_ar,
-      departmentAr: item.department_ar,
-      termAr: item.term_ar,
-      bookLink: item.book_link,
-      lecturesLink: item.lectures_link,
-      googleDriveLink: item.google_drive_link,
-      additionalLinks: item.additional_links,
-      showGoogleDriveOnly: item.show_google_drive_only,
-      showMaterialsSection: item.show_materials_section ?? true,
-      showMaterialLinksSection: item.show_material_links_section ?? true,
-      showPdfsSection: item.show_pdfs_section ?? true,
-      showVideosSection: item.show_videos_section ?? true
-    }));
+    return withCache(
+      CACHE_KEYS.MATERIALS,
+      async () => {
+        const { data, error } = await supabase
+          .from('materials')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        // تحويل أسماء الحقول من snake_case إلى camelCase
+        return (data || []).map((item: any) => ({
+          ...item,
+          titleAr: item.title_ar,
+          departmentAr: item.department_ar,
+          termAr: item.term_ar,
+          bookLink: item.book_link,
+          lecturesLink: item.lectures_link,
+          googleDriveLink: item.google_drive_link,
+          additionalLinks: item.additional_links,
+          showGoogleDriveOnly: item.show_google_drive_only,
+          showMaterialsSection: item.show_materials_section ?? true,
+          showMaterialLinksSection: item.show_material_links_section ?? true,
+          showPdfsSection: item.show_pdfs_section ?? true,
+          showVideosSection: item.show_videos_section ?? true
+        }));
+      },
+      10 * 60 * 1000 // 10 دقائق للتخزين المؤقت
+    );
   },
 
   async getById(id: string): Promise<Material | null> {
-    const { data, error } = await supabase
-      .from('materials')
-      .select('*')
-      .eq('id', id)
-      .single();
-    
-    if (error) return null;
-    
-    // تحويل أسماء الحقول من snake_case إلى camelCase
-    return {
-      ...data,
-      titleAr: data.title_ar,
-      departmentAr: data.department_ar,
-      termAr: data.term_ar,
-      bookLink: data.book_link,
-      lecturesLink: data.lectures_link,
-      googleDriveLink: data.google_drive_link,
-      additionalLinks: data.additional_links,
-      showGoogleDriveOnly: data.show_google_drive_only,
-      showMaterialsSection: data.show_materials_section ?? true,
-      showMaterialLinksSection: data.show_material_links_section ?? true,
-      showPdfsSection: data.show_pdfs_section ?? true,
-      showVideosSection: data.show_videos_section ?? true
-    };
+    return withCache(
+      CACHE_KEYS.MATERIAL(id),
+      async () => {
+        const { data, error } = await supabase
+          .from('materials')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (error) return null;
+        
+        // تحويل أسماء الحقول من snake_case إلى camelCase
+        return {
+          ...data,
+          titleAr: data.title_ar,
+          departmentAr: data.department_ar,
+          termAr: data.term_ar,
+          bookLink: data.book_link,
+          lecturesLink: data.lectures_link,
+          googleDriveLink: data.google_drive_link,
+          additionalLinks: data.additional_links,
+          showGoogleDriveOnly: data.show_google_drive_only,
+          showMaterialsSection: data.show_materials_section ?? true,
+          showMaterialLinksSection: data.show_material_links_section ?? true,
+          showPdfsSection: data.show_pdfs_section ?? true,
+          showVideosSection: data.show_videos_section ?? true
+        };
+      },
+      15 * 60 * 1000 // 15 دقيقة للتخزين المؤقت
+    );
   },
 
   async add(material: Omit<Material, 'id' | 'created_at' | 'updated_at'>): Promise<Material> {
@@ -282,14 +295,20 @@ export const pdfsService = {
   },
 
   async getByMaterialId(materialId: string): Promise<Pdf[]> {
-    const { data, error } = await supabase
-      .from('pdfs')
-      .select('*')
-      .eq('material_id', materialId)
-      .order('created_at', { ascending: false });
-    
-    if (error) throw error;
-    return data || [];
+    return withCache(
+      CACHE_KEYS.PDFS(materialId),
+      async () => {
+        const { data, error } = await supabase
+          .from('pdfs')
+          .select('*')
+          .eq('material_id', materialId)
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        return data || [];
+      },
+      20 * 60 * 1000 // 20 دقيقة للتخزين المؤقت
+    );
   },
 
   async add(pdf: Omit<Pdf, 'id' | 'created_at' | 'updated_at'>, file?: File): Promise<Pdf> {
@@ -394,14 +413,20 @@ export const videosService = {
   },
 
   async getByMaterialId(materialId: string): Promise<Video[]> {
-    const { data, error } = await supabase
-      .from('videos')
-      .select('*')
-      .eq('material_id', materialId)
-      .order('created_at', { ascending: true });
-    
-    if (error) throw error;
-    return data || [];
+    return withCache(
+      CACHE_KEYS.VIDEOS(materialId),
+      async () => {
+        const { data, error } = await supabase
+          .from('videos')
+          .select('*')
+          .eq('material_id', materialId)
+          .order('created_at', { ascending: true });
+        
+        if (error) throw error;
+        return data || [];
+      },
+      20 * 60 * 1000 // 20 دقيقة للتخزين المؤقت
+    );
   },
 
   async add(video: Omit<Video, 'id' | 'created_at' | 'updated_at'>): Promise<Video> {

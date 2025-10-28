@@ -3,7 +3,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // Background sounds - LOCAL FILES (guaranteed to work!)
-const backgroundSounds = [
+interface BackgroundSound {
+  id: string;
+  name: string;
+  icon: string;
+  url: string;
+  startTime?: number; // وقت البداية بالثواني
+  backupUrls?: string[];
+}
+
+const backgroundSounds: BackgroundSound[] = [
   { 
     id: 'none', 
     name: 'صمت (بدون صوت)', 
@@ -27,6 +36,21 @@ const backgroundSounds = [
     name: 'سورة مريم - مشاري العفاسي', 
     icon: '📖', 
     url: 'https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/019.mp3'
+  },
+  { 
+    id: 'najm', 
+    name: 'سورة النجم - ناصر القطامي', 
+    icon: '📖', 
+    url: '/sounds/videoplayback.m4a',
+    startTime: 12, // بدء التشغيل من الثانية 12
+    backupUrls: [
+      'https://download.quranicaudio.com/quran/nasser_al_qatami/053.mp3',
+      'https://cdn.islamic.network/quran/audio-surah/128/ar.nasser/053.mp3',
+      'https://server8.mp3quran.net/nasser/053.mp3',
+      'https://server7.mp3quran.net/nasser/053.mp3',
+      'https://server9.mp3quran.net/nasser/053.mp3',
+      'https://server10.mp3quran.net/nasser/053.mp3'
+    ]
   },
 ];
 
@@ -122,12 +146,54 @@ export default function PomodoroPage() {
       
       console.log('🎵 تحميل:', selectedSoundObj.name);
       
-      // Try to play
+      // Try to play with backup URLs for Quran recitations
       setTimeout(() => {
-        backgroundAudioRef.current?.play()
-          .then(() => console.log('✅ يعمل!'))
-          .catch(err => console.log('❌', err.message));
-      }, 300);
+        const tryPlay = (urlIndex = 0) => {
+          if (!backgroundAudioRef.current) return;
+          
+          const urlsToTry = [
+            selectedSoundObj.url,
+            ...(selectedSoundObj.backupUrls || [])
+          ];
+          
+          if (urlIndex >= urlsToTry.length) {
+            console.log('❌ جميع المصادر فشلت');
+            return;
+          }
+          
+          console.log(`🔄 جاري تجربة المصدر ${urlIndex + 1}: ${urlsToTry[urlIndex]}`);
+          backgroundAudioRef.current.src = urlsToTry[urlIndex];
+          backgroundAudioRef.current.load();
+          
+          // Add error event listener for this attempt
+          const handleError = () => {
+            console.log(`❌ فشل المصدر ${urlIndex + 1}: ${urlsToTry[urlIndex]}`);
+            backgroundAudioRef.current?.removeEventListener('error', handleError);
+            tryPlay(urlIndex + 1);
+          };
+          
+          backgroundAudioRef.current.addEventListener('error', handleError);
+          
+          backgroundAudioRef.current.play()
+            .then(() => {
+              console.log(`✅ يعمل! (المصدر ${urlIndex + 1}): ${urlsToTry[urlIndex]}`);
+              backgroundAudioRef.current?.removeEventListener('error', handleError);
+              
+              // تعيين وقت البداية إذا كان محدداً
+              if (selectedSoundObj.startTime && backgroundAudioRef.current) {
+                backgroundAudioRef.current.currentTime = selectedSoundObj.startTime;
+                console.log(`⏰ بدء التشغيل من الثانية ${selectedSoundObj.startTime}`);
+              }
+            })
+            .catch(err => {
+              console.log(`❌ فشل المصدر ${urlIndex + 1}:`, err.message);
+              backgroundAudioRef.current?.removeEventListener('error', handleError);
+              tryPlay(urlIndex + 1);
+            });
+        };
+        
+        tryPlay();
+      }, 500);
       
     } else {
       if (backgroundAudioRef.current?.src) {
