@@ -534,9 +534,18 @@ export default function AdminDashboardPage() {
       const normalizedScopeTerm = normalizeTerm(scope.term);
       
       // التحقق من المطابقة
-      const departmentMatch = normalizedScopeDepartment === normalizedItemDepartment;
-      const yearMatch = normalizedScopeYear === normalizedItemYear;
-      const termMatch = normalizedScopeTerm === normalizedItemTerm;
+      // إذا كان scope فارغ (null أو empty)، يعتبر "كل شيء" = match
+      const departmentMatch = !scope.department || scope.department === '' 
+        ? true  // جميع الأقسام
+        : normalizedScopeDepartment === normalizedItemDepartment;
+      
+      const yearMatch = !scope.year || scope.year === 0 || scope.year === null
+        ? true  // جميع السنوات
+        : normalizedScopeYear === normalizedItemYear;
+      
+      const termMatch = !scope.term || scope.term === ''
+        ? true  // جميع الترمات
+        : normalizedScopeTerm === normalizedItemTerm;
       
       const matches = departmentMatch && yearMatch && termMatch;
       
