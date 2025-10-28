@@ -64,7 +64,7 @@ export default function ManageAdminsPage() {
 
   useEffect(() => {
     // التحقق من تسجيل الدخول
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const adminData = localStorage.getItem('superAdmin');
       if (!adminData) {
         router.push('/admin/login');
@@ -78,13 +78,27 @@ export default function ManageAdminsPage() {
           admin.role = 'super_admin';
         }
         
-        if (admin.role !== 'super_admin') {
+        // التحقق من الصلاحيات
+        if (admin.role === 'super_admin') {
+          // السوبر أدمن له الصلاحية
+          setCurrentUser(admin);
+          loadAdmins();
+        } else if (admin.role === 'admin') {
+          // الأدمن العادي - تحقق من صلاحية إدارة الأدمنز
+          const scopes = await AdminService.getAdminScopes(admin.id);
+          const hasAdminPermission = scopes.some(s => s.canManageAdmins);
+          
+          if (hasAdminPermission) {
+            setCurrentUser(admin);
+            loadAdmins();
+          } else {
+            router.push('/admin/dashboard');
+            return;
+          }
+        } else {
           router.push('/admin/dashboard');
           return;
         }
-
-        setCurrentUser(admin);
-        loadAdmins();
     } catch (error) {
         router.push('/admin/login');
       }
@@ -254,7 +268,7 @@ export default function ManageAdminsPage() {
     return permissions.join(', ') || 'لا توجد صلاحيات';
   };
 
-  if (!currentUser || currentUser.role !== 'super_admin') {
+  if (!currentUser) {
   return (
       <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#FAFAD2'}}>
         <div className="text-center text-white">
@@ -404,7 +418,8 @@ export default function ManageAdminsPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      {selectedAdmin.role !== 'super_admin' && (
+                      {/* السوبر أدمن فقط يمكنه تعديل/حذف أي أدمن، الأدمن العادي لا يستطيع تعديل السوبر أدمن */}
+                      {selectedAdmin.role !== 'super_admin' && (currentUser.role === 'super_admin' || selectedAdmin.role === 'admin') && (
                         <>
                           <button
                             onClick={() => handleToggleAdminStatus(selectedAdmin.id, selectedAdmin.isActive)}
@@ -420,6 +435,11 @@ export default function ManageAdminsPage() {
                           </button>
                         </>
                       )}
+                      {selectedAdmin.role === 'super_admin' && currentUser.role !== 'super_admin' && (
+                        <div className="text-yellow-300 text-sm px-4 py-2 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                          ⚠️ لا يمكنك تعديل مدير النظام
+                        </div>
+                      )}
                 </div>
               </div>
           </div>
@@ -430,7 +450,8 @@ export default function ManageAdminsPage() {
                     <h3 className="text-xl font-bold text-white">
                       نطاقات الصلاحيات ({adminScopes.length})
                 </h3>
-                    {selectedAdmin.role !== 'super_admin' && (
+                    {/* السوبر أدمن فقط يمكنه إضافة صلاحيات، أو الأدمن العادي للأدمن العادي فقط */}
+                    {selectedAdmin.role !== 'super_admin' && (currentUser.role === 'super_admin' || selectedAdmin.role === 'admin') && (
                       <button
                         onClick={() => setShowScopeModal(true)}
                         className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/30"
@@ -449,12 +470,14 @@ export default function ManageAdminsPage() {
                     <div className="text-center py-8">
                       <div className="text-4xl mb-3">🔐</div>
                       <p className="text-gray-400">لا توجد صلاحيات محددة لهذا الأدمن</p>
-                      <button
-                        onClick={() => setShowScopeModal(true)}
-                        className="mt-4 px-4 py-2 bg-yellow-500/20 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-all border border-yellow-500/50"
-                      >
-                        إضافة أول صلاحية
-                      </button>
+                      {(currentUser.role === 'super_admin' || selectedAdmin.role === 'admin') && (
+                        <button
+                          onClick={() => setShowScopeModal(true)}
+                          className="mt-4 px-4 py-2 bg-yellow-500/20 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-all border border-yellow-500/50"
+                        >
+                          إضافة أول صلاحية
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -480,12 +503,14 @@ export default function ManageAdminsPage() {
                                 </p>
                               )}
                     </div>
-                            <button
-                              onClick={() => handleDeleteScope(scope.id)}
-                              className="text-red-400 hover:text-red-300 transition-colors ml-4"
-                            >
-                              🗑️
-                            </button>
+                            {(currentUser.role === 'super_admin' || selectedAdmin.role === 'admin') && (
+                              <button
+                                onClick={() => handleDeleteScope(scope.id)}
+                                className="text-red-400 hover:text-red-300 transition-colors ml-4"
+                              >
+                                🗑️
+                              </button>
+                            )}
                 </div>
               </div>
             ))}

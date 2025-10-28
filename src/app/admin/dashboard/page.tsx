@@ -235,6 +235,7 @@ export default function AdminDashboardPage() {
               canManageMessages: scopes.some(s => s.canManageMessages),
               canViewAnalytics: scopes.some(s => s.canViewAnalytics),
               canManageUsers: scopes.some(s => s.canManageUsers),
+              canManageAdmins: scopes.some(s => s.canManageAdmins), // إضافة صلاحية إدارة الأدمنز
               scopes: scopes // حفظ النطاقات للتحقق التفصيلي
             };
             setUserPermissions(permissions);
@@ -246,7 +247,8 @@ export default function AdminDashboardPage() {
               canManageSchedules: permissions.canManageSchedules,
               canManageMessages: permissions.canManageMessages,
               canViewAnalytics: permissions.canViewAnalytics,
-              canManageUsers: permissions.canManageUsers
+              canManageUsers: permissions.canManageUsers,
+              canManageAdmins: permissions.canManageAdmins
             });
             console.log('✅ Admin scopes details:');
             scopes.forEach((scope: any, index: number) => {
@@ -295,6 +297,7 @@ export default function AdminDashboardPage() {
               canManageMessages: false,
               canViewAnalytics: false,
               canManageUsers: false,
+              canManageAdmins: false,
               scopes: []
             });
           }
@@ -308,6 +311,7 @@ export default function AdminDashboardPage() {
             canManageMessages: true,
             canViewAnalytics: true,
             canManageUsers: true,
+            canManageAdmins: true,
             scopes: []
           });
         }
@@ -435,8 +439,8 @@ export default function AdminDashboardPage() {
   
   console.log('🔨 Final tabs built:', tabs.map(t => t.name));
 
-  // Super Admin specific tabs
-  const superAdminTabs = superAdmin?.role === 'super_admin' 
+  // Super Admin specific tabs (أو الأدمن الذي لديه صلاحية إدارة الأدمنز)
+  const superAdminTabs = (superAdmin?.role === 'super_admin' || userPermissions?.canManageAdmins)
     ? [{ id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' }]
     : [];
 
@@ -2320,7 +2324,7 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Admins Management Tab */}
-        {activeTab === 'admins' && superAdmin?.role === 'super_admin' && (
+        {activeTab === 'admins' && (superAdmin?.role === 'super_admin' || userPermissions?.canManageAdmins) && (
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <div className="text-center py-12">
               <div className="text-6xl mb-4">👑</div>
