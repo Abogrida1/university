@@ -158,13 +158,14 @@ export default function PomodoroPage() {
     const selectedSoundObj = backgroundSounds.find(s => s.id === selectedSound);
     
     if (selectedSound !== 'none' && selectedSoundObj && selectedSoundObj.url) {
-      // Stop current
-      if (backgroundAudioRef.current.src) {
-        backgroundAudioRef.current.pause();
-        backgroundAudioRef.current.currentTime = 0;
-      }
-      
-      // Set new source
+      // Capture current playback state and position to continue smoothly
+      const wasPlaying = backgroundAudioRef.current && !backgroundAudioRef.current.paused;
+      const previousTime = backgroundAudioRef.current ? backgroundAudioRef.current.currentTime : 0;
+      const desiredTime = wasPlaying
+        ? previousTime
+        : (selectedSoundObj.startTime ?? 0);
+
+      // Set new source without resetting the desired time
       backgroundAudioRef.current.src = selectedSoundObj.url;
       backgroundAudioRef.current.volume = volume / 100;
       backgroundAudioRef.current.load();
@@ -203,11 +204,24 @@ export default function PomodoroPage() {
             .then(() => {
               console.log(`✅ يعمل! (المصدر ${urlIndex + 1}): ${urlsToTry[urlIndex]}`);
               backgroundAudioRef.current?.removeEventListener('error', handleError);
-              
-              // تعيين وقت البداية إذا كان محدداً
-              if (selectedSoundObj.startTime && backgroundAudioRef.current) {
-                backgroundAudioRef.current.currentTime = selectedSoundObj.startTime;
-                console.log(`⏰ بدء التشغيل من الثانية ${selectedSoundObj.startTime}`);
+
+              // اضبط وقت التشغيل المطلوب للحفاظ على الاستمرارية
+              if (backgroundAudioRef.current) {
+                // إذا لم يكن الملف قد حمّل الميتاداتا بعد، انتظر الحدث واضبط الوقت
+                const setTime = () => {
+                  try {
+                    backgroundAudioRef.current!.currentTime = desiredTime;
+                  } catch {}
+                };
+                if (backgroundAudioRef.current.readyState >= 1) {
+                  setTime();
+                } else {
+                  const onLoaded = () => {
+                    setTime();
+                    backgroundAudioRef.current?.removeEventListener('loadedmetadata', onLoaded);
+                  };
+                  backgroundAudioRef.current.addEventListener('loadedmetadata', onLoaded);
+                }
               }
             })
             .catch(err => {
