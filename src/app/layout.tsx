@@ -8,6 +8,7 @@ import { UserProvider } from '@/lib/UserContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import FirstVisitDisclaimer from '@/components/FirstVisitDisclaimer';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
+import { GlobalAudioProvider } from '@/lib/GlobalAudioProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider>
           <UserProvider>
+            <GlobalAudioProvider>
             <div className="min-h-screen flex flex-col relative">
               <SimpleHeader />
               <main className="flex-1 pb-16 lg:pb-0">
@@ -35,6 +37,7 @@ export default function RootLayout({
               <FirstVisitDisclaimer />
               <ServiceWorkerRegistration />
             </div>
+            </GlobalAudioProvider>
           </UserProvider>
         </ThemeProvider>
       </body>

@@ -1,58 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BACKGROUND_SOUNDS, useGlobalAudio } from '@/lib/GlobalAudioProvider';
 
-// Background sounds - LOCAL FILES (guaranteed to work!)
-interface BackgroundSound {
-  id: string;
-  name: string;
-  icon: string;
-  url: string;
-  startTime?: number; // وقت البداية بالثواني
-  backupUrls?: string[];
-}
-
-const backgroundSounds: BackgroundSound[] = [
-  { 
-    id: 'none', 
-    name: 'صمت (بدون صوت)', 
-    icon: '🔇', 
-    url: ''
-  },
-  { 
-    id: 'rain', 
-    name: 'صوت المطر الهادئ', 
-    icon: '🌧️', 
-    url: '/sounds/calming-rain-257596.mp3'
-  },
-  { 
-    id: 'whitenoise', 
-    name: 'ضوضاء خفيفة', 
-    icon: '🎵', 
-    url: '/sounds/relaxing-smoothed-brown-noise-294838.mp3'
-  },
-  { 
-    id: 'maryam', 
-    name: 'سورة مريم - مشاري العفاسي', 
-    icon: '📖', 
-    url: 'https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/019.mp3'
-  },
-  { 
-    id: 'najm', 
-    name: 'سورة النجم - ناصر القطامي', 
-    icon: '📖', 
-    url: '/sounds/videoplayback.m4a',
-    startTime: 12, // بدء التشغيل من الثانية 12
-    backupUrls: [
-      'https://download.quranicaudio.com/quran/nasser_al_qatami/053.mp3',
-      'https://cdn.islamic.network/quran/audio-surah/128/ar.nasser/053.mp3',
-      'https://server8.mp3quran.net/nasser/053.mp3',
-      'https://server7.mp3quran.net/nasser/053.mp3',
-      'https://server9.mp3quran.net/nasser/053.mp3',
-      'https://server10.mp3quran.net/nasser/053.mp3'
-    ]
-  },
-];
+// الأصوات تأتي من المزود العالمي ليبقى التشغيل عبر الصفحات
 
 interface Task {
   id: number;
@@ -107,172 +58,8 @@ export default function PomodoroPage() {
   const [completedPomodoros, setCompletedPomodoros] = useState(0);
   const [totalFocusTime, setTotalFocusTime] = useState(0);
   
-  // Background sound
-  const [selectedSound, setSelectedSound] = useState('none');
-  const [volume, setVolume] = useState(50);
-  
-  // Audio refs
-  const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
-  const enableOnClickRef = useRef<((e: any) => void) | null>(null);
-
-  // Hydrate settings from localStorage (selected sound + volume)
-  useEffect(() => {
-    try {
-      const savedSound = localStorage.getItem('pomodoroSelectedSound');
-      const savedVolume = localStorage.getItem('pomodoroVolume');
-      if (savedSound) setSelectedSound(savedSound);
-      if (savedVolume) setVolume(Number(savedVolume));
-    } catch {}
-  }, []);
-
-  // Persist settings to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('pomodoroSelectedSound', selectedSound);
-    } catch {}
-  }, [selectedSound]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('pomodoroVolume', String(volume));
-    } catch {}
-  }, [volume]);
-  
-  // Play background sounds
-  useEffect(() => {
-    if (!backgroundAudioRef.current) {
-      backgroundAudioRef.current = new Audio();
-      backgroundAudioRef.current.loop = true;
-      backgroundAudioRef.current.volume = 0.5;
-      
-      // Enable audio on first user interaction
-      const enableOnClick = () => {
-        if (backgroundAudioRef.current && selectedSound !== 'none' && backgroundAudioRef.current.paused) {
-          backgroundAudioRef.current.play().catch(() => {});
-        }
-      };
-      enableOnClickRef.current = enableOnClick;
-      document.addEventListener('click', enableOnClick);
-    }
-    
-    const selectedSoundObj = backgroundSounds.find(s => s.id === selectedSound);
-    
-    if (selectedSound !== 'none' && selectedSoundObj && selectedSoundObj.url) {
-      // Capture current playback state and position to continue smoothly
-      const wasPlaying = backgroundAudioRef.current && !backgroundAudioRef.current.paused;
-      const previousTime = backgroundAudioRef.current ? backgroundAudioRef.current.currentTime : 0;
-      const desiredTime = wasPlaying
-        ? previousTime
-        : (selectedSoundObj.startTime ?? 0);
-
-      // Set new source without resetting the desired time
-      backgroundAudioRef.current.src = selectedSoundObj.url;
-      backgroundAudioRef.current.volume = volume / 100;
-      backgroundAudioRef.current.load();
-      
-      console.log('🎵 تحميل:', selectedSoundObj.name);
-      
-      // Try to play with backup URLs for Quran recitations
-      setTimeout(() => {
-        const tryPlay = (urlIndex = 0) => {
-          if (!backgroundAudioRef.current) return;
-          
-          const urlsToTry = [
-            selectedSoundObj.url,
-            ...(selectedSoundObj.backupUrls || [])
-          ];
-          
-          if (urlIndex >= urlsToTry.length) {
-            console.log('❌ جميع المصادر فشلت');
-            return;
-          }
-          
-          console.log(`🔄 جاري تجربة المصدر ${urlIndex + 1}: ${urlsToTry[urlIndex]}`);
-          backgroundAudioRef.current.src = urlsToTry[urlIndex];
-          backgroundAudioRef.current.load();
-          
-          // Add error event listener for this attempt
-          const handleError = () => {
-            console.log(`❌ فشل المصدر ${urlIndex + 1}: ${urlsToTry[urlIndex]}`);
-            backgroundAudioRef.current?.removeEventListener('error', handleError);
-            tryPlay(urlIndex + 1);
-          };
-          
-          backgroundAudioRef.current.addEventListener('error', handleError);
-          
-          backgroundAudioRef.current.play()
-            .then(() => {
-              console.log(`✅ يعمل! (المصدر ${urlIndex + 1}): ${urlsToTry[urlIndex]}`);
-              backgroundAudioRef.current?.removeEventListener('error', handleError);
-
-              // اضبط وقت التشغيل المطلوب للحفاظ على الاستمرارية
-              if (backgroundAudioRef.current) {
-                // إذا لم يكن الملف قد حمّل الميتاداتا بعد، انتظر الحدث واضبط الوقت
-                const setTime = () => {
-                  try {
-                    backgroundAudioRef.current!.currentTime = desiredTime;
-                  } catch {}
-                };
-                if (backgroundAudioRef.current.readyState >= 1) {
-                  setTime();
-                } else {
-                  const onLoaded = () => {
-                    setTime();
-                    backgroundAudioRef.current?.removeEventListener('loadedmetadata', onLoaded);
-                  };
-                  backgroundAudioRef.current.addEventListener('loadedmetadata', onLoaded);
-                }
-              }
-            })
-            .catch(err => {
-              console.log(`❌ فشل المصدر ${urlIndex + 1}:`, err.message);
-              backgroundAudioRef.current?.removeEventListener('error', handleError);
-              tryPlay(urlIndex + 1);
-            });
-        };
-        
-        tryPlay();
-      }, 500);
-      
-    } else {
-      if (backgroundAudioRef.current?.src) {
-        backgroundAudioRef.current.pause();
-        backgroundAudioRef.current.currentTime = 0;
-        backgroundAudioRef.current.src = '';
-      }
-    }
-
-    // Cleanup on unmount: pause audio and remove listeners
-    return () => {
-      if (backgroundAudioRef.current) {
-        try {
-          backgroundAudioRef.current.pause();
-        } catch {}
-        backgroundAudioRef.current.src = '';
-      }
-      if (enableOnClickRef.current) {
-        document.removeEventListener('click', enableOnClickRef.current);
-      }
-    };
-  }, [selectedSound, volume]);
-  
-  // Update volume separately (don't restart audio)
-  useEffect(() => {
-      if (backgroundAudioRef.current) {
-      backgroundAudioRef.current.volume = volume / 100;
-      }
-  }, [volume]);
-
-  // Pause audio when tab becomes hidden to avoid background playback
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === 'hidden' && backgroundAudioRef.current) {
-        try { backgroundAudioRef.current.pause(); } catch {}
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, []);
+  // Background sound via global provider
+  const { selectedSound, setSelectedSound, volume, setVolume } = useGlobalAudio();
   
   // Timer effect
   useEffect(() => {
@@ -736,7 +523,7 @@ export default function PomodoroPage() {
                   </p>
                   
                   <div className="space-y-2 sm:space-y-3">
-                    {backgroundSounds.map((sound) => (
+                    {BACKGROUND_SOUNDS.map((sound) => (
                       <button
                         key={sound.id}
                         onClick={() => setSelectedSound(sound.id)}
