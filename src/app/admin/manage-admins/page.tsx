@@ -287,7 +287,7 @@ export default function ManageAdminsPage() {
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
         {/* Header */}
       <div className="bg-black/95 backdrop-blur-sm sticky top-0 z-10 relative">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 space-x-reverse">
             <button
@@ -297,7 +297,7 @@ export default function ManageAdminsPage() {
                 <span className="text-2xl">←</span>
             </button>
               <div>
-                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
+                <h1 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
                   إدارة الأدمنز والصلاحيات
                 </h1>
                 <p className="text-gray-400 text-sm mt-1">إضافة وإدارة المديرين وصلاحياتهم</p>
@@ -305,7 +305,7 @@ export default function ManageAdminsPage() {
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/30"
+              className="px-3 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/30"
             >
               + إضافة أدمن جديد
             </button>
@@ -315,27 +315,27 @@ export default function ManageAdminsPage() {
 
       {/* Messages */}
       {successMessage && (
-        <div className="container mx-auto px-4 mt-4">
-          <div className="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-4 text-yellow-300">
+        <div className="container mx-auto px-4 mt-3">
+          <div className="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-3 text-yellow-300">
             {successMessage}
             </div>
           </div>
         )}
 
       {errorMessage && (
-        <div className="container mx-auto px-4 mt-4">
-          <div className="bg-red-900/30 border border-red-500/50 rounded-lg p-4 text-red-300">
+        <div className="container mx-auto px-4 mt-3">
+          <div className="bg-red-900/30 border border-red-500/50 rounded-lg p-3 text-red-300">
             {errorMessage}
             </div>
           </div>
         )}
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Admins List */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-bold text-white mb-4">قائمة الأدمنز ({admins.length})</h2>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
+              <h2 className="text-lg font-bold text-white mb-3">قائمة الأدمنز ({admins.length})</h2>
               
               {loading ? (
                 <div className="text-center py-8 text-gray-400">جاري التحميل...</div>

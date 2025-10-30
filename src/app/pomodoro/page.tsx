@@ -113,6 +113,30 @@ export default function PomodoroPage() {
   
   // Audio refs
   const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
+  const enableOnClickRef = useRef<((e: any) => void) | null>(null);
+
+  // Hydrate settings from localStorage (selected sound + volume)
+  useEffect(() => {
+    try {
+      const savedSound = localStorage.getItem('pomodoroSelectedSound');
+      const savedVolume = localStorage.getItem('pomodoroVolume');
+      if (savedSound) setSelectedSound(savedSound);
+      if (savedVolume) setVolume(Number(savedVolume));
+    } catch {}
+  }, []);
+
+  // Persist settings to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('pomodoroSelectedSound', selectedSound);
+    } catch {}
+  }, [selectedSound]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pomodoroVolume', String(volume));
+    } catch {}
+  }, [volume]);
   
   // Play background sounds
   useEffect(() => {
@@ -121,12 +145,13 @@ export default function PomodoroPage() {
       backgroundAudioRef.current.loop = true;
       backgroundAudioRef.current.volume = 0.5;
       
-      // Enable on any click
+      // Enable audio on first user interaction
       const enableOnClick = () => {
         if (backgroundAudioRef.current && selectedSound !== 'none' && backgroundAudioRef.current.paused) {
           backgroundAudioRef.current.play().catch(() => {});
         }
       };
+      enableOnClickRef.current = enableOnClick;
       document.addEventListener('click', enableOnClick);
     }
     
@@ -199,9 +224,23 @@ export default function PomodoroPage() {
       if (backgroundAudioRef.current?.src) {
         backgroundAudioRef.current.pause();
         backgroundAudioRef.current.currentTime = 0;
-    }
+        backgroundAudioRef.current.src = '';
       }
-  }, [selectedSound]);
+    }
+
+    // Cleanup on unmount: pause audio and remove listeners
+    return () => {
+      if (backgroundAudioRef.current) {
+        try {
+          backgroundAudioRef.current.pause();
+        } catch {}
+        backgroundAudioRef.current.src = '';
+      }
+      if (enableOnClickRef.current) {
+        document.removeEventListener('click', enableOnClickRef.current);
+      }
+    };
+  }, [selectedSound, volume]);
   
   // Update volume separately (don't restart audio)
   useEffect(() => {
@@ -209,6 +248,17 @@ export default function PomodoroPage() {
       backgroundAudioRef.current.volume = volume / 100;
       }
   }, [volume]);
+
+  // Pause audio when tab becomes hidden to avoid background playback
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden' && backgroundAudioRef.current) {
+        try { backgroundAudioRef.current.pause(); } catch {}
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
   
   // Timer effect
   useEffect(() => {

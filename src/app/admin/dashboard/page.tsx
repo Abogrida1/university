@@ -1240,34 +1240,34 @@ export default function AdminDashboardPage() {
       <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5"></div>
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
-      <div className="container mx-auto px-4 py-10 relative z-10">
+      <div className="container mx-auto px-4 py-4 relative z-10">
         {/* Header */}
-        <div className="text-center mb-12 relative z-20">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl mb-6 shadow-2xl shadow-yellow-500/25">
-            <span className="text-3xl">⚙️</span>
+        <div className="text-center mb-6 relative z-20">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl mb-3 shadow-2xl shadow-yellow-500/25">
+            <span className="text-2xl">⚙️</span>
           </div>
-          <h1 className="text-5xl font-black text-white mb-4 drop-shadow-2xl">
+          <h1 className="text-4xl font-black text-white mb-2 drop-shadow-2xl">
             لوحة تحكم Super Admin
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-4">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-2">
             مرحباً {superAdmin.name} - إدارة شاملة لمنصة المواد الدراسية
           </p>
-          <div className="flex justify-center gap-4 relative z-30">
+          <div className="flex justify-center gap-3 relative z-30">
             <button
               onClick={handleLogout}
-              className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl hover:bg-red-500/30 hover:border-red-500/50 transition-all duration-200 font-bold cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-4 py-2 rounded-xl hover:bg-red-500/30 hover:border-red-500/50 transition-all duration-200 font-bold cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               🚪 تسجيل الخروج
             </button>
             <Link
               href="/"
-              className="inline-block bg-gray-500/20 border border-gray-500/30 text-gray-300 px-6 py-3 rounded-xl hover:bg-gray-500/30 hover:border-gray-400/50 transition-all duration-200 font-bold cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-block bg-gray-500/20 border border-gray-500/30 text-gray-300 px-4 py-2 rounded-xl hover:bg-gray-500/30 hover:border-gray-400/50 transition-all duration-200 font-bold cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               🏠 العودة للموقع
             </Link>
           </div>
           {successMessage && (
-            <div className="mt-4 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl max-w-md mx-auto">
+            <div className="mt-3 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-4 py-2 rounded-xl max-w-md mx-auto">
               {successMessage}
             </div>
           )}
@@ -1275,12 +1275,12 @@ export default function AdminDashboardPage() {
 
         {/* Tabs - Only show if there are management tabs */}
         {allTabs.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
             {allTabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
+                className={`flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-base transition-all duration-300 transform hover:scale-105 ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/30'
                     : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-600/50'
@@ -1296,8 +1296,8 @@ export default function AdminDashboardPage() {
         {/* Overview Section - Only visible when no other tabs OR active */}
         {(userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') && 
          (allTabs.length === 0 || activeTab === 'overview') && (
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-700/50 mb-8">
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-6 sm:mb-8">📊 نظرة عامة على النظام</h2>
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-4 sm:p-6 md:p-6 shadow-2xl border border-gray-700/50 mb-6">
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-4 sm:mb-6">📊 نظرة عامة على النظام</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
