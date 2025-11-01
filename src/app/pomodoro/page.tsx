@@ -61,7 +61,28 @@ export default function PomodoroPage() {
   // Background sound via global provider
   const { selectedSound, setSelectedSound, volume, setVolume, isPlaying, play, pause, restart } = useGlobalAudio();
   
-  // Timer effect
+  // Timer alarm sound (last 12 seconds)
+  const [alarmAudio, setAlarmAudio] = useState<HTMLAudioElement | null>(null);
+  const [isAlarmPlaying, setIsAlarmPlaying] = useState(false);
+  
+  // Initialize alarm audio
+  useEffect(() => {
+    const audio = new Audio('/sounds/kitchen-timer-87485.mp3');
+    audio.loop = true; // Loop until timer stops
+    audio.volume = 1.0; // Set volume to 100%
+    
+    audio.addEventListener('loadeddata', () => {
+      setAlarmAudio(audio);
+    });
+    
+    return () => {
+      audio.pause();
+      audio.src = '';
+      setAlarmAudio(null);
+    };
+  }, []);
+
+  // Timer effect with alarm
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
@@ -85,8 +106,46 @@ export default function PomodoroPage() {
     };
   }, [isRunning, minutes, seconds]);
 
+  // Alarm sound control (play when 12 seconds or less remaining)
+  useEffect(() => {
+    const totalSecondsRemaining = minutes * 60 + seconds;
+    
+    // If 12 seconds or less remaining and timer is running, play alarm
+    if (isRunning && totalSecondsRemaining <= 12 && totalSecondsRemaining > 0 && alarmAudio) {
+      if (!isAlarmPlaying) {
+        alarmAudio.play().catch(err => {
+          console.error('Error playing alarm:', err);
+        });
+        setIsAlarmPlaying(true);
+      }
+    } else {
+      // Stop alarm if timer stopped or more than 12 seconds remaining
+      if (isAlarmPlaying && alarmAudio) {
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0; // Reset to beginning
+        setIsAlarmPlaying(false);
+      }
+    }
+  }, [minutes, seconds, isRunning, alarmAudio, isAlarmPlaying]);
+
+  // Stop alarm when timer stops manually
+  useEffect(() => {
+    if (!isRunning && isAlarmPlaying && alarmAudio) {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      setIsAlarmPlaying(false);
+    }
+  }, [isRunning, isAlarmPlaying, alarmAudio]);
+
   const handleTimerComplete = () => {
     setIsRunning(false);
+    
+    // Stop alarm when timer completes
+    if (isAlarmPlaying && alarmAudio) {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      setIsAlarmPlaying(false);
+    }
     
     if (sessionType === 'work') {
       setCompletedPomodoros(prev => prev + 1);
@@ -120,6 +179,12 @@ export default function PomodoroPage() {
 
   const handleReset = () => {
     setIsRunning(false);
+    // Stop alarm when reset
+    if (isAlarmPlaying && alarmAudio) {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      setIsAlarmPlaying(false);
+    }
     const duration = sessionType === 'work' ? workDuration : shortBreakDuration;
     setMinutes(duration);
     setSeconds(0);
