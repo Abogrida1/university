@@ -7,7 +7,12 @@ import Footer from '@/components/Footer';
 import { UserProvider } from '@/lib/UserContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import FirstVisitDisclaimer from '@/components/FirstVisitDisclaimer';
+import dynamic from 'next/dynamic';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
+
+const OnboardingTour = dynamic(() => import('@/components/OnboardingTour'), {
+  ssr: false,
+});
 import { GlobalAudioProvider } from '@/lib/GlobalAudioProvider';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -35,6 +40,7 @@ export default function RootLayout({
               </main>
               <Footer />
               <FirstVisitDisclaimer />
+              <OnboardingTour />
               <ServiceWorkerRegistration />
             </div>
             </GlobalAudioProvider>

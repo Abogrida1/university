@@ -59,7 +59,7 @@ export default function PomodoroPage() {
   const [totalFocusTime, setTotalFocusTime] = useState(0);
   
   // Background sound via global provider
-  const { selectedSound, setSelectedSound, volume, setVolume } = useGlobalAudio();
+  const { selectedSound, setSelectedSound, volume, setVolume, isPlaying, play, pause, restart } = useGlobalAudio();
   
   // Timer effect
   useEffect(() => {
@@ -564,6 +564,26 @@ export default function PomodoroPage() {
                             background: linear-gradient(to right, #eab308 0%, #eab308 ${volume}%, #4b5563 ${volume}%, #4b5563 100%) !important;
                           }
                         `}</style>
+
+                        {/* Playback Controls */}
+                        <div className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3">
+                          <button
+                            onClick={() => (isPlaying ? pause() : play())}
+                            className={`px-4 py-2 rounded-lg font-bold text-sm sm:text-base transition-all border-2 ${
+                              isPlaying
+                                ? 'bg-red-50 dark:bg-gray-700/40 text-red-600 dark:text-red-400 border-red-300 dark:border-red-600 hover:bg-red-100 dark:hover:bg-gray-600'
+                                : 'bg-green-50 dark:bg-gray-700/40 text-green-700 dark:text-green-400 border-green-300 dark:border-green-600 hover:bg-green-100 dark:hover:bg-gray-600'
+                            }`}
+                          >
+                            {isPlaying ? 'إيقاف مؤقت' : 'تشغيل'}
+                          </button>
+                          <button
+                            onClick={restart}
+                            className="px-4 py-2 rounded-lg font-bold text-sm sm:text-base transition-all border-2 bg-blue-50 dark:bg-gray-700/40 text-blue-700 dark:text-yellow-400 border-blue-300 dark:border-yellow-600 hover:bg-blue-100 dark:hover:bg-gray-600"
+                          >
+                            إعادة من البداية
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

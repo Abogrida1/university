@@ -34,6 +34,7 @@ type GlobalAudioContextType = {
   isPlaying: boolean;
   play: () => void;
   pause: () => void;
+  restart: () => void;
 };
 
 const GlobalAudioContext = createContext<GlobalAudioContextType | undefined>(undefined);
@@ -134,9 +135,14 @@ export const GlobalAudioProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const setVolume = (v: number) => setVolumeState(v);
   const play = () => { audioRef.current?.play().catch(() => {}); };
   const pause = () => { audioRef.current?.pause(); };
+  const restart = () => {
+    if (!audioRef.current) return;
+    try { audioRef.current.currentTime = 0; } catch {}
+    audioRef.current.play().catch(() => {});
+  };
 
   return (
-    <GlobalAudioContext.Provider value={{ selectedSound, setSelectedSound, volume, setVolume, isPlaying, play, pause }}>
+    <GlobalAudioContext.Provider value={{ selectedSound, setSelectedSound, volume, setVolume, isPlaying, play, pause, restart }}>
       {children}
     </GlobalAudioContext.Provider>
   );
