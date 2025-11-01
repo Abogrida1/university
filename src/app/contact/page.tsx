@@ -268,7 +268,7 @@ export default function ContactPage() {
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-blue-500 to-blue-700 dark:from-yellow-400 dark:to-yellow-500 bg-clip-text text-transparent mb-3 sm:mb-4" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                   انضم إلى فريق الإدارة
                 </h2>
-                <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 mb-4 sm:mb-6 max-w-3xl mx-auto leading-relaxed px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-white mb-4 sm:mb-6 max-w-3xl mx-auto leading-relaxed px-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                   كن جزءاً من فريق الإدارة وساعد في تطوير المنصة وتقديم أفضل تجربة للطلاب
                 </p>
                 <div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
@@ -296,7 +296,7 @@ export default function ContactPage() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
-                      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                      <label className="block text-gray-700 dark:text-white text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         الاسم الأول *
                       </label>
                       <input
@@ -304,7 +304,7 @@ export default function ContactPage() {
                         name="firstName"
                         value={joinData.firstName}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base sm:text-lg"
                         placeholder="أدخل اسمك الأول"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -312,7 +312,7 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                      <label className="block text-gray-700 dark:text-white text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         البريد الإلكتروني *
                       </label>
                       <input
@@ -320,7 +320,7 @@ export default function ContactPage() {
                         name="email"
                         value={joinData.email}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base sm:text-lg"
                         placeholder="example@gmail.com"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
@@ -337,14 +337,14 @@ export default function ContactPage() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <div>
-                      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                      <label className="block text-gray-700 dark:text-white text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         القسم *
                       </label>
                       <select
                         name="department"
                         value={joinData.department}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
@@ -356,14 +356,14 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                      <label className="block text-gray-700 dark:text-white text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         السنة *
                       </label>
                       <select
                         name="year"
                         value={joinData.year}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
@@ -376,14 +376,14 @@ export default function ContactPage() {
                     </div>
 
                     <div className="sm:col-span-2 lg:col-span-1">
-                      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                      <label className="block text-gray-700 dark:text-white text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                         الترم *
                       </label>
                       <select
                         name="term"
                         value={joinData.term}
                         onChange={handleJoinChange}
-                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white text-base sm:text-lg"
+                        className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white text-base sm:text-lg"
                         required
                         style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                       >
@@ -402,7 +402,7 @@ export default function ContactPage() {
                     معلومات التواصل
                   </h3>
                   <div>
-                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                    <label className="block text-gray-700 dark:text-white text-sm font-bold mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                       رقم الواتساب *
                     </label>
                     <input
@@ -410,12 +410,12 @@ export default function ContactPage() {
                       name="whatsapp"
                       value={joinData.whatsapp}
                       onChange={handleJoinChange}
-                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-700/50 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base sm:text-lg"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600/50 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 dark:focus:border-yellow-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base sm:text-lg"
                       placeholder="+20 10 1234 5678"
                       required
                       style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}
                     />
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-white mt-2" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                       سنتواصل معك عبر الواتساب لتأكيد انضمامك للفريق
                     </p>
                   </div>
@@ -427,7 +427,7 @@ export default function ContactPage() {
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                       جاهز للانضمام؟
                     </h3>
-                    <p className="text-gray-700 dark:text-gray-300 text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+                    <p className="text-gray-700 dark:text-white text-base sm:text-lg" style={{fontFamily: 'Cairo, -apple-system, BlinkMacSystemFont, sans-serif'}}>
                       بعد إرسال طلبك، سنراجع معلوماتك ونتواصل معك قريباً
                     </p>
                   </div>
