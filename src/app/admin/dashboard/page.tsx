@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { materialsService, pdfsService, videosService, usersService, Material, Pdf, Video, User } from '@/lib/supabaseServiceFixed';
 import { schedulesService, Schedule } from '@/lib/schedulesService';
 import { messagesService, Message } from '@/lib/messagesService';
+import SendNotification from '@/components/SendNotification';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -441,7 +442,10 @@ export default function AdminDashboardPage() {
 
   // Super Admin specific tabs (أو الأدمن الذي لديه صلاحية إدارة الأدمنز)
   const superAdminTabs = (superAdmin?.role === 'super_admin' || userPermissions?.canManageAdmins)
-    ? [{ id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' }]
+    ? [
+        { id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' },
+        { id: 'notifications', name: 'إرسال الإشعارات', icon: '🔔' }
+      ]
     : [];
 
   // إضافة "نظرة عامة" كـ tab فقط لو فيه tabs تانية
@@ -2345,6 +2349,16 @@ export default function AdminDashboardPage() {
                 </button>
               </Link>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'notifications' && superAdmin?.role === 'super_admin' && (
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
+            <SendNotification 
+              onSuccess={() => {
+                showMessage('تم إرسال الإشعار بنجاح!');
+              }}
+            />
           </div>
         )}
 
