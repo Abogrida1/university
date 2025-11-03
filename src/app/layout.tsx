@@ -6,6 +6,7 @@ import SimpleHeader from '@/components/SimpleHeader';
 import Footer from '@/components/Footer';
 import { UserProvider } from '@/lib/UserContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
+import { NotificationsProvider } from '@/lib/NotificationsContext';
 import FirstVisitDisclaimer from '@/components/FirstVisitDisclaimer';
 import dynamic from 'next/dynamic';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
@@ -32,18 +33,20 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider>
           <UserProvider>
-            <GlobalAudioProvider>
-            <div className="min-h-screen flex flex-col relative">
-              <SimpleHeader />
-              <main className="flex-1 pb-16 lg:pb-0">
-                {children}
-              </main>
-              <Footer />
-              <FirstVisitDisclaimer />
-              <OnboardingTour />
-              <ServiceWorkerRegistration />
-            </div>
-            </GlobalAudioProvider>
+            <NotificationsProvider>
+              <GlobalAudioProvider>
+              <div className="min-h-screen flex flex-col relative">
+                <SimpleHeader />
+                <main className="flex-1 pb-16 lg:pb-0">
+                  {children}
+                </main>
+                <Footer />
+                <FirstVisitDisclaimer />
+                <OnboardingTour />
+                <ServiceWorkerRegistration />
+              </div>
+              </GlobalAudioProvider>
+            </NotificationsProvider>
           </UserProvider>
         </ThemeProvider>
       </body>

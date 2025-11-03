@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useUser } from '@/lib/UserContext';
 import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import NotificationBell from './NotificationBell';
 
 export default function SimpleHeader() {
   const { user, logout } = useUser();
@@ -69,6 +70,8 @@ export default function SimpleHeader() {
             <div className="flex items-center space-x-4">
               {/* Theme Toggle */}
               <ThemeToggle />
+              {/* Notifications */}
+              {user && <NotificationBell />}
               {user ? (
                 <div className="relative">
                   <button
