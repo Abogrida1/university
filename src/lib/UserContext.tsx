@@ -3,8 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserProfile, UserSession, LoginCredentials, RegisterData } from './types';
 import { UserService } from './userService';
-import { supabase } from './supabase';
-import { getOAuthConfig } from './oauthConfig';
 
 interface UserContextType {
   user: UserProfile | null;
@@ -12,7 +10,6 @@ interface UserContextType {
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
-  loginWithGoogle: (academicData?: { department: string; year: string; term: string }) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
@@ -57,7 +54,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
               const currentPath = window.location.pathname;
               if (currentPath !== '/auth/register') {
                 console.log('Redirecting to complete registration...');
-                window.location.href = '/auth/register?step=1&google=true';
+                window.location.href = '/auth/register?step=1';
                 return;
               } else {
                 console.log('Already on register page, setting user as inactive...');
@@ -76,7 +73,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
               
               if (!userProfile.department || !userProfile.year || !userProfile.term) {
                 console.log('⚠️ Active user missing academic data, redirecting to register...');
-                window.location.href = '/auth/register?step=1&google=true';
+                window.location.href = '/auth/register?step=1';
                 return;
               }
             }
@@ -173,63 +170,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async (academicData?: { department: string; year: string; term: string }): Promise<boolean> => {
-    try {
-      setLoading(true);
-      
-      // تسجيل الدخول بجوجل عبر Supabase
-      console.log('🚀 Starting Google OAuth...');
-      
-      // تحديد redirect URL مباشرة
-      const isProduction = process.env.NODE_ENV === 'production';
-      const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-      
-      let redirectUrl;
-      if (isProduction && !isLocalhost) {
-        redirectUrl = 'https://university-l2nm.vercel.app/auth/callback';
-      } else if (isLocalhost) {
-        redirectUrl = 'http://localhost:3000/auth/callback';
-      } else {
-        redirectUrl = 'https://university-l2nm.vercel.app/auth/callback';
-      }
-      
-      console.log('📍 Environment:', process.env.NODE_ENV);
-      console.log('📍 Is Production:', isProduction);
-      console.log('📍 Is Localhost:', isLocalhost);
-      console.log('📍 Hostname:', typeof window !== 'undefined' ? window.location.hostname : 'undefined');
-      console.log('📍 Redirect URL:', redirectUrl);
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        }
-      });
-
-      console.log('📊 OAuth Response:', { data, error });
-
-      if (error) {
-        console.error('خطأ في تسجيل الدخول بجوجل:', error);
-        return false;
-      }
-
-      // حفظ البيانات الأكاديمية إذا كانت متوفرة
-      if (academicData) {
-        localStorage.setItem('pendingGoogleAuth', JSON.stringify(academicData));
-      }
-
-      return true;
-    } catch (error) {
-      console.error('خطأ في تسجيل الدخول بجوجل:', error);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const logout = async (): Promise<void> => {
     try {
@@ -278,7 +218,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     loading,
     login,
     register,
-    loginWithGoogle,
     logout,
     updateProfile,
     changePassword,

@@ -77,7 +77,7 @@ export default function HomePage() {
       console.log('Invalid user detected, redirecting to register page...');
       // توجيه المستخدم غير النشط أو بدون بيانات أكاديمية لصفحة إنشاء الحساب
       setTimeout(() => {
-        window.location.href = '/auth/register?step=1&google=true';
+        window.location.href = '/auth/register?step=1';
       }, 500);
     } else if (user && user.isActive && user.department && user.year && user.term) {
       console.log('Valid user with academic data detected, staying on home page...');
