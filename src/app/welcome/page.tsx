@@ -35,7 +35,7 @@ export default function WelcomePage() {
           term: user?.term
         });
         setHasRedirected(true);
-        window.location.href = '/auth/register?step=1&google=true';
+        window.location.href = '/auth/register?step=1';
       } else if (user && user.is_active && user.department && user.year && user.term) {
         console.log('✅ Valid user detected on welcome page, staying here...');
         console.log('User data:', {
