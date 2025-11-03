@@ -18,8 +18,12 @@ export default function AdminDashboardPage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showReplyModal, setShowReplyModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Material | Pdf | Video | User | null>(null);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [replySubject, setReplySubject] = useState('');
+  const [replyBody, setReplyBody] = useState('');
   const [loadingVideo, setLoadingVideo] = useState(false);
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [loadingMaterial, setLoadingMaterial] = useState(false);
@@ -1920,8 +1924,21 @@ export default function AdminDashboardPage() {
                           }
                         }}
                         className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
+                        title="تغيير حالة القراءة"
                       >
                         <span className="text-blue-400">👁️</span>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setSelectedMessage(message);
+                          setReplySubject(message.type === 'contact' && message.subject ? `Re: ${message.subject}` : 'رد على رسالتك');
+                          setReplyBody('');
+                          setShowReplyModal(true);
+                        }}
+                        className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors"
+                        title="الرد على الرسالة"
+                      >
+                        <span className="text-purple-400">💌</span>
                       </button>
                       <button 
                         onClick={async () => {
@@ -1938,6 +1955,7 @@ export default function AdminDashboardPage() {
                           }
                         }}
                         className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-green-500/30 transition-colors"
+                        title="تحديد كمردود عليها"
                       >
                         <span className="text-green-400">✅</span>
                       </button>
@@ -1958,6 +1976,7 @@ export default function AdminDashboardPage() {
                           }
                         }}
                         className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                        title="حذف الرسالة"
                       >
                         <span className="text-red-400">🗑️</span>
                       </button>
@@ -3246,6 +3265,146 @@ export default function AdminDashboardPage() {
                   >
                     إلغاء
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reply to Message Modal */}
+        {showReplyModal && selectedMessage && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-800 rounded-3xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold text-white">الرد على الرسالة 💌</h2>
+                <button
+                  onClick={() => {
+                    setShowReplyModal(false);
+                    setSelectedMessage(null);
+                    setReplySubject('');
+                    setReplyBody('');
+                  }}
+                  className="text-gray-400 hover:text-white transition-colors text-3xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* معلومات المرسل */}
+                <div className="bg-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+                  <h3 className="text-xl font-bold text-white mb-4">معلومات المرسل</h3>
+                  <div className="space-y-2 text-gray-300">
+                    <p><span className="font-semibold text-white">الاسم:</span> {selectedMessage.first_name}</p>
+                    <p><span className="font-semibold text-white">البريد الإلكتروني:</span> {selectedMessage.email}</p>
+                    {selectedMessage.type === 'contact' && selectedMessage.subject && (
+                      <p><span className="font-semibold text-white">الموضوع:</span> {selectedMessage.subject}</p>
+                    )}
+                    {selectedMessage.type === 'contact' && selectedMessage.message && (
+                      <div>
+                        <p className="font-semibold text-white mb-2">الرسالة الأصلية:</p>
+                        <div className="bg-gray-700/50 rounded-lg p-4 text-gray-300 text-sm">
+                          {selectedMessage.message}
+                        </div>
+                      </div>
+                    )}
+                    {selectedMessage.type === 'join' && (
+                      <>
+                        <p><span className="font-semibold text-white">القسم:</span> {selectedMessage.department}</p>
+                        <p><span className="font-semibold text-white">السنة:</span> {selectedMessage.year}</p>
+                        <p><span className="font-semibold text-white">الترم:</span> {selectedMessage.term}</p>
+                        {selectedMessage.whatsapp && (
+                          <p><span className="font-semibold text-white">واتساب:</span> {selectedMessage.whatsapp}</p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* نموذج الرد */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-white font-medium mb-2">موضوع الرد</label>
+                    <input
+                      type="text"
+                      value={replySubject}
+                      onChange={(e) => setReplySubject(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                      placeholder="موضوع الرسالة"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-medium mb-2">نص الرد</label>
+                    <textarea
+                      value={replyBody}
+                      onChange={(e) => setReplyBody(e.target.value)}
+                      rows={10}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                      placeholder="اكتب ردك هنا..."
+                    />
+                  </div>
+                </div>
+
+                {/* أزرار الإجراءات */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      // إنشاء رابط mailto للرد
+                      const mailtoLink = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
+                      window.open(mailtoLink, '_blank');
+                      
+                      // تحديث حالة الرسالة إلى "مردود عليها"
+                      messagesService.updateStatus(selectedMessage.id, 'replied').then(() => {
+                        messagesService.getAll().then(setMessages);
+                        messagesService.getStats().then(setMessageStats);
+                        showMessage('تم فتح برنامج البريد الإلكتروني للرد!');
+                      });
+                      
+                      setShowReplyModal(false);
+                      setSelectedMessage(null);
+                      setReplySubject('');
+                      setReplyBody('');
+                    }}
+                    disabled={!replySubject.trim() || !replyBody.trim()}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    📧 إرسال الرد عبر البريد الإلكتروني
+                  </button>
+                  <button
+                    onClick={() => {
+                      // نسخ البريد الإلكتروني والرد
+                      const emailText = `To: ${selectedMessage.email}\nSubject: ${replySubject}\n\n${replyBody}`;
+                      navigator.clipboard.writeText(emailText).then(() => {
+                        showMessage('تم نسخ الرد! يمكنك لصقه في أي برنامج بريد إلكتروني');
+                      }).catch(() => {
+                        showMessage('فشل نسخ الرد', true);
+                      });
+                    }}
+                    disabled={!replySubject.trim() || !replyBody.trim()}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    📋 نسخ الرد
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowReplyModal(false);
+                      setSelectedMessage(null);
+                      setReplySubject('');
+                      setReplyBody('');
+                    }}
+                    className="bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+
+                {/* ملاحظة للمستخدم */}
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                  <p className="text-blue-300 text-sm">
+                    💡 <span className="font-semibold">ملاحظة:</span> عند النقر على "إرسال الرد"، سيتم فتح برنامج البريد الإلكتروني الافتراضي في جهازك مع الرسالة جاهزة للإرسال. 
+                    يمكنك أيضاً استخدام زر "نسخ الرد" لنسخ النص وإرساله عبر أي برنامج بريد إلكتروني آخر.
+                  </p>
                 </div>
               </div>
             </div>
