@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   // Redirect logged-in users (only if active and has academic data)
   useEffect(() => {
-    if (user && user.is_active && user.department && user.year && user.term) {
+    if (user && user.isActive && user.department && user.year && user.term) {
       console.log('✅ Active user with academic data detected on login page, redirecting to home...');
       router.push('/');
     }
@@ -38,6 +38,9 @@ export default function LoginPage() {
 
     const success = await login(formData);
     if (success) {
+      // بعد تسجيل الدخول الناجح، سيتم توجيه المستخدم تلقائياً من useEffect في UserContext
+      // إذا كان المستخدم جديداً (اسمه فارغ أو هو نفس البريد الإلكتروني)، سيتم توجيهه إلى Welcome
+      // وإلا سيتم توجيهه إلى الصفحة الرئيسية
       router.push('/');
     } else {
       setError('البريد الإلكتروني أو كلمة المرور غير صحيحة');

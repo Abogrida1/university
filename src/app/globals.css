@@ -20,6 +20,46 @@
   color: #9ca3af !important;
 }
 
+/* Force dark mode for notifications panel */
+.dark .notification-panel {
+  background-color: #111827 !important;
+  border-color: #374151 !important;
+}
+
+.dark .notification-panel * {
+  border-color: #374151 !important;
+}
+
+/* Force dark mode for notification items */
+.dark .notification-item {
+  background-color: #111827 !important;
+}
+
+.dark .notification-item-unread {
+  background-color: rgba(30, 58, 138, 0.2) !important;
+}
+
+.dark .notification-item-read {
+  background-color: #111827 !important;
+}
+
+/* Force dark mode for notification header */
+.dark .notification-panel > div:first-child {
+  background: linear-gradient(to right, #1f2937, #111827) !important;
+  border-bottom-color: #374151 !important;
+}
+
+/* Force dark mode for notification list container */
+.dark .notification-panel > div:nth-child(2) {
+  background-color: #111827 !important;
+}
+
+/* Force dark mode for empty state */
+.dark .notification-panel [class*="p-8 text-center"] {
+  background-color: #111827 !important;
+  color: #d1d5db !important;
+}
+
 /* Theme Variables */
 :root {
   /* Light mode variables - Enhanced */

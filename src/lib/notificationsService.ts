@@ -1,331 +1,257 @@
 import { supabase } from './supabase';
 
-export interface Notification {
+export interface UserNotification {
   id: string;
-  user_id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'update' | 'announcement';
+  type: 'update' | 'announcement' | 'warning' | 'info';
+  target_user_id: string | null; // null = لجميع المستخدمين
   is_read: boolean;
   created_by: string | null;
-  created_by_name?: string;
-  scheduled_for: string | null;
-  sent_at: string | null;
+  scheduled_at: string | null; // تاريخ الإرسال المجدول
   created_at: string;
-  updated_at: string;
+  read_at: string | null;
+  expires_at: string | null;
 }
 
 export interface CreateNotificationData {
-  user_id?: string; // إذا كان null، يتم إرسالها لجميع المستخدمين
   title: string;
   message: string;
-  type?: 'info' | 'success' | 'warning' | 'error' | 'update' | 'announcement';
-  scheduled_for?: string | null; // ISO date string أو null للإرسال الفوري
+  type?: 'update' | 'announcement' | 'warning' | 'info';
+  target_user_id?: string | null; // null = لجميع المستخدمين
+  scheduled_at?: string | null; // تاريخ الإرسال المجدول
+  expires_at?: string | null;
 }
 
 class NotificationsService {
-  /**
-   * إنشاء إشعار جديد
-   * فقط super_admin يمكنه إنشاء الإشعارات
-   */
-  async createNotification(
-    data: CreateNotificationData,
-    createdBy: string
-  ): Promise<{ success: boolean; notificationId?: string; error?: string }> {
+  // إنشاء إشعار جديد (للمدير الرئيسي فقط)
+  async create(data: CreateNotificationData, createdBy: string): Promise<UserNotification> {
     try {
-      // التحقق من أن المنشئ هو super_admin
-      const { data: creator, error: creatorError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', createdBy)
+      const notificationData = {
+        title: data.title,
+        message: data.message,
+        type: data.type || 'update',
+        target_user_id: data.target_user_id || null,
+        created_by: createdBy,
+        scheduled_at: data.scheduled_at || null,
+        expires_at: data.expires_at || null,
+      };
+
+      const { data: notification, error } = await supabase
+        .from('user_notifications')
+        .insert([notificationData])
+        .select()
         .single();
 
-      if (creatorError || !creator || creator.role !== 'super_admin') {
-        return { success: false, error: 'فقط المدير الرئيسي يمكنه إرسال الإشعارات' };
+      if (error) {
+        console.error('Error creating notification:', error);
+        throw new Error(`فشل في إنشاء الإشعار: ${error.message}`);
       }
 
-      // إذا كان user_id محدداً، أرسل لمستخدم واحد
-      if (data.user_id) {
-        const notificationData: any = {
-          user_id: data.user_id,
-          title: data.title,
-          message: data.message,
-          type: data.type || 'info',
-          created_by: createdBy,
-          scheduled_for: data.scheduled_for || null,
-          sent_at: data.scheduled_for ? null : new Date().toISOString()
-        };
-
-        const { data: notification, error } = await supabase
-          .from('notifications')
-          .insert([notificationData])
-          .select()
-          .single();
-
-        if (error) {
-          console.error('Error creating notification:', error);
-          return { success: false, error: `فشل في إنشاء الإشعار: ${error.message}` };
-        }
-
-        return { success: true, notificationId: notification.id };
-      } else {
-        // إرسال لجميع المستخدمين النشطين
-        const { data: users, error: usersError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('is_active', true)
-          .neq('role', 'super_admin'); // استثناء super_admin من تلقي الإشعارات
-
-        if (usersError) {
-          console.error('Error fetching users:', usersError);
-          return { success: false, error: 'فشل في جلب المستخدمين' };
-        }
-
-        if (!users || users.length === 0) {
-          return { success: false, error: 'لا يوجد مستخدمون لإرسال الإشعارات لهم' };
-        }
-
-        const notifications = users.map(user => ({
-          user_id: user.id,
-          title: data.title,
-          message: data.message,
-          type: data.type || 'info',
-          created_by: createdBy,
-          scheduled_for: data.scheduled_for || null,
-          sent_at: data.scheduled_for ? null : new Date().toISOString()
-        }));
-
-        const { data: createdNotifications, error } = await supabase
-          .from('notifications')
-          .insert(notifications)
-          .select();
-
-        if (error) {
-          console.error('Error creating notifications:', error);
-          return { success: false, error: `فشل في إنشاء الإشعارات: ${error.message}` };
-        }
-
-        return { success: true, notificationId: createdNotifications?.[0]?.id };
-      }
-    } catch (error: any) {
-      console.error('Error in createNotification:', error);
-      return { success: false, error: error.message || 'خطأ غير متوقع' };
+      return notification;
+    } catch (error) {
+      console.error('Error in create method:', error);
+      throw error;
     }
   }
 
-  /**
-   * جلب إشعارات المستخدم
-   */
-  async getUserNotifications(userId: string, limit: number = 50): Promise<Notification[]> {
+  // جلب إشعارات المستخدم
+  async getUserNotifications(userId: string): Promise<UserNotification[]> {
     try {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select(`
-          *,
-          created_by_user:users!notifications_created_by_fkey(name)
-        `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(limit);
+      // جلب الإشعارات الموجهة للمستخدم أو للجميع
+      const { data: notifications, error } = await supabase
+        .from('user_notifications')
+        .select('*')
+        .or(`target_user_id.eq.${userId},target_user_id.is.null`)
+        .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching notifications:', error);
-        return [];
+        console.error('Error fetching user notifications:', error);
+        throw new Error(`فشل في جلب الإشعارات: ${error.message}`);
       }
 
-      return (data || []).map((item: any) => ({
-        id: item.id,
-        user_id: item.user_id,
-        title: item.title,
-        message: item.message,
-        type: item.type,
-        is_read: item.is_read,
-        created_by: item.created_by,
-        created_by_name: item.created_by_user?.name,
-        scheduled_for: item.scheduled_for,
-        sent_at: item.sent_at,
-        created_at: item.created_at,
-        updated_at: item.updated_at
-      }));
+      // تصفية الإشعارات:
+      // 1. المنتهية الصلاحية
+      // 2. التي لم يحن وقت إرسالها بعد (scheduled_at في المستقبل)
+      const now = new Date();
+      const validNotifications = notifications?.filter(notif => {
+        // تصفية الإشعارات المجدولة (التي لم يحن وقتها بعد)
+        if (notif.scheduled_at && new Date(notif.scheduled_at) > now) {
+          return false;
+        }
+        
+        // تصفية الإشعارات المنتهية الصلاحية
+        if (notif.expires_at && new Date(notif.expires_at) < now) {
+          return false;
+        }
+        
+        return true;
+      }) || [];
+
+      return validNotifications;
     } catch (error) {
-      console.error('Error in getUserNotifications:', error);
-      return [];
+      console.error('Error in getUserNotifications method:', error);
+      throw error;
     }
   }
 
-  /**
-   * جلب الإشعارات غير المقروءة
-   */
-  async getUnreadNotifications(userId: string): Promise<Notification[]> {
+  // جلب إشعارات غير مقروءة فقط
+  async getUnreadNotifications(userId: string): Promise<UserNotification[]> {
     try {
-      const { data, error } = await supabase
-        .rpc('get_unread_notifications', { p_user_id: userId });
-
-      if (error) {
-        console.error('Error fetching unread notifications:', error);
-        return [];
-      }
-
-      return (data || []).map((item: any) => ({
-        id: item.id,
-        user_id: userId,
-        title: item.title,
-        message: item.message,
-        type: item.type,
-        is_read: false,
-        created_by: null,
-        created_by_name: item.created_by_name,
-        scheduled_for: null,
-        sent_at: null,
-        created_at: item.created_at,
-        updated_at: item.created_at
-      }));
+      const notifications = await this.getUserNotifications(userId);
+      return notifications.filter(notif => !notif.is_read);
     } catch (error) {
-      console.error('Error in getUnreadNotifications:', error);
-      return [];
+      console.error('Error in getUnreadNotifications method:', error);
+      throw error;
     }
   }
 
-  /**
-   * الحصول على عدد الإشعارات غير المقروءة
-   */
-  async getUnreadCount(userId: string): Promise<number> {
+  // تحديد إشعار كمقروء
+  async markAsRead(notificationId: string, userId: string): Promise<UserNotification> {
     try {
-      const now = new Date().toISOString();
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('is_read', false)
-        .or(`scheduled_for.is.null,scheduled_for.lte.${now}`)
-        .or(`sent_at.not.is.null,scheduled_for.is.null`);
+      // التأكد من أن الإشعار خاص بهذا المستخدم
+      const { data: notification, error: fetchError } = await supabase
+        .from('user_notifications')
+        .select('*')
+        .eq('id', notificationId)
+        .single();
 
-      if (error) {
-        console.error('Error getting unread count:', error);
-        return 0;
+      if (fetchError || !notification) {
+        throw new Error('الإشعار غير موجود');
       }
 
-      return data?.length || 0;
-    } catch (error) {
-      console.error('Error in getUnreadCount:', error);
-      return 0;
-    }
-  }
+      // التحقق من أن الإشعار خاص بهذا المستخدم أو للجميع
+      if (notification.target_user_id && notification.target_user_id !== userId) {
+        throw new Error('غير مصرح لك بقراءة هذا الإشعار');
+      }
 
-  /**
-   * تحديد إشعار كمقروء
-   */
-  async markAsRead(notificationId: string, userId: string): Promise<boolean> {
-    try {
-      const { data, error } = await supabase
-        .rpc('mark_notification_as_read', {
-          p_notification_id: notificationId,
-          p_user_id: userId
-        });
+      const { data: updated, error } = await supabase
+        .from('user_notifications')
+        .update({
+          is_read: true,
+          read_at: new Date().toISOString()
+        })
+        .eq('id', notificationId)
+        .select()
+        .single();
 
       if (error) {
         console.error('Error marking notification as read:', error);
-        return false;
+        throw new Error(`فشل في تحديث حالة الإشعار: ${error.message}`);
       }
 
-      return data;
+      return updated;
     } catch (error) {
-      console.error('Error in markAsRead:', error);
-      return false;
+      console.error('Error in markAsRead method:', error);
+      throw error;
     }
   }
 
-  /**
-   * تحديد جميع الإشعارات كمقروءة
-   */
-  async markAllAsRead(userId: string): Promise<number> {
+  // تحديد جميع إشعارات المستخدم كمقروءة
+  async markAllAsRead(userId: string): Promise<void> {
     try {
-      const { data, error } = await supabase
-        .rpc('mark_all_notifications_as_read', { p_user_id: userId });
+      const { error } = await supabase
+        .from('user_notifications')
+        .update({
+          is_read: true,
+          read_at: new Date().toISOString()
+        })
+        .or(`target_user_id.eq.${userId},target_user_id.is.null`)
+        .eq('is_read', false);
 
       if (error) {
         console.error('Error marking all notifications as read:', error);
-        return 0;
+        throw new Error(`فشل في تحديث الإشعارات: ${error.message}`);
       }
-
-      return data || 0;
     } catch (error) {
-      console.error('Error in markAllAsRead:', error);
-      return 0;
+      console.error('Error in markAllAsRead method:', error);
+      throw error;
     }
   }
 
-  /**
-   * حذف إشعار
-   * فقط super_admin يمكنه حذف الإشعارات
-   */
-  async deleteNotification(
-    notificationId: string,
-    deletedBy: string
-  ): Promise<{ success: boolean; error?: string }> {
+  // جلب جميع الإشعارات (للمدير الرئيسي)
+  async getAll(): Promise<UserNotification[]> {
     try {
-      // التحقق من أن الحاذف هو super_admin
-      const { data: deleter, error: deleterError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', deletedBy)
-        .single();
+      const { data: notifications, error } = await supabase
+        .from('user_notifications')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      if (deleterError || !deleter || deleter.role !== 'super_admin') {
-        return { success: false, error: 'فقط المدير الرئيسي يمكنه حذف الإشعارات' };
+      if (error) {
+        console.error('Error fetching all notifications:', error);
+        throw new Error(`فشل في جلب الإشعارات: ${error.message}`);
       }
 
+      return notifications || [];
+    } catch (error) {
+      console.error('Error in getAll method:', error);
+      throw error;
+    }
+  }
+
+  // حذف إشعار (للمدير الرئيسي فقط)
+  async delete(notificationId: string): Promise<void> {
+    try {
       const { error } = await supabase
-        .from('notifications')
+        .from('user_notifications')
         .delete()
         .eq('id', notificationId);
 
       if (error) {
         console.error('Error deleting notification:', error);
-        return { success: false, error: `فشل في حذف الإشعار: ${error.message}` };
+        throw new Error(`فشل في حذف الإشعار: ${error.message}`);
       }
-
-      return { success: true };
-    } catch (error: any) {
-      console.error('Error in deleteNotification:', error);
-      return { success: false, error: error.message || 'خطأ غير متوقع' };
+    } catch (error) {
+      console.error('Error in delete method:', error);
+      throw error;
     }
   }
 
-  /**
-   * جلب جميع المستخدمين لإرسال الإشعارات لهم
-   * فقط super_admin يمكنه استخدام هذه الدالة
-   */
-  async getAllUsersForNotifications(adminId: string): Promise<{ success: boolean; users?: any[]; error?: string }> {
+  // جلب إحصائيات الإشعارات
+  async getStats(): Promise<{
+    total: number;
+    unread: number;
+    read: number;
+    byType: {
+      update: number;
+      announcement: number;
+      warning: number;
+      info: number;
+    };
+  }> {
     try {
-      // التحقق من أن الطالب هو super_admin
-      const { data: admin, error: adminError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', adminId)
-        .single();
+      const notifications = await this.getAll();
+      
+      const stats = {
+        total: notifications.length,
+        unread: notifications.filter(n => !n.is_read).length,
+        read: notifications.filter(n => n.is_read).length,
+        byType: {
+          update: notifications.filter(n => n.type === 'update').length,
+          announcement: notifications.filter(n => n.type === 'announcement').length,
+          warning: notifications.filter(n => n.type === 'warning').length,
+          info: notifications.filter(n => n.type === 'info').length,
+        }
+      };
 
-      if (adminError || !admin || admin.role !== 'super_admin') {
-        return { success: false, error: 'فقط المدير الرئيسي يمكنه جلب المستخدمين' };
-      }
+      return stats;
+    } catch (error) {
+      console.error('Error in getStats method:', error);
+      throw error;
+    }
+  }
 
-      const { data: users, error } = await supabase
-        .from('users')
-        .select('id, name, email, role, department, year, term')
-        .eq('is_active', true)
-        .order('name');
-
-      if (error) {
-        console.error('Error fetching users:', error);
-        return { success: false, error: 'فشل في جلب المستخدمين' };
-      }
-
-      return { success: true, users: users || [] };
-    } catch (error: any) {
-      console.error('Error in getAllUsersForNotifications:', error);
-      return { success: false, error: error.message || 'خطأ غير متوقع' };
+  // جلب عدد الإشعارات غير المقروءة للمستخدم
+  async getUnreadCount(userId: string): Promise<number> {
+    try {
+      const unread = await this.getUnreadNotifications(userId);
+      return unread.length;
+    } catch (error) {
+      console.error('Error in getUnreadCount method:', error);
+      return 0;
     }
   }
 }
 
 export const notificationsService = new NotificationsService();
+

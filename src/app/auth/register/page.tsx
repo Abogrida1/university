@@ -32,20 +32,29 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false);
 
   // إعادة توجيه المستخدمين المسجلين (فقط إذا كان الحساب نشط وله بيانات أكاديمية)
+  // ولكن ليس إذا كانوا بالفعل في صفحة التسجيل (لتجنب الحلقة)
   useEffect(() => {
-    if (user && user.is_active && user.department && user.year && user.term) {
-      console.log('✅ Active user with academic data detected, redirecting to welcome...');
-      console.log('User data:', {
-        is_active: user.is_active,
-        department: user.department,
-        year: user.year,
-        term: user.term
-      });
-      // توجيه فوري للويلكم
-      window.location.href = '/welcome';
+    if (user && user.isActive && user.department && user.year && user.term) {
+      const currentPath = window.location.pathname;
+      // فقط إذا لم نكن في صفحة التسجيل (لتجنب الحلقة)
+      if (currentPath === '/auth/register') {
+        console.log('✅ Active user with academic data detected on register page, redirecting to welcome...');
+        console.log('User data:', {
+          isActive: user.isActive,
+          department: user.department,
+          year: user.year,
+          term: user.term
+        });
+        // توجيه إلى Welcome لإكمال البيانات
+        router.push('/welcome');
+      }
     }
   }, [user, router]);
 
+<<<<<<< HEAD
+=======
+  // Google OAuth disabled - removed all related logic
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
 
   const departments = [
     { value: 'Cyber Security', label: 'الأمن السيبراني', icon: '🛡️', color: 'from-yellow-500 to-yellow-600' },
@@ -78,7 +87,11 @@ export default function RegisterPage() {
       return;
     }
     
+<<<<<<< HEAD
     // للمستخدمين، الانتقال للخطوة التالية
+=======
+    // الانتقال للخطوة التالية
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
     setFormData({
       ...formData,
       department: selectedData.department,
@@ -119,7 +132,8 @@ export default function RegisterPage() {
 
             const success = await register(formData);
             if (success) {
-              router.push('/');
+              // توجيه المستخدم الجديد إلى صفحة Welcome
+              router.push('/welcome');
             } else {
               setError('خطأ في إنشاء الحساب. تأكد من صحة البيانات أو تحقق من اتصال الإنترنت');
             }
@@ -149,6 +163,26 @@ export default function RegisterPage() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleGoogleLogin = async () => {
+    try {
+      const success = await loginWithGoogle({
+        department: selectedData.department,
+        year: selectedData.year,
+        term: selectedData.term
+      });
+      
+      if (!success) {
+        setError('خطأ في تسجيل الدخول بجوجل');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setError('خطأ في تسجيل الدخول بجوجل');
+    }
+  };
+
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
 
   return (
     <div className="min-h-screen py-6 sm:py-8 lg:py-12 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-black dark:to-gray-800 relative overflow-hidden">

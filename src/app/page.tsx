@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import Link from 'next/link';
 import { materialsService, Material } from '@/lib/supabaseServiceFixed';
 import { useUser } from '@/lib/UserContext';
+import { useRouter } from 'next/navigation';
 
 // تحميل المكونات بشكل كسول
 const LectureSchedule = lazy(() => import('@/components/LectureSchedule'));
@@ -37,6 +38,7 @@ type ProgramKey = 'General' | 'Cyber Security' | 'Artificial Intelligence';
 
 export default function HomePage() {
   const { user } = useUser();
+  const router = useRouter();
   const [program, setProgram] = useState<ProgramKey | ''>('');
   const [year, setYear] = useState<number | ''>('');
   const [term, setTerm] = useState<'FIRST' | 'SECOND' | ''>('');
@@ -50,6 +52,11 @@ export default function HomePage() {
 
   // Check if user needs to go to welcome page - فقط إذا كان المستخدم موجود ونشط وله بيانات أكاديمية
   useEffect(() => {
+    // التحقق من أننا في الصفحة الرئيسية (لتجنب التوجيه المستمر)
+    if (typeof window === 'undefined') return;
+    const currentPath = window.location.pathname;
+    if (currentPath !== '/') return;
+
     if (user && user.isActive && user.department && user.year && user.term) {
       const emailPrefix = user.email?.split('@')[0] || '';
       const isNewUser = !user.name || 
@@ -57,23 +64,14 @@ export default function HomePage() {
                        user.name === user.email ||
                        user.name.length < 3;
       
-      console.log('=== HOME PAGE USER CHECK ===');
-      console.log('User:', user);
-      console.log('User name:', user.name);
-      console.log('Email prefix:', emailPrefix);
-      console.log('Is new user:', isNewUser);
-      console.log('Is active:', user.isActive);
-      console.log('Has academic data:', !!(user.department && user.year && user.term));
-      console.log('============================');
-      
       if (isNewUser) {
         console.log('New user detected, redirecting to welcome page...');
-        // تأخير قليل لتجنب التوجيه السريع
-        setTimeout(() => {
-          window.location.href = '/welcome';
-        }, 500);
+        // استخدام router.push بدلاً من window.location لتجنب إعادة تحميل كاملة
+        router.push('/welcome');
+        return;
       }
     } else if (user && (!user.isActive || !user.department || !user.year || !user.term)) {
+<<<<<<< HEAD
       console.log('Invalid user detected, redirecting to register page...');
       // توجيه المستخدم غير النشط أو بدون بيانات أكاديمية لصفحة إنشاء الحساب
       setTimeout(() => {
@@ -82,8 +80,16 @@ export default function HomePage() {
     } else if (user && user.isActive && user.department && user.year && user.term) {
       console.log('Valid user with academic data detected, staying on home page...');
       // المستخدم صالح وله بيانات أكاديمية، يبقى في الصفحة الرئيسية
+=======
+      const currentPath2 = window.location.pathname;
+      // فقط إذا لم نكن بالفعل في صفحة التسجيل أو Welcome
+      if (currentPath2 !== '/auth/register' && currentPath2 !== '/welcome') {
+        console.log('Invalid user detected, redirecting to register page...');
+        router.push('/auth/register');
+      }
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
     }
-  }, [user]);
+  }, [user?.id, user?.isActive, user?.name, router]); // فقط التغييرات المهمة
 
   // Get unique departments from materials
   const getUniqueDepartments = () => {

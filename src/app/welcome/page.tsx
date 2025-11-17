@@ -21,34 +21,56 @@ export default function WelcomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // إعادة توجيه المستخدمين غير المسجلين أو غير النشطين أو بدون بيانات أكاديمية
+  // إعادة توجيه المستخدمين غير المسجلين فقط (وليس من لديهم بيانات أكاديمية لكن لم يكملوا Welcome)
   useEffect(() => {
+    // التحقق من أننا بالفعل في صفحة Welcome (لتجنب التوجيه المستمر)
+    if (typeof window === 'undefined') return;
+    const currentPath = window.location.pathname;
+    if (currentPath !== '/welcome') return;
+
     // انتظار قصير للتأكد من تحميل بيانات المستخدم
     const timer = setTimeout(() => {
-      if ((!user || (user && !user.is_active) || (user && (!user.department || !user.year || !user.term))) && !hasRedirected) {
-        console.log('No valid user found after timeout, redirecting to register...');
-        console.log('User status:', {
-          user: !!user,
-          is_active: user?.is_active,
-          department: user?.department,
-          year: user?.year,
-          term: user?.term
-        });
+      // فقط إذا لم يكن هناك مستخدم على الإطلاق، أو المستخدم غير نشط وبدون بيانات أكاديمية
+      // نسمح للمستخدمين الجدد بالبقاء في صفحة Welcome لإكمال بياناتهم
+      if (!user && !hasRedirected) {
+        console.log('No user found, redirecting to register...');
         setHasRedirected(true);
-        window.location.href = '/auth/register?step=1';
-      } else if (user && user.is_active && user.department && user.year && user.term) {
-        console.log('✅ Valid user detected on welcome page, staying here...');
-        console.log('User data:', {
-          is_active: user.is_active,
-          department: user.department,
-          year: user.year,
-          term: user.term
-        });
+        router.push('/auth/register');
+        return;
       }
-    }, 1000); // تقليل الوقت إلى ثانية واحدة
+      
+      if (user && !user.isActive && (!user.department || !user.year || !user.term) && !hasRedirected) {
+        // فقط إذا كان المستخدم غير نشط وبدون بيانات أكاديمية تماماً
+        console.log('Inactive user without academic data, redirecting to register...');
+        setHasRedirected(true);
+        router.push('/auth/register');
+        return;
+      }
+      
+      // إذا كان المستخدم لديه كل البيانات
+      if (user && user.isActive && user.department && user.year && user.term) {
+        const emailPrefix = user.email?.split('@')[0] || '';
+        const hasValidName = user.name && 
+                           user.name !== emailPrefix && 
+                           user.name !== user.email && 
+                           user.name.length >= 3;
+        
+        // فقط إذا كان المستخدم قد أكمل اسمه ولم نكن قد أعدنا التوجيه بالفعل
+        if (hasValidName && !hasRedirected && !success) {
+          console.log('User has valid name, redirecting to home...');
+          setHasRedirected(true);
+          // لا نعيد التوجيه هنا - سيتم من handleSubmit بعد حفظ الاسم
+        }
+        
+        // إذا لم يكن لديه اسم صالح، يبقى في Welcome لإكمال اسمه
+        if (!hasValidName) {
+          console.log('✅ Valid user on welcome page, waiting for name completion...');
+        }
+      }
+    }, 500); // تقليل الوقت لتجنب التأخير
 
     return () => clearTimeout(timer);
-  }, [user, hasRedirected]);
+  }, [user?.id, user?.isActive, user?.name, hasRedirected, success, router]); // فقط التغييرات المهمة
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,12 +102,13 @@ export default function WelcomePage() {
 
       // إظهار رسالة النجاح
       setSuccess(true);
+      setHasRedirected(true); // منع إعادة التوجيه المتكررة
       console.log('Name updated successfully, redirecting to home...');
       
       // إعادة التوجيه إلى الصفحة الرئيسية
       setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
+        router.push('/');
+      }, 1500);
     } catch (err) {
       console.error('خطأ في حفظ الاسم:', err);
       setError('حدث خطأ في حفظ الاسم. يرجى المحاولة مرة أخرى.');

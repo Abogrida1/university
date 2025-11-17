@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserProfile, UserSession, LoginCredentials, RegisterData } from './types';
 import { UserService } from './userService';
+import { supabase } from './supabase';
+import { getOAuthConfig } from './oauthConfig';
 
 interface UserContextType {
   user: UserProfile | null;
@@ -10,6 +12,7 @@ interface UserContextType {
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
+  loginWithGoogle: (academicData?: { department: string; year: string; term: string }) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
@@ -23,8 +26,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<UserSession | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // تحميل المستخدم من الجلسة المحفوظة
+  // تحميل المستخدم من الجلسة المحفوظة (مرة واحدة فقط عند التحميل)
   useEffect(() => {
+    let isMounted = true; // للتحقق من أن المكون لا يزال محملاً
+    
     const loadUserFromSession = async () => {
       try {
         console.log('🔄 UserContext: Loading user from session...');
@@ -40,7 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           console.log('👤 User profile details:', {
             id: userProfile?.id,
             email: userProfile?.email,
-            is_active: userProfile?.is_active,
+            isActive: userProfile?.isActive,
             department: userProfile?.department,
             year: userProfile?.year,
             term: userProfile?.term
@@ -48,18 +53,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
           
           if (userProfile) {
             // التحقق من أن الحساب نشط
-            if (!userProfile.is_active) {
+            if (!userProfile.isActive) {
               console.log('⚠️ User account is not active, checking current page...');
               // التحقق من الصفحة الحالية لتجنب التوجيه المستمر
               const currentPath = window.location.pathname;
               if (currentPath !== '/auth/register') {
                 console.log('Redirecting to complete registration...');
-                window.location.href = '/auth/register?step=1';
+                window.location.href = '/auth/register';
                 return;
               } else {
                 console.log('Already on register page, setting user as inactive...');
                 // تعيين المستخدم كغير نشط ولكن لا نعيد التوجيه
-                setUser({ ...userProfile, is_active: false });
+                setUser({ ...userProfile, isActive: false });
                 return;
               }
             } else {
@@ -72,9 +77,19 @@ export function UserProvider({ children }: { children: ReactNode }) {
               });
               
               if (!userProfile.department || !userProfile.year || !userProfile.term) {
-                console.log('⚠️ Active user missing academic data, redirecting to register...');
-                window.location.href = '/auth/register?step=1';
-                return;
+                console.log('⚠️ Active user missing academic data, checking current page...');
+                const currentPath = window.location.pathname;
+                // فقط إذا لم نكن بالفعل في صفحة التسجيل أو Welcome (لتجنب الحلقة)
+                if (currentPath !== '/auth/register' && currentPath !== '/welcome') {
+                  console.log('Redirecting to register...');
+                  window.location.href = '/auth/register';
+                  return;
+                } else {
+                  console.log('Already on register/welcome page, staying here...');
+                  // نضع المستخدم في حالة بدون بيانات أكاديمية لكن لا نعيد التوجيه
+                  setUser(userProfile);
+                  return;
+                }
               }
             }
             
@@ -117,15 +132,23 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error('❌ Error loading user:', error);
-        localStorage.removeItem('session_token');
+        if (isMounted) {
+          localStorage.removeItem('session_token');
+        }
       } finally {
-        console.log('🔄 UserContext loading complete');
-        setLoading(false);
+        if (isMounted) {
+          console.log('🔄 UserContext loading complete');
+          setLoading(false);
+        }
       }
     };
 
     loadUserFromSession();
-  }, []);
+    
+    return () => {
+      isMounted = false; // تنظيف عند إلغاء تحميل المكون
+    };
+  }, []); // [] يعني مرة واحدة فقط عند التحميل
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
@@ -170,6 +193,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Google OAuth disabled - using regular login only
+  const loginWithGoogle = async (academicData?: { department: string; year: string; term: string }): Promise<boolean> => {
+    console.warn('Google OAuth is currently disabled. Please use regular login.');
+    return false;
+  };
 
   const logout = async (): Promise<void> => {
     try {
@@ -218,6 +246,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     loading,
     login,
     register,
+    loginWithGoogle,
     logout,
     updateProfile,
     changePassword,

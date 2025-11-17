@@ -193,6 +193,71 @@ export default function AdminDashboardPage() {
     join: 0
   });
 
+  // Notifications state
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showNotificationPasswordModal, setShowNotificationPasswordModal] = useState(false);
+  const [notificationPassword, setNotificationPassword] = useState('');
+  const [notificationPasswordError, setNotificationPasswordError] = useState('');
+  const NOTIFICATION_PASSWORD = '2212'; // يمكن تغييره لاحقاً
+  const [sentNotifications, setSentNotifications] = useState<any[]>([]);
+  const [notificationForm, setNotificationForm] = useState({
+    title: '',
+    message: '',
+    type: 'update' as 'update' | 'announcement' | 'warning' | 'info',
+    targetUserId: '' as string | null,
+    scheduledDate: '' as string | null, // تاريخ الإرسال (date only)
+    scheduledTime: '' as string | null, // وقت الإرسال (time only)
+    expireDate: '' as string | null, // تاريخ الانتهاء (date only)
+    expireTime: '' as string | null, // وقت الانتهاء (time only)
+  });
+
+  // Load sent notifications when notifications tab is active
+  useEffect(() => {
+    if (activeTab === 'notifications' && superAdmin?.role === 'super_admin') {
+      loadSentNotifications();
+    }
+  }, [activeTab, superAdmin?.id]);
+
+  const loadSentNotifications = async () => {
+    if (!superAdmin?.id) return;
+    try {
+      const response = await fetch('/api/notifications?all=true', {
+        headers: {
+          'x-admin-id': superAdmin.id,
+        },
+      });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setSentNotifications(result.data || []);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading sent notifications:', error);
+    }
+  };
+
+  const handleNotificationPasswordSubmit = () => {
+    if (notificationPassword === NOTIFICATION_PASSWORD) {
+      setShowNotificationPasswordModal(false);
+      setNotificationPassword('');
+      setNotificationPasswordError('');
+      setNotificationForm({
+        title: '',
+        message: '',
+        type: 'update',
+        targetUserId: null,
+        scheduledDate: null,
+        scheduledTime: null,
+        expireDate: null,
+        expireTime: null,
+      });
+      setShowNotificationModal(true);
+    } else {
+      setNotificationPasswordError('الكلمة المرورية غير صحيحة');
+    }
+  };
+
   // Map departments EN -> AR for schedules title convenience
   const departmentMap: { [key: string]: string } = {
     'General Program': 'البرنامج العام',
@@ -448,7 +513,11 @@ export default function AdminDashboardPage() {
   const superAdminTabs = (superAdmin?.role === 'super_admin' || userPermissions?.canManageAdmins)
     ? [
         { id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' },
+<<<<<<< HEAD
         { id: 'notifications', name: 'إرسال الإشعارات', icon: '🔔' }
+=======
+        ...(superAdmin?.role === 'super_admin' ? [{ id: 'notifications', name: 'إرسال إشعارات', icon: '📢' }] : [])
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
       ]
     : [];
 
@@ -2371,6 +2440,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+<<<<<<< HEAD
         {activeTab === 'notifications' && superAdmin?.role === 'super_admin' && (
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <SendNotification 
@@ -2378,6 +2448,130 @@ export default function AdminDashboardPage() {
                 showMessage('تم إرسال الإشعار بنجاح!');
               }}
             />
+=======
+        {/* Notifications Management (Super Admin Only) */}
+        {activeTab === 'notifications' && superAdmin?.role === 'super_admin' && (
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h2 className="text-3xl font-black text-white mb-2">إرسال إشعارات للمستخدمين</h2>
+                <p className="text-gray-400">أرسل تحديثات وإعلانات لجميع المستخدمين أو مستخدم محدد</p>
+              </div>
+              <button
+                onClick={() => {
+                  console.log('Opening password modal...');
+                  setShowNotificationPasswordModal(true);
+                }}
+                className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/30"
+              >
+                + إرسال إشعار جديد
+              </button>
+            </div>
+
+            <div className="bg-gray-900/50 rounded-2xl p-6 border border-gray-700/50">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-blue-500/20 border border-blue-500/30 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">🆕</div>
+                  <div className="text-2xl font-bold text-white mb-1">تحديثات</div>
+                </div>
+                <div className="bg-purple-500/20 border border-purple-500/30 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">📢</div>
+                  <div className="text-2xl font-bold text-white mb-1">إعلانات</div>
+                </div>
+                <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">⚠️</div>
+                  <div className="text-2xl font-bold text-white mb-1">تحذيرات</div>
+                </div>
+                <div className="bg-green-500/20 border border-green-500/30 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">ℹ️</div>
+                  <div className="text-2xl font-bold text-white mb-1">معلومات</div>
+                </div>
+              </div>
+
+              {/* Sent Notifications List */}
+              <div className="mt-8">
+                <h3 className="text-xl font-bold text-white mb-4">الإشعارات المرسلة</h3>
+                {sentNotifications.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400">
+                    <p>لا توجد إشعارات مرسلة بعد</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                    {sentNotifications.map((notification: any) => {
+                      const typeColors = {
+                        update: 'bg-blue-500/20 border-blue-500/30',
+                        announcement: 'bg-purple-500/20 border-purple-500/30',
+                        warning: 'bg-yellow-500/20 border-yellow-500/30',
+                        info: 'bg-green-500/20 border-green-500/30',
+                      };
+                      const typeIcons = {
+                        update: '🆕',
+                        announcement: '📢',
+                        warning: '⚠️',
+                        info: 'ℹ️',
+                      };
+
+                      return (
+                        <div
+                          key={notification.id}
+                          className={`p-4 rounded-xl border ${typeColors[notification.type] || typeColors.update}`}
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex items-start gap-3 flex-1">
+                              <span className="text-2xl">{typeIcons[notification.type] || '📢'}</span>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-white mb-1">{notification.title}</h4>
+                                <p className="text-sm text-gray-300 mb-2 line-clamp-2">{notification.message}</p>
+                                <div className="flex flex-wrap gap-4 text-xs text-gray-400">
+                                  <span>
+                                    📅 {new Date(notification.created_at).toLocaleString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                      hour12: true
+                                    })}
+                                  </span>
+                                  {notification.scheduled_at && (
+                                    <span>
+                                      ⏰ Scheduled: {new Date(notification.scheduled_at).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                      })}
+                                    </span>
+                                  )}
+                                  {notification.expires_at && (
+                                    <span>
+                                      ⏳ Expires: {new Date(notification.expires_at).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                      })}
+                                    </span>
+                                  )}
+                                  <span>
+                                    👤 {notification.target_user_id ? 'Specific User' : 'All Users'}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
           </div>
         )}
 
@@ -3271,6 +3465,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+<<<<<<< HEAD
         {/* Reply to Message Modal */}
         {showReplyModal && selectedMessage && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -3285,11 +3480,112 @@ export default function AdminDashboardPage() {
                     setReplyBody('');
                   }}
                   className="text-gray-400 hover:text-white transition-colors text-3xl"
+=======
+        {/* Notification Password Modal */}
+        {showNotificationPasswordModal && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
+              onClick={() => {
+                setShowNotificationPasswordModal(false);
+                setNotificationPassword('');
+                setNotificationPasswordError('');
+              }}
+            />
+            <div className="fixed inset-0 flex items-center justify-center z-[101] p-4 pointer-events-none">
+              <div className="bg-gray-800 rounded-3xl p-8 w-full max-w-md pointer-events-auto shadow-2xl border border-gray-700">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-bold text-white">⚠️ تأكيد الكلمة المرورية</h3>
+                  <button
+                    onClick={() => {
+                      setShowNotificationPasswordModal(false);
+                      setNotificationPassword('');
+                      setNotificationPasswordError('');
+                    }}
+                    className="text-gray-400 hover:text-white text-2xl"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-gray-300 mb-4">
+                    هذا القسم محمي بكلمة مرور لأن إرسال الإشعارات للمستخدمين عملية حساسة.
+                  </p>
+                  <div>
+                    <label className="block text-white font-medium mb-2">الكلمة المرورية</label>
+                    <input
+                      type="password"
+                      value={notificationPassword}
+                      onChange={(e) => {
+                        setNotificationPassword(e.target.value);
+                        setNotificationPasswordError('');
+                      }}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleNotificationPasswordSubmit();
+                        }
+                      }}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                      placeholder="أدخل الكلمة المرورية"
+                      autoFocus
+                    />
+                    {notificationPasswordError && (
+                      <p className="text-red-400 text-sm mt-2">{notificationPasswordError}</p>
+                    )}
+                  </div>
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      onClick={handleNotificationPasswordSubmit}
+                      className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+                    >
+                      تأكيد
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowNotificationPasswordModal(false);
+                        setNotificationPassword('');
+                        setNotificationPasswordError('');
+                      }}
+                      className="flex-1 bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Notification Modal */}
+        {showNotificationModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-800 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-white">إرسال إشعار جديد</h3>
+                <button
+                  onClick={() => {
+                    setShowNotificationModal(false);
+                    setNotificationForm({
+                      title: '',
+                      message: '',
+                      type: 'update',
+                      targetUserId: null,
+                      scheduledDate: null,
+                      scheduledTime: null,
+                      expireDate: null,
+                      expireTime: null,
+                    });
+                  }}
+                  className="text-gray-400 hover:text-white text-2xl"
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
                 >
                   ×
                 </button>
               </div>
 
+<<<<<<< HEAD
               <div className="space-y-6">
                 {/* معلومات المرسل */}
                 <div className="bg-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
@@ -3317,10 +3613,160 @@ export default function AdminDashboardPage() {
                           <p><span className="font-semibold text-white">واتساب:</span> {selectedMessage.whatsapp}</p>
                         )}
                       </>
+=======
+              {successMessage && (
+                <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
+                  ✅ {successMessage}
+                </div>
+              )}
+              {errorMessage && (
+                <div className="mb-6 bg-red-500/20 border border-red-500/30 text-red-300 px-6 py-3 rounded-xl">
+                  ❌ {errorMessage}
+                </div>
+              )}
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">نوع الإشعار *</label>
+                  <select
+                    value={notificationForm.type}
+                    onChange={(e) => setNotificationForm({ ...notificationForm, type: e.target.value as any })}
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  >
+                    <option value="update">🆕 تحديث</option>
+                    <option value="announcement">📢 إعلان</option>
+                    <option value="warning">⚠️ تحذير</option>
+                    <option value="info">ℹ️ معلومات</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">العنوان *</label>
+                  <input
+                    type="text"
+                    value={notificationForm.title}
+                    onChange={(e) => setNotificationForm({ ...notificationForm, title: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                    placeholder="مثال: تحديث جديد على الموقع"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">الرسالة *</label>
+                  <textarea
+                    value={notificationForm.message}
+                    onChange={(e) => setNotificationForm({ ...notificationForm, message: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500 min-h-[150px]"
+                    placeholder="اكتب محتوى الإشعار هنا..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">إرسال إلى</label>
+                  <select
+                    value={notificationForm.targetUserId || ''}
+                    onChange={(e) => setNotificationForm({ ...notificationForm, targetUserId: e.target.value || null })}
+                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  >
+                    <option value="">جميع المستخدمين</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name} ({user.email})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Schedule Date & Time */}
+                  <div className="bg-gray-700/30 rounded-xl p-4 border border-gray-600/50">
+                    <label className="block text-white font-medium mb-3">
+                      Schedule Date & Time (Optional)
+                      <span className="text-xs text-gray-400 block mt-1 font-normal">Send notification at a specific date and time</span>
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-300 text-sm mb-2">Date</label>
+                        <input
+                          type="date"
+                          value={notificationForm.scheduledDate || ''}
+                          onChange={(e) => setNotificationForm({ ...notificationForm, scheduledDate: e.target.value || null })}
+                          className="w-full px-4 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm"
+                          min={new Date().toISOString().split('T')[0]}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-300 text-sm mb-2">Time</label>
+                        <input
+                          type="time"
+                          value={notificationForm.scheduledTime || ''}
+                          onChange={(e) => setNotificationForm({ ...notificationForm, scheduledTime: e.target.value || null })}
+                          className="w-full px-4 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm"
+                          disabled={!notificationForm.scheduledDate}
+                        />
+                      </div>
+                    </div>
+                    {notificationForm.scheduledDate && notificationForm.scheduledTime && (
+                      <p className="text-xs text-gray-400 mt-2">
+                        📅 Will be sent: {new Date(`${notificationForm.scheduledDate}T${notificationForm.scheduledTime}`).toLocaleString('en-US', { 
+                          weekday: 'short',
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric', 
+                          hour: '2-digit', 
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Expiry Date & Time */}
+                  <div className="bg-gray-700/30 rounded-xl p-4 border border-gray-600/50">
+                    <label className="block text-white font-medium mb-3">
+                      Expiry Date & Time (Optional)
+                      <span className="text-xs text-gray-400 block mt-1 font-normal">Notification expires at this date and time</span>
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-300 text-sm mb-2">Date</label>
+                        <input
+                          type="date"
+                          value={notificationForm.expireDate || ''}
+                          onChange={(e) => setNotificationForm({ ...notificationForm, expireDate: e.target.value || null })}
+                          className="w-full px-4 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm"
+                          min={notificationForm.scheduledDate || new Date().toISOString().split('T')[0]}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-300 text-sm mb-2">Time</label>
+                        <input
+                          type="time"
+                          value={notificationForm.expireTime || ''}
+                          onChange={(e) => setNotificationForm({ ...notificationForm, expireTime: e.target.value || null })}
+                          className="w-full px-4 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm"
+                          disabled={!notificationForm.expireDate}
+                        />
+                      </div>
+                    </div>
+                    {notificationForm.expireDate && notificationForm.expireTime && (
+                      <p className="text-xs text-gray-400 mt-2">
+                        ⏰ Expires: {new Date(`${notificationForm.expireDate}T${notificationForm.expireTime}`).toLocaleString('en-US', { 
+                          weekday: 'short',
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric', 
+                          hour: '2-digit', 
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </p>
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
                     )}
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 {/* نموذج الرد */}
                 <div className="space-y-4">
                   <div>
@@ -3394,10 +3840,100 @@ export default function AdminDashboardPage() {
                       setReplyBody('');
                     }}
                     className="bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
+=======
+                <div className="flex gap-4 pt-4">
+                  <button
+                    onClick={async () => {
+                      if (!notificationForm.title || !notificationForm.message) {
+                        setErrorMessage('العنوان والرسالة مطلوبان');
+                        return;
+                      }
+
+                      try {
+                        setSuccessMessage('');
+                        setErrorMessage('');
+
+                        // بناء التاريخ والوقت للإرسال
+                        let scheduled_at = null;
+                        if (notificationForm.scheduledDate && notificationForm.scheduledTime) {
+                          scheduled_at = `${notificationForm.scheduledDate}T${notificationForm.scheduledTime}:00`;
+                        }
+
+                        // بناء التاريخ والوقت للانتهاء
+                        let expires_at = null;
+                        if (notificationForm.expireDate && notificationForm.expireTime) {
+                          expires_at = `${notificationForm.expireDate}T${notificationForm.expireTime}:00`;
+                        }
+
+                        const response = await fetch('/api/notifications', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'x-admin-id': superAdmin?.id || '',
+                          },
+                          body: JSON.stringify({
+                            title: notificationForm.title,
+                            message: notificationForm.message,
+                            type: notificationForm.type,
+                            target_user_id: notificationForm.targetUserId,
+                            scheduled_at: scheduled_at,
+                            expires_at: expires_at,
+                          }),
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                          setSuccessMessage('تم إرسال الإشعار بنجاح');
+                          setNotificationForm({
+                            title: '',
+                            message: '',
+                            type: 'update',
+                            targetUserId: null,
+                            scheduledDate: null,
+                            scheduledTime: null,
+                            expireDate: null,
+                            expireTime: null,
+                          });
+                          // تحديث قائمة الإشعارات المرسلة
+                          loadSentNotifications();
+                          setTimeout(() => {
+                            setShowNotificationModal(false);
+                            setSuccessMessage('');
+                          }, 2000);
+                        } else {
+                          setErrorMessage(result.message || 'حدث خطأ في إرسال الإشعار');
+                        }
+                      } catch (error: any) {
+                        console.error('Error sending notification:', error);
+                        setErrorMessage('حدث خطأ في إرسال الإشعار');
+                      }
+                    }}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+                  >
+                    إرسال الإشعار
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowNotificationModal(false);
+                      setNotificationForm({
+                        title: '',
+                        message: '',
+                        type: 'update',
+                        targetUserId: null,
+                        scheduledDate: null,
+                        scheduledTime: null,
+                        expireDate: null,
+                        expireTime: null,
+                      });
+                    }}
+                    className="flex-1 bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
                   >
                     إلغاء
                   </button>
                 </div>
+<<<<<<< HEAD
 
                 {/* ملاحظة للمستخدم */}
                 <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
@@ -3406,6 +3942,8 @@ export default function AdminDashboardPage() {
                     يمكنك أيضاً استخدام زر "نسخ الرد" لنسخ النص وإرساله عبر أي برنامج بريد إلكتروني آخر.
                   </p>
                 </div>
+=======
+>>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
               </div>
             </div>
           </div>
