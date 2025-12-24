@@ -9,7 +9,7 @@ import { validateEmail } from '@/lib/emailValidator';
 import { supabase } from '@/lib/supabase';
 
 export default function RegisterPage() {
-  const { user, register, loading, setUser } = useUser();
+  const { user, register, loading, setUser, loginWithGoogle } = useUser();
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [selectedData, setSelectedData] = useState({
@@ -51,10 +51,7 @@ export default function RegisterPage() {
     }
   }, [user, router]);
 
-<<<<<<< HEAD
-=======
   // Google OAuth disabled - removed all related logic
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
 
   const departments = [
     { value: 'Cyber Security', label: 'الأمن السيبراني', icon: '🛡️', color: 'from-yellow-500 to-yellow-600' },
@@ -86,12 +83,8 @@ export default function RegisterPage() {
       setError('يرجى اختيار القسم والسنة والترم');
       return;
     }
-    
-<<<<<<< HEAD
-    // للمستخدمين، الانتقال للخطوة التالية
-=======
+
     // الانتقال للخطوة التالية
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
     setFormData({
       ...formData,
       department: selectedData.department,
@@ -130,18 +123,18 @@ export default function RegisterPage() {
       return;
     }
 
-            const success = await register(formData);
-            if (success) {
-              // توجيه المستخدم الجديد إلى صفحة Welcome
-              router.push('/welcome');
-            } else {
-              setError('خطأ في إنشاء الحساب. تأكد من صحة البيانات أو تحقق من اتصال الإنترنت');
-            }
+    const success = await register(formData);
+    if (success) {
+      // توجيه المستخدم الجديد إلى صفحة Welcome
+      router.push('/welcome');
+    } else {
+      setError('خطأ في إنشاء الحساب. تأكد من صحة البيانات أو تحقق من اتصال الإنترنت');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     setFormData({
       ...formData,
       [name]: value
@@ -150,7 +143,7 @@ export default function RegisterPage() {
 
   const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const email = e.target.value.trim();
-    
+
     if (email) {
       const emailValidation = validateEmail(email);
       if (!emailValidation.isValid) {
@@ -163,8 +156,6 @@ export default function RegisterPage() {
     }
   };
 
-<<<<<<< HEAD
-=======
   const handleGoogleLogin = async () => {
     try {
       const success = await loginWithGoogle({
@@ -172,7 +163,7 @@ export default function RegisterPage() {
         year: selectedData.year,
         term: selectedData.term
       });
-      
+
       if (!success) {
         setError('خطأ في تسجيل الدخول بجوجل');
       }
@@ -181,8 +172,6 @@ export default function RegisterPage() {
       setError('خطأ في تسجيل الدخول بجوجل');
     }
   };
-
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
 
   return (
     <div className="min-h-screen py-6 sm:py-8 lg:py-12 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-black dark:to-gray-800 relative overflow-hidden">
@@ -194,9 +183,9 @@ export default function RegisterPage() {
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-yellow-400 dark:to-yellow-600 rounded-xl sm:rounded-2xl lg:rounded-3xl mb-4 sm:mb-6 lg:mb-8 shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/25">
-            <img 
-              src="/assets/icons/main-icon.png" 
-              alt="University Materials" 
+            <img
+              src="/assets/icons/main-icon.png"
+              alt="University Materials"
               className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10"
             />
           </div>
@@ -240,16 +229,14 @@ export default function RegisterPage() {
                   <button
                     key={dept.value}
                     onClick={() => handleSelection('department', dept.value)}
-                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 backdrop-blur-sm ${
-                      selectedData.department === dept.value
-                        ? `bg-gradient-to-r from-blue-600 to-blue-700 dark:${dept.color} shadow-lg sm:shadow-xl lg:shadow-2xl text-white dark:text-black border-2 border-blue-800 dark:border-yellow-600`
-                        : 'register-card-unselected border-2 hover:border-blue-500'
-                    }`}
+                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 backdrop-blur-sm ${selectedData.department === dept.value
+                      ? `bg-gradient-to-r from-blue-600 to-blue-700 dark:${dept.color} shadow-lg sm:shadow-xl lg:shadow-2xl text-white dark:text-black border-2 border-blue-800 dark:border-yellow-600`
+                      : 'register-card-unselected border-2 hover:border-blue-500'
+                      }`}
                   >
                     <div className="text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 lg:mb-4">{dept.icon}</div>
-                    <h3 className={`text-sm sm:text-lg lg:text-xl font-bold mb-1 sm:mb-2 ${
-                      selectedData.department === dept.value ? 'text-white dark:text-black' : 'text-slate-900 dark:text-white'
-                    }`}>{dept.label}</h3>
+                    <h3 className={`text-sm sm:text-lg lg:text-xl font-bold mb-1 sm:mb-2 ${selectedData.department === dept.value ? 'text-white dark:text-black' : 'text-slate-900 dark:text-white'
+                      }`}>{dept.label}</h3>
                     {selectedData.department === dept.value && (
                       <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-black/20 dark:bg-white/30 rounded-full flex items-center justify-center">
                         <span className="text-white dark:text-black text-xs sm:text-sm font-bold">✓</span>
@@ -268,16 +255,14 @@ export default function RegisterPage() {
                   <button
                     key={year.value}
                     onClick={() => handleSelection('year', year.value)}
-                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 backdrop-blur-sm ${
-                      selectedData.year === year.value
-                        ? `bg-gradient-to-r from-indigo-600 to-indigo-700 dark:${year.color} shadow-md sm:shadow-lg lg:shadow-xl text-white dark:text-black border-2 border-indigo-800 dark:border-yellow-600`
-                        : 'register-card-unselected register-card-unselected-indigo border-2 hover:border-indigo-500'
-                    }`}
+                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 backdrop-blur-sm ${selectedData.year === year.value
+                      ? `bg-gradient-to-r from-indigo-600 to-indigo-700 dark:${year.color} shadow-md sm:shadow-lg lg:shadow-xl text-white dark:text-black border-2 border-indigo-800 dark:border-yellow-600`
+                      : 'register-card-unselected register-card-unselected-indigo border-2 hover:border-indigo-500'
+                      }`}
                   >
                     <div className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2">{year.icon}</div>
-                    <h3 className={`text-xs sm:text-sm lg:text-lg font-bold ${
-                      selectedData.year === year.value ? 'text-white dark:text-black' : 'text-slate-900 dark:text-white'
-                    }`}>{year.label}</h3>
+                    <h3 className={`text-xs sm:text-sm lg:text-lg font-bold ${selectedData.year === year.value ? 'text-white dark:text-black' : 'text-slate-900 dark:text-white'
+                      }`}>{year.label}</h3>
                     {selectedData.year === year.value && (
                       <div className="absolute top-1 right-1 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-black/20 dark:bg-white/30 rounded-full flex items-center justify-center">
                         <span className="text-white dark:text-black text-xs font-bold">✓</span>
@@ -296,16 +281,14 @@ export default function RegisterPage() {
                   <button
                     key={term.value}
                     onClick={() => handleSelection('term', term.value)}
-                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 backdrop-blur-sm ${
-                      selectedData.term === term.value
-                        ? `bg-gradient-to-r from-purple-600 to-purple-700 dark:${term.color} shadow-md sm:shadow-lg lg:shadow-xl text-white dark:text-black border-2 border-purple-800 dark:border-yellow-600`
-                        : 'register-card-unselected register-card-unselected-purple border-2 hover:border-purple-500'
-                    }`}
+                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 text-center transition-all duration-300 transform hover:scale-105 active:scale-95 backdrop-blur-sm ${selectedData.term === term.value
+                      ? `bg-gradient-to-r from-purple-600 to-purple-700 dark:${term.color} shadow-md sm:shadow-lg lg:shadow-xl text-white dark:text-black border-2 border-purple-800 dark:border-yellow-600`
+                      : 'register-card-unselected register-card-unselected-purple border-2 hover:border-purple-500'
+                      }`}
                   >
                     <div className="text-xl sm:text-2xl lg:text-3xl mb-2 sm:mb-3 lg:mb-4">{term.icon}</div>
-                    <h3 className={`text-sm sm:text-lg lg:text-xl font-bold ${
-                      selectedData.term === term.value ? 'text-white dark:text-black' : 'text-slate-900 dark:text-white'
-                    }`}>{term.label}</h3>
+                    <h3 className={`text-sm sm:text-lg lg:text-xl font-bold ${selectedData.term === term.value ? 'text-white dark:text-black' : 'text-slate-900 dark:text-white'
+                      }`}>{term.label}</h3>
                     {selectedData.term === term.value && (
                       <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-black/20 dark:bg-white/30 rounded-full flex items-center justify-center">
                         <span className="text-white dark:text-black text-xs sm:text-sm font-bold">✓</span>
@@ -362,11 +345,10 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={handleChange}
                     onBlur={handleEmailBlur}
-                    className={`w-full px-3 sm:px-4 py-2 sm:py-3 lg:py-4 bg-blue-50 dark:bg-gray-700/50 border-2 rounded-lg sm:rounded-xl lg:rounded-2xl focus:outline-none transition-all duration-300 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 text-sm sm:text-base lg:text-lg ${
-                      emailError 
-                        ? 'border-red-500 focus:border-red-400' 
-                        : 'border-blue-300 dark:border-gray-600/50 focus:border-blue-600 dark:focus:border-cyan-500'
-                    }`}
+                    className={`w-full px-3 sm:px-4 py-2 sm:py-3 lg:py-4 bg-blue-50 dark:bg-gray-700/50 border-2 rounded-lg sm:rounded-xl lg:rounded-2xl focus:outline-none transition-all duration-300 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-gray-400 text-sm sm:text-base lg:text-lg ${emailError
+                      ? 'border-red-500 focus:border-red-400'
+                      : 'border-blue-300 dark:border-gray-600/50 focus:border-blue-600 dark:focus:border-cyan-500'
+                      }`}
                     placeholder="example@gmail.com"
                     required
                   />
@@ -400,11 +382,11 @@ export default function RegisterPage() {
                     >
                       {showPassword ? (
                         <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                         </svg>
                       ) : (
                         <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />
                         </svg>
                       )}
                     </button>
@@ -432,11 +414,11 @@ export default function RegisterPage() {
                     >
                       {showConfirmPassword ? (
                         <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                         </svg>
                       ) : (
                         <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                          <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />
                         </svg>
                       )}
                     </button>
@@ -480,7 +462,7 @@ export default function RegisterPage() {
                     className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs sm:text-sm font-medium"
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                     </svg>
                     العودة للصفحة الرئيسية
                   </Link>

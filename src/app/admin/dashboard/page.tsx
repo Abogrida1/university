@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
   const [loadingVideoUpdate, setLoadingVideoUpdate] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   // Form data states
   const [formData, setFormData] = useState({
     title: '',
@@ -63,29 +63,29 @@ export default function AdminDashboardPage() {
       superAdminRole: superAdmin?.role,
       userPermissions: userPermissions
     });
-    
+
     if (superAdmin?.role === 'admin' && userPermissions?.scopes && userPermissions.scopes.length > 0) {
       console.log('✅ Condition met - setting form defaults');
       // إيجاد أول صلاحية نشطة ومحددة (ليست null)
-      const specificScope = userPermissions.scopes.find((s: any) => 
+      const specificScope = userPermissions.scopes.find((s: any) =>
         s.isActive && (s.department || s.year || s.term)
       ) || userPermissions.scopes[0];
-      
+
       console.log('🔧 Setting form defaults from scope:', specificScope);
       console.log('🔧 All available scopes:', userPermissions.scopes);
       console.log('🔧 Admin role:', superAdmin?.role);
       console.log('🔧 User permissions loaded:', !!userPermissions);
-      
+
       if (specificScope) {
         const defaultDept = specificScope.department;
         const defaultYear = specificScope.year;
         const defaultTerm = specificScope.term;
-        const defaultTermAr = specificScope.term === 'FIRST' ? 'الترم الأول' : 
-                             specificScope.term === 'SECOND' ? 'الترم الثاني' : '';
+        const defaultTermAr = specificScope.term === 'FIRST' ? 'الترم الأول' :
+          specificScope.term === 'SECOND' ? 'الترم الثاني' : '';
         const defaultDeptAr = defaultDept === 'Cyber Security' ? 'الأمن السيبراني' :
-                             defaultDept === 'Artificial Intelligence' ? 'الذكاء الاصطناعي' :
-                             defaultDept === 'General Program' ? 'البرنامج العام' : '';
-        
+          defaultDept === 'Artificial Intelligence' ? 'الذكاء الاصطناعي' :
+            defaultDept === 'General Program' ? 'البرنامج العام' : '';
+
         console.log('📝 Form defaults:', {
           department: defaultDept,
           year: defaultYear,
@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
             term: !!defaultTerm
           }
         });
-        
+
         setFormData(prev => ({
           ...prev,
           department: defaultDept,
@@ -133,7 +133,7 @@ export default function AdminDashboardPage() {
       });
     }
   }, [userPermissions, superAdmin]);
-  
+
   const [pdfFormData, setPdfFormData] = useState({
     title: '',
     materialId: '',
@@ -152,9 +152,9 @@ export default function AdminDashboardPage() {
     fileName: ''
   });
   const [scheduleFile, setScheduleFile] = useState<File | null>(null);
-  
+
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  
+
   const [videoFormData, setVideoFormData] = useState({
     title: '',
     materialId: '',
@@ -276,7 +276,7 @@ export default function AdminDashboardPage() {
         router.push('/admin/login');
         return;
       }
-      
+
       try {
         const admin = JSON.parse(adminData);
         // إذا لم يكن لديه role، افترض أنه super_admin (للتوافق مع البيانات القديمة)
@@ -295,7 +295,7 @@ export default function AdminDashboardPage() {
             console.log('🔐 Loaded scopes:', scopes);
             console.log('🔐 Admin email:', admin.email);
             console.log('🔐 Admin ID:', admin.id);
-            
+
             // تجميع الصلاحيات من جميع النطاقات
             const permissions = {
               canManageMaterials: scopes.some(s => s.canManageMaterials),
@@ -335,7 +335,7 @@ export default function AdminDashboardPage() {
                 }
               });
             });
-            
+
             // ملخص واضح للصلاحيات
             console.log('');
             console.log('════════════════════════════════════════════');
@@ -396,7 +396,7 @@ export default function AdminDashboardPage() {
   // Load data from Firebase on component mount
   useEffect(() => {
     if (!superAdmin) return;
-    
+
     const loadData = async () => {
       try {
         const [materialsData, pdfsData, videosData, usersData, schedulesData, messagesData, statsData] = await Promise.all([
@@ -408,13 +408,13 @@ export default function AdminDashboardPage() {
           messagesService.getAll(),
           messagesService.getStats()
         ]);
-        
+
         console.log('');
         console.log('════════════════════════════════════════════');
         console.log('📚 MATERIALS DATABASE SUMMARY');
         console.log('════════════════════════════════════════════');
         console.log('📦 Total Materials Loaded:', materialsData.length);
-        
+
         if (materialsData.length > 0) {
           console.log('\n📋 Materials List:');
           materialsData.forEach((material: any, index: number) => {
@@ -440,7 +440,7 @@ export default function AdminDashboardPage() {
             termType: typeof schedulesData[0].term
           });
         }
-        
+
         setMaterials(materialsData);
         setPdfs(pdfsData);
         setVideos(videosData);
@@ -452,7 +452,7 @@ export default function AdminDashboardPage() {
         console.error('Error loading data:', error);
       }
     };
-    
+
     loadData();
   }, [superAdmin]);
 
@@ -475,12 +475,12 @@ export default function AdminDashboardPage() {
   // بناء التبويبات بناءً على الصلاحيات
   console.log('🔨 Building tabs with permissions:', userPermissions);
   console.log('🔨 User role:', superAdmin?.role);
-  
+
   const tabs = [];
-  
+
   // نظرة عامة - تُضاف كـ tab لو فيه صلاحيات تانية
   // لو مفيش صلاحيات تانية، هتظهر فوق مباشرة
-  
+
   // التبويبات بناءً على الصلاحيات
   if (userPermissions?.canManageMessages || superAdmin?.role === 'super_admin') {
     console.log('✅ Adding messages tab - canManageMessages:', userPermissions?.canManageMessages);
@@ -506,25 +506,21 @@ export default function AdminDashboardPage() {
     console.log('✅ Adding users tab - canManageUsers:', userPermissions?.canManageUsers);
     tabs.push({ id: 'users', name: 'إدارة المستخدمين', icon: '👥' });
   }
-  
+
   console.log('🔨 Final tabs built:', tabs.map(t => t.name));
 
   // Super Admin specific tabs (أو الأدمن الذي لديه صلاحية إدارة الأدمنز)
   const superAdminTabs = (superAdmin?.role === 'super_admin' || userPermissions?.canManageAdmins)
     ? [
-        { id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' },
-<<<<<<< HEAD
-        { id: 'notifications', name: 'إرسال الإشعارات', icon: '🔔' }
-=======
-        ...(superAdmin?.role === 'super_admin' ? [{ id: 'notifications', name: 'إرسال إشعارات', icon: '📢' }] : [])
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
-      ]
+      { id: 'admins', name: 'إدارة الأدمنز والصلاحيات', icon: '👑' },
+      ...(superAdmin?.role === 'super_admin' ? [{ id: 'notifications', name: 'إرسال إشعارات', icon: '📢' }] : [])
+    ]
     : [];
 
   // إضافة "نظرة عامة" كـ tab فقط لو فيه tabs تانية
   // لو الأدمن عنده canViewAnalytics و فيه tabs تانية، نضيف overview كأول tab
-  if ((userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') && 
-      (tabs.length > 0 || superAdminTabs.length > 0)) {
+  if ((userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') &&
+    (tabs.length > 0 || superAdminTabs.length > 0)) {
     tabs.unshift({ id: 'overview', name: 'نظرة عامة', icon: '📊' });
   }
 
@@ -534,16 +530,16 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     // انتظر حتى يتم تحميل المستخدم على الأقل
     if (!superAdmin) return;
-    
+
     // للسوبر أدمن، كل شيء متاح
     if (superAdmin.role === 'super_admin') return;
-    
+
     // للأدمن العادي، انتظر تحميل الصلاحيات
     if (!userPermissions) return;
-    
+
     // تحقق إذا كان التبويب الحالي متاح للأدمن
     const isCurrentTabAvailable = allTabs.some(tab => tab.id === activeTab);
-    
+
     if (!isCurrentTabAvailable && allTabs.length > 0) {
       // التبويب الحالي غير متاح، الانتقال لأول تبويب متاح
       const firstAvailableTab = allTabs[0];
@@ -559,13 +555,13 @@ export default function AdminDashboardPage() {
       console.log('✅ Super admin - full access granted');
       return true;
     }
-    
+
     // إذا لم تكن هناك صلاحيات محملة
     if (!userPermissions?.scopes || userPermissions.scopes.length === 0) {
       console.log('❌ No permissions/scopes loaded');
       return false;
     }
-    
+
     // تحويل term إلى صيغة موحدة للمقارنة
     const normalizeTerm = (term: string | null | undefined): string => {
       if (!term) return '';
@@ -574,23 +570,23 @@ export default function AdminDashboardPage() {
       if (upperTerm === 'SECOND' || upperTerm.includes('SECOND') || upperTerm.includes('الثاني')) return 'SECOND';
       return upperTerm;
     };
-    
+
     // تحويل department إلى صيغة موحدة للمقارنة
     const normalizeDepartment = (dept: string | null | undefined): string => {
       if (!dept) return '';
       return String(dept).toLowerCase().trim().replace(/\s+/g, ' ');
     };
-    
+
     // تحويل year إلى رقم
     const normalizeYear = (year: any): number => {
       if (year === null || year === undefined) return 0;
       return parseInt(String(year), 10) || 0;
     };
-    
+
     const normalizedItemDepartment = normalizeDepartment(itemDepartment);
     const normalizedItemYear = normalizeYear(itemYear);
     const normalizedItemTerm = normalizeTerm(itemTerm);
-    
+
     console.log('');
     console.log('═══════════════════════════════════════');
     console.log('🔍 Checking permission for item:');
@@ -598,34 +594,34 @@ export default function AdminDashboardPage() {
     console.log('   📅 Year:', itemYear, '→', normalizedItemYear);
     console.log('   📆 Term:', itemTerm, '→', normalizedItemTerm);
     console.log('   🔐 Available scopes:', userPermissions.scopes.length);
-    
+
     // التحقق من وجود صلاحية مطابقة
     const hasPermission = userPermissions.scopes.some((scope: any) => {
       if (!scope.isActive) {
         console.log('⏭️ Skipping inactive scope');
         return false;
       }
-      
+
       const normalizedScopeDepartment = normalizeDepartment(scope.department);
       const normalizedScopeYear = normalizeYear(scope.year);
       const normalizedScopeTerm = normalizeTerm(scope.term);
-      
+
       // التحقق من المطابقة
       // إذا كان scope فارغ (null أو empty)، يعتبر "كل شيء" = match
-      const departmentMatch = !scope.department || scope.department === '' 
+      const departmentMatch = !scope.department || scope.department === ''
         ? true  // جميع الأقسام
         : normalizedScopeDepartment === normalizedItemDepartment;
-      
+
       const yearMatch = !scope.year || scope.year === 0 || scope.year === null
         ? true  // جميع السنوات
         : normalizedScopeYear === normalizedItemYear;
-      
+
       const termMatch = !scope.term || scope.term === ''
         ? true  // جميع الترمات
         : normalizedScopeTerm === normalizedItemTerm;
-      
+
       const matches = departmentMatch && yearMatch && termMatch;
-      
+
       console.log('🧪 Testing scope:');
       console.log('   📍 Scope Dept:', `"${scope.department}"`, '→', `"${normalizedScopeDepartment}"`);
       console.log('   📍 Item Dept:', `"${itemDepartment}"`, '→', `"${normalizedItemDepartment}"`);
@@ -640,14 +636,14 @@ export default function AdminDashboardPage() {
       console.log('   ✓ Term Match:', termMatch);
       console.log('');
       console.log('   🎯 FINAL RESULT:', matches ? '✅ MATCH' : '❌ NO MATCH');
-      
+
       return matches;
     });
-    
+
     console.log('');
     console.log(hasPermission ? '✅✅✅ ACCESS GRANTED ✅✅✅' : '❌❌❌ ACCESS DENIED ❌❌❌');
     console.log('═══════════════════════════════════════');
-    
+
     return hasPermission;
   };
 
@@ -656,17 +652,17 @@ export default function AdminDashboardPage() {
     try {
       setLoadingMaterial(true);
       console.log('🔄 Adding material:', formData);
-      
-      const newMaterial = await materialsService.add({...formData, description: ''});
+
+      const newMaterial = await materialsService.add({ ...formData, description: '' });
       console.log('✅ Material added successfully:', newMaterial);
-      
+
       const updatedMaterials = await materialsService.getAll();
       setMaterials(updatedMaterials);
-      
+
       setShowAddModal(false);
       resetForm();
       showMessage('تم إضافة المادة بنجاح!');
-      
+
       // إشارة لتحديث البيانات في جميع الصفحات
       localStorage.setItem('materialsUpdated', Date.now().toString());
       window.dispatchEvent(new Event('storage'));
@@ -690,17 +686,17 @@ export default function AdminDashboardPage() {
     setLoadingMaterial(true);
     try {
       console.log('🔄 Updating material...');
-      await materialsService.update((editingItem as Material).id, {...formData, description: ''});
-      
+      await materialsService.update((editingItem as Material).id, { ...formData, description: '' });
+
       console.log('✅ Material updated successfully, refreshing list...');
       const updatedMaterials = await materialsService.getAll();
       setMaterials(updatedMaterials);
-      
+
       setShowAddModal(false);
       setEditingItem(null);
       resetForm();
       showMessage('تم تحديث المادة بنجاح!');
-      
+
       // إشارة لتحديث البيانات في جميع الصفحات
       localStorage.setItem('materialsUpdated', Date.now().toString());
       window.dispatchEvent(new Event('storage'));
@@ -720,11 +716,11 @@ export default function AdminDashboardPage() {
         const updatedMaterials = await materialsService.getAll();
         setMaterials(updatedMaterials);
         showMessage('تم حذف المادة بنجاح!');
-        
+
         // إشارة لتحديث البيانات في جميع الصفحات
         localStorage.setItem('materialsUpdated', Date.now().toString());
         window.dispatchEvent(new Event('storage'));
-      window.dispatchEvent(new CustomEvent('dataUpdated', { detail: 'materials' }));
+        window.dispatchEvent(new CustomEvent('dataUpdated', { detail: 'materials' }));
       } catch (error) {
         console.error('Error deleting material:', error);
         showMessage('حدث خطأ في حذف المادة', true);
@@ -737,7 +733,7 @@ export default function AdminDashboardPage() {
     setLoadingPdf(true);
     try {
       console.log('🔄 Adding PDF...');
-      
+
       const material = materials.find(m => m.id === pdfFormData.materialId);
       const newPdf = {
         title: pdfFormData.title,
@@ -749,19 +745,19 @@ export default function AdminDashboardPage() {
         file_url: '',
         file_name: pdfFile?.name || ''
       };
-      
+
       console.log('📝 New PDF data:', newPdf);
       await pdfsService.add(newPdf, pdfFile || undefined);
-      
+
       console.log('✅ PDF added successfully, refreshing list...');
       const updatedPdfs = await pdfsService.getAll();
       setPdfs(updatedPdfs);
-      
+
       setShowPdfModal(false);
       setEditingItem(null);
       resetPdfForm();
       showMessage('تم إضافة ملف PDF بنجاح!');
-      
+
       // إشارة لتحديث البيانات في جميع الصفحات
       localStorage.setItem('pdfsUpdated', Date.now().toString());
       window.dispatchEvent(new Event('storage'));
@@ -791,7 +787,7 @@ export default function AdminDashboardPage() {
     setLoadingPdf(true);
     try {
       console.log('🔄 Updating PDF...');
-      
+
       const material = materials.find(m => m.id === pdfFormData.materialId);
       const updates = {
         title: pdfFormData.title,
@@ -801,14 +797,14 @@ export default function AdminDashboardPage() {
         material_id: pdfFormData.materialId,
         file_name: pdfFile?.name || (editingItem as Pdf)?.file_name || ''
       };
-      
+
       console.log('📝 PDF updates:', updates);
       await pdfsService.update((editingItem as Pdf).id, updates, pdfFile || undefined);
-      
+
       console.log('✅ PDF updated successfully, refreshing list...');
       const updatedPdfs = await pdfsService.getAll();
       setPdfs(updatedPdfs);
-      
+
       setShowPdfModal(false);
       setEditingItem(null);
       resetPdfForm();
@@ -839,7 +835,7 @@ export default function AdminDashboardPage() {
   const handleAddVideo = async () => {
     try {
       const material = materials.find(m => m.id === videoFormData.materialId);
-      
+
       let realViews = Math.floor(Math.random() * 10000) + 100;
       if (videoFormData.youtubeId) {
         try {
@@ -849,7 +845,7 @@ export default function AdminDashboardPage() {
           console.log('Using fallback views');
         }
       }
-      
+
       const newVideo = {
         title: videoFormData.title,
         material: material?.title || '',
@@ -863,7 +859,7 @@ export default function AdminDashboardPage() {
         playlist_id: videoFormData.playlistId,
         is_playlist: videoFormData.isPlaylist
       };
-      
+
       console.log('🎥 Adding new video with playlist data:', {
         title: newVideo.title,
         is_playlist: newVideo.is_playlist,
@@ -871,14 +867,14 @@ export default function AdminDashboardPage() {
         playlist_url: newVideo.playlist_url,
         youtube_id: newVideo.youtube_id
       });
-      
+
       await videosService.add(newVideo);
       const updatedVideos = await videosService.getAll();
       setVideos(updatedVideos);
       setShowVideoModal(false);
       resetVideoForm();
       showMessage('تم إضافة الفيديو بنجاح!');
-      
+
       // إشارة لتحديث البيانات في جميع الصفحات
       localStorage.setItem('videosUpdated', Date.now().toString());
       window.dispatchEvent(new Event('storage'));
@@ -911,7 +907,7 @@ export default function AdminDashboardPage() {
     try {
       console.log('🔄 Updating video...');
       const material = materials.find(m => m.id === videoFormData.materialId);
-      
+
       let realViews = Math.floor(Math.random() * 10000) + 100;
       if (videoFormData.youtubeId) {
         try {
@@ -921,7 +917,7 @@ export default function AdminDashboardPage() {
           console.log('Using fallback views');
         }
       }
-      
+
       const updates = {
         title: videoFormData.title,
         material: material?.title || '',
@@ -935,7 +931,7 @@ export default function AdminDashboardPage() {
         playlist_id: videoFormData.playlistId,
         is_playlist: videoFormData.isPlaylist
       };
-      
+
       console.log('📝 Video updates with playlist data:', {
         title: updates.title,
         is_playlist: updates.is_playlist,
@@ -944,11 +940,11 @@ export default function AdminDashboardPage() {
         youtube_id: updates.youtube_id
       });
       await videosService.update((editingItem as Video).id, updates);
-      
+
       console.log('✅ Video updated successfully, refreshing list...');
       const updatedVideos = await videosService.getAll();
       setVideos(updatedVideos);
-      
+
       setShowVideoModal(false);
       setEditingItem(null);
       resetVideoForm();
@@ -985,7 +981,7 @@ export default function AdminDashboardPage() {
         role: userFormData.role,
         status: userFormData.status
       };
-      
+
       await usersService.add(newUser);
       const updatedUsers = await usersService.getAll();
       setUsers(updatedUsers);
@@ -1019,12 +1015,12 @@ export default function AdminDashboardPage() {
         role: userFormData.role,
         status: userFormData.status
       };
-      
+
       // Only update password if provided
       if (userFormData.password) {
         (updates as any).password = userFormData.password;
       }
-      
+
       await usersService.update((editingItem as User).id, updates);
       const updatedUsers = await usersService.getAll();
       setUsers(updatedUsers);
@@ -1125,18 +1121,18 @@ export default function AdminDashboardPage() {
 
   // Handle playlist URL change
   const handlePlaylistUrlChange = async (url: string) => {
-    setVideoFormData({...videoFormData, playlistUrl: url});
-    
+    setVideoFormData({ ...videoFormData, playlistUrl: url });
+
     const playlistId = extractPlaylistId(url);
     if (playlistId) {
-      setVideoFormData(prev => ({...prev, playlistId: playlistId}));
+      setVideoFormData(prev => ({ ...prev, playlistId: playlistId }));
       setVideoFormData(prev => ({
         ...prev,
         title: 'جاري تحميل بيانات Playlist...',
         duration: 'Playlist',
         isPlaylist: true
       }));
-      
+
       // Fetch playlist data
       try {
         setLoadingVideo(true);
@@ -1170,7 +1166,7 @@ export default function AdminDashboardPage() {
     try {
       const oembedResponse = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.youtube.com/oembed?url=https://www.youtube.com/playlist?list=${playlistId}&format=json`)}`);
       const oembedData = await oembedResponse.json();
-      
+
       if (oembedData.contents) {
         const data = JSON.parse(oembedData.contents);
         return {
@@ -1190,18 +1186,18 @@ export default function AdminDashboardPage() {
       const oembedResponse = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)}`);
       const oembedData = await oembedResponse.json();
       const videoData = JSON.parse(oembedData.contents);
-      
+
       try {
         const internalResponse = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`);
         const internalData = await internalResponse.json();
         const htmlContent = internalData.contents;
-        
+
         const videoDataMatch = htmlContent.match(/"videoDetails":({.+?})/);
         if (videoDataMatch) {
           const videoDetails = JSON.parse(videoDataMatch[1]);
           const duration = formatDuration(parseInt(videoDetails.lengthSeconds));
           const views = parseInt(videoDetails.viewCount) || Math.floor(Math.random() * 100000) + 1000;
-          
+
           return {
             title: videoDetails.title || videoData.title,
             duration: duration,
@@ -1209,13 +1205,13 @@ export default function AdminDashboardPage() {
             thumbnail: videoData.thumbnail_url
           };
         }
-        
+
         const durationMatch = htmlContent.match(/"lengthSeconds":"(\d+)"/);
         const duration = durationMatch ? formatDuration(parseInt(durationMatch[1])) : '00:00';
-        
+
         const viewsMatch = htmlContent.match(/"viewCount":"(\d+)"/);
         const views = viewsMatch ? parseInt(viewsMatch[1]) : Math.floor(Math.random() * 100000) + 1000;
-        
+
         return {
           title: videoData.title,
           duration: duration,
@@ -1245,7 +1241,7 @@ export default function AdminDashboardPage() {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     if (hours > 0) {
       return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     } else {
@@ -1254,19 +1250,19 @@ export default function AdminDashboardPage() {
   };
 
   const handleYouTubeUrlChange = async (url: string) => {
-    setVideoFormData({...videoFormData, youtubeUrl: url});
-    
+    setVideoFormData({ ...videoFormData, youtubeUrl: url });
+
     const videoId = extractYouTubeId(url);
     if (videoId) {
       setLoadingVideo(true);
-      setVideoFormData(prev => ({...prev, youtubeId: videoId}));
-      
+      setVideoFormData(prev => ({ ...prev, youtubeId: videoId }));
+
       setVideoFormData(prev => ({
         ...prev,
         title: 'جاري تحميل بيانات الفيديو...',
         duration: 'جاري التحميل...'
       }));
-      
+
       try {
         const videoData = await fetchYouTubeData(videoId);
         setVideoFormData(prev => ({
@@ -1290,7 +1286,7 @@ export default function AdminDashboardPage() {
 
   if (!superAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: '#FAFAD2'}}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FAFAD2' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
           <p className="text-white">جاري التحقق من الصلاحيات...</p>
@@ -1298,7 +1294,7 @@ export default function AdminDashboardPage() {
       </div>
     );
   }
-  
+
   // للأدمن العادي، انتظر تحميل الصلاحيات قبل عرض الصفحة
   if (superAdmin.role === 'admin' && !userPermissions) {
     return (
@@ -1357,11 +1353,10 @@ export default function AdminDashboardPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-base transition-all duration-300 transform hover:scale-105 ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/30'
-                    : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-600/50'
-                }`}
+                className={`flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-base transition-all duration-300 transform hover:scale-105 ${activeTab === tab.id
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/30'
+                  : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-600/50'
+                  }`}
               >
                 <span className="text-2xl">{tab.icon}</span>
                 {tab.name}
@@ -1371,146 +1366,146 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Overview Section - Only visible when no other tabs OR active */}
-        {(userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') && 
-         (allTabs.length === 0 || activeTab === 'overview') && (
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-4 sm:p-6 md:p-6 shadow-2xl border border-gray-700/50 mb-6">
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-4 sm:mb-6">📊 نظرة عامة على النظام</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">إجمالي المواد</p>
-                    <p className="text-white text-3xl font-bold">
-                      {(() => {
-                        const filtered = materials.filter(m => canEditItem(m.department, m.year, m.term));
-                        console.log('📊 Overview - Total materials:', materials.length);
-                        console.log('📊 Overview - Filtered materials:', filtered.length);
-                        console.log('📊 Overview - User permissions:', userPermissions);
-                        return filtered.length;
-                      })()}
-                    </p>
-                  </div>
-                  <span className="text-4xl">📚</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-red-500/20 to-red-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">ملفات PDF</p>
-                    <p className="text-white text-3xl font-bold">
-                      {pdfs.filter(pdf => {
-                        const pdfAny = pdf as any;
-                        const material = materials.find(m => m.id === pdfAny.materialId || m.id === pdfAny.material_id);
-                        return material && canEditItem(material.department, material.year, material.term);
-                      }).length}
-                    </p>
-                  </div>
-                  <span className="text-4xl">📄</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">الفيديوهات</p>
-                    <p className="text-white text-3xl font-bold">
-                      {videos.filter(video => {
-                        const videoAny = video as any;
-                        const material = materials.find(m => m.id === videoAny.materialId || m.id === videoAny.material_id);
-                        return material && canEditItem(material.department, material.year, material.term);
-                      }).length}
-                    </p>
-                  </div>
-                  <span className="text-4xl">🎥</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">المستخدمين</p>
-                    <p className="text-white text-3xl font-bold">{users.length}</p>
-                  </div>
-                  <span className="text-4xl">👥</span>
-                </div>
-              </div>
-            </div>
+        {(userPermissions?.canViewAnalytics || superAdmin?.role === 'super_admin') &&
+          (allTabs.length === 0 || activeTab === 'overview') && (
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-4 sm:p-6 md:p-6 shadow-2xl border border-gray-700/50 mb-6">
+              <h2 className="text-2xl sm:text-3xl font-black text-white mb-4 sm:mb-6">📊 نظرة عامة على النظام</h2>
 
-            {/* Messages Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">إجمالي الرسائل</p>
-                    <p className="text-white text-3xl font-bold">{messageStats.total}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">إجمالي المواد</p>
+                      <p className="text-white text-3xl font-bold">
+                        {(() => {
+                          const filtered = materials.filter(m => canEditItem(m.department, m.year, m.term));
+                          console.log('📊 Overview - Total materials:', materials.length);
+                          console.log('📊 Overview - Filtered materials:', filtered.length);
+                          console.log('📊 Overview - User permissions:', userPermissions);
+                          return filtered.length;
+                        })()}
+                      </p>
+                    </div>
+                    <span className="text-4xl">📚</span>
                   </div>
-                  <span className="text-4xl">💬</span>
                 </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">رسائل جديدة</p>
-                    <p className="text-white text-3xl font-bold">{messageStats.new}</p>
-                  </div>
-                  <span className="text-4xl">🆕</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">طلبات انضمام</p>
-                    <p className="text-white text-3xl font-bold">{messageStats.join}</p>
-                  </div>
-                  <span className="text-4xl">👋</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-yellow-300 text-sm">رسائل تواصل</p>
-                    <p className="text-white text-3xl font-bold">{messageStats.contact}</p>
-                  </div>
-                  <span className="text-4xl">📧</span>
-                </div>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">أحدث المواد</h3>
-                <div className="space-y-3">
-                  {materials
-                    .filter(m => canEditItem(m.department, m.year, m.term))
-                    .slice(0, 5)
-                    .map(material => (
-                      <div key={material.id} className="bg-gray-700/30 rounded-xl p-4">
-                        <h4 className="text-white font-medium">{material.title}</h4>
-                        <p className="text-gray-400 text-sm">{material.code} - {material.department}</p>
+                <div className="bg-gradient-to-r from-red-500/20 to-red-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">ملفات PDF</p>
+                      <p className="text-white text-3xl font-bold">
+                        {pdfs.filter(pdf => {
+                          const pdfAny = pdf as any;
+                          const material = materials.find(m => m.id === pdfAny.materialId || m.id === pdfAny.material_id);
+                          return material && canEditItem(material.department, material.year, material.term);
+                        }).length}
+                      </p>
+                    </div>
+                    <span className="text-4xl">📄</span>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">الفيديوهات</p>
+                      <p className="text-white text-3xl font-bold">
+                        {videos.filter(video => {
+                          const videoAny = video as any;
+                          const material = materials.find(m => m.id === videoAny.materialId || m.id === videoAny.material_id);
+                          return material && canEditItem(material.department, material.year, material.term);
+                        }).length}
+                      </p>
+                    </div>
+                    <span className="text-4xl">🎥</span>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">المستخدمين</p>
+                      <p className="text-white text-3xl font-bold">{users.length}</p>
+                    </div>
+                    <span className="text-4xl">👥</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Messages Statistics */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">إجمالي الرسائل</p>
+                      <p className="text-white text-3xl font-bold">{messageStats.total}</p>
+                    </div>
+                    <span className="text-4xl">💬</span>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">رسائل جديدة</p>
+                      <p className="text-white text-3xl font-bold">{messageStats.new}</p>
+                    </div>
+                    <span className="text-4xl">🆕</span>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">طلبات انضمام</p>
+                      <p className="text-white text-3xl font-bold">{messageStats.join}</p>
+                    </div>
+                    <span className="text-4xl">👋</span>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 border border-yellow-500/30 rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-300 text-sm">رسائل تواصل</p>
+                      <p className="text-white text-3xl font-bold">{messageStats.contact}</p>
+                    </div>
+                    <span className="text-4xl">📧</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-4">أحدث المواد</h3>
+                  <div className="space-y-3">
+                    {materials
+                      .filter(m => canEditItem(m.department, m.year, m.term))
+                      .slice(0, 5)
+                      .map(material => (
+                        <div key={material.id} className="bg-gray-700/30 rounded-xl p-4">
+                          <h4 className="text-white font-medium">{material.title}</h4>
+                          <p className="text-gray-400 text-sm">{material.code} - {material.department}</p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-4">أحدث المستخدمين</h3>
+                  <div className="space-y-3">
+                    {users.slice(0, 5).map(user => (
+                      <div key={user.id} className="bg-gray-700/30 rounded-xl p-4">
+                        <h4 className="text-white font-medium">{user.name}</h4>
+                        <p className="text-gray-400 text-sm">{user.email} - {user.role}</p>
                       </div>
                     ))}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">أحدث المستخدمين</h3>
-                <div className="space-y-3">
-                  {users.slice(0, 5).map(user => (
-                    <div key={user.id} className="bg-gray-700/30 rounded-xl p-4">
-                      <h4 className="text-white font-medium">{user.name}</h4>
-                      <p className="text-gray-400 text-sm">{user.email} - {user.role}</p>
-                    </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Schedule Upload/Edit Modal */}
         {showScheduleModal && (
@@ -1563,9 +1558,8 @@ export default function AdminDashboardPage() {
                         title: `جدول المحاضرات - ${deptAr} - السنة ${scheduleForm.year || ''} - ${scheduleForm.term === 'FIRST' ? 'الترم الأول' : scheduleForm.term === 'SECOND' ? 'الترم الثاني' : ''}`
                       });
                     }}
-                    className={`w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-cyan-500 focus:outline-none ${
-                      superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department) ? 'opacity-60 cursor-not-allowed' : ''
-                    }`}
+                    className={`w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-cyan-500 focus:outline-none ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department) ? 'opacity-60 cursor-not-allowed' : ''
+                      }`}
                     required
                   >
                     <option value="">اختر القسم</option>
@@ -1590,16 +1584,15 @@ export default function AdminDashboardPage() {
                       <span className="text-yellow-400 text-xs mr-2">🔒 محدد: {scheduleForm.year}</span>
                     )}
                   </label>
-                  <select 
-                    value={scheduleForm.year || ''} 
+                  <select
+                    value={scheduleForm.year || ''}
                     disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.year)}
                     onChange={(e) => {
-                    const y = Number(e.target.value);
-                    setScheduleForm({ ...scheduleForm, year: y, title: `جدول المحاضرات - ${scheduleForm.departmentAr} - السنة ${y} - ${scheduleForm.term === 'FIRST' ? 'الترم الأول' : scheduleForm.term === 'SECOND' ? 'الترم الثاني' : ''}` });
-                    }} 
-                    className={`w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-cyan-500 focus:outline-none ${
-                      superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.year) ? 'opacity-60 cursor-not-allowed' : ''
-                    }`}
+                      const y = Number(e.target.value);
+                      setScheduleForm({ ...scheduleForm, year: y, title: `جدول المحاضرات - ${scheduleForm.departmentAr} - السنة ${y} - ${scheduleForm.term === 'FIRST' ? 'الترم الأول' : scheduleForm.term === 'SECOND' ? 'الترم الثاني' : ''}` });
+                    }}
+                    className={`w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-cyan-500 focus:outline-none ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.year) ? 'opacity-60 cursor-not-allowed' : ''
+                      }`}
                     required
                   >
                     <option value="">اختر السنة</option>
@@ -1616,17 +1609,16 @@ export default function AdminDashboardPage() {
                       <span className="text-yellow-400 text-xs mr-2">🔒 محدد: {scheduleForm.termAr}</span>
                     )}
                   </label>
-                  <select 
-                    value={scheduleForm.term || ''} 
+                  <select
+                    value={scheduleForm.term || ''}
                     disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term)}
                     onChange={(e) => {
-                    const t = e.target.value as 'FIRST' | 'SECOND';
-                    const termAr = t === 'FIRST' ? 'الترم الأول' : 'الترم الثاني';
-                    setScheduleForm({ ...scheduleForm, term: t, termAr, title: `جدول المحاضرات - ${scheduleForm.departmentAr} - السنة ${scheduleForm.year || ''} - ${termAr}` });
-                    }} 
-                    className={`w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-cyan-500 focus:outline-none ${
-                      superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term) ? 'opacity-60 cursor-not-allowed' : ''
-                    }`}
+                      const t = e.target.value as 'FIRST' | 'SECOND';
+                      const termAr = t === 'FIRST' ? 'الترم الأول' : 'الترم الثاني';
+                      setScheduleForm({ ...scheduleForm, term: t, termAr, title: `جدول المحاضرات - ${scheduleForm.departmentAr} - السنة ${scheduleForm.year || ''} - ${termAr}` });
+                    }}
+                    className={`w-full bg-gray-800 text-white rounded-xl p-3 border border-gray-700 focus:border-cyan-500 focus:outline-none ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term) ? 'opacity-60 cursor-not-allowed' : ''
+                      }`}
                     required
                   >
                     <option value="">اختر الترم</option>
@@ -1654,18 +1646,18 @@ export default function AdminDashboardPage() {
                           showMessage('يجب اختيار ملف PDF فقط', true);
                           return;
                         }
-                        
+
                         // التحقق من حجم الملف (حد أقصى 5MB للـ Base64)
                         if (f.size > 5 * 1024 * 1024) {
                           showMessage('حجم الملف يجب أن يكون أقل من 5MB للرفع الآمن', true);
                           return;
                         }
-                        
+
                         // تحذير للملفات الكبيرة
                         if (f.size > 2 * 1024 * 1024) {
                           showMessage('ملف كبير - قد يستغرق الرفع وقت أطول', true);
                         }
-                        
+
                         setScheduleForm({
                           ...scheduleForm,
                           size: `${(f.size / (1024 * 1024)).toFixed(2)} MB`,
@@ -1677,17 +1669,15 @@ export default function AdminDashboardPage() {
                     required
                   />
                   {scheduleFile ? (
-                    <div className={`mt-2 p-3 rounded-lg border ${
-                      scheduleFile.size > 2 * 1024 * 1024 
-                        ? 'bg-orange-500/20 border-yellow-500/30' 
-                        : 'bg-yellow-500/20 border-yellow-500/30'
-                    }`}>
-                      <p className={`text-sm ${
-                        scheduleFile.size > 2 * 1024 * 1024 
-                          ? 'text-yellow-300' 
-                          : 'text-yellow-300'
+                    <div className={`mt-2 p-3 rounded-lg border ${scheduleFile.size > 2 * 1024 * 1024
+                      ? 'bg-orange-500/20 border-yellow-500/30'
+                      : 'bg-yellow-500/20 border-yellow-500/30'
                       }`}>
-                        {scheduleFile.size > 2 * 1024 * 1024 ? '⚠️' : '✅'} 
+                      <p className={`text-sm ${scheduleFile.size > 2 * 1024 * 1024
+                        ? 'text-yellow-300'
+                        : 'text-yellow-300'
+                        }`}>
+                        {scheduleFile.size > 2 * 1024 * 1024 ? '⚠️' : '✅'}
                         الملف المحدد: {scheduleFile.name} ({scheduleForm.size})
                         {scheduleFile.size > 2 * 1024 * 1024 && (
                           <span className="block text-xs mt-1">
@@ -1695,7 +1685,7 @@ export default function AdminDashboardPage() {
                           </span>
                         )}
                       </p>
-                </div>
+                    </div>
                   ) : (
                     <div className="mt-2 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
                       <p className="text-yellow-300 text-sm">
@@ -1713,7 +1703,7 @@ export default function AdminDashboardPage() {
                     onClick={async () => {
                       try {
                         setLoadingSchedule(true);
-                        console.log('🔄 Saving schedule...', { 
+                        console.log('🔄 Saving schedule...', {
                           scheduleForm: {
                             ...scheduleForm,
                             // Don't log the entire form to avoid console spam
@@ -1721,14 +1711,14 @@ export default function AdminDashboardPage() {
                             department: scheduleForm.department,
                             year: scheduleForm.year,
                             term: scheduleForm.term
-                          }, 
+                          },
                           scheduleFile: scheduleFile ? {
                             name: scheduleFile.name,
                             size: scheduleFile.size,
                             type: scheduleFile.type
                           } : null
                         });
-                        
+
                         if (editingSchedule) {
                           console.log('📝 Updating existing schedule...', {
                             editingId: editingSchedule.id,
@@ -1758,18 +1748,18 @@ export default function AdminDashboardPage() {
                           if (!scheduleForm.term) {
                             throw new Error('يجب اختيار الترم');
                           }
-                          
+
                           // Check if schedule already exists
                           const existingSchedule = await schedulesService.getByCriteria(
                             scheduleForm.department,
                             scheduleForm.year,
                             scheduleForm.term as 'FIRST' | 'SECOND'
                           );
-                          
+
                           if (existingSchedule) {
                             throw new Error('يوجد جدول محاضرات بالفعل لهذا القسم والسنة والترم. يرجى تحديث الجدول الموجود بدلاً من إنشاء جدول جديد.');
                           }
-                          
+
                           console.log('💾 Adding schedule with data:', {
                             title: scheduleForm.title,
                             department: scheduleForm.department,
@@ -1779,15 +1769,15 @@ export default function AdminDashboardPage() {
                             termAr: scheduleForm.termAr,
                             hasFile: !!scheduleFile
                           });
-                          
+
                           const result = await schedulesService.add(scheduleForm as any, scheduleFile);
                           if (!result) {
                             throw new Error('فشل في حفظ الجدول');
                           }
-                          
+
                           console.log('✅ Schedule added successfully:', result);
                         }
-                        
+
                         console.log('✅ Schedule saved successfully, refreshing list...');
                         const list = await schedulesService.getAll();
                         setSchedules(list);
@@ -1795,14 +1785,14 @@ export default function AdminDashboardPage() {
                         setEditingSchedule(null);
                         setScheduleFile(null);
                         showMessage(editingSchedule ? 'تم تحديث جدول المحاضرات بنجاح' : 'تم حفظ جدول المحاضرات بنجاح');
-                        
+
                         // إشارة لتحديث الجدول في الصفحة الرئيسية
                         console.log('📤 Sending schedule update signal...');
                         localStorage.setItem('scheduleUpdated', Date.now().toString());
                         window.dispatchEvent(new Event('storage'));
                         window.dispatchEvent(new CustomEvent('dataUpdated', { detail: 'schedule' }));
                         console.log('✅ Schedule update signal sent');
-                        
+
                         // إعادة تعيين النموذج
                         setScheduleForm({
                           title: '',
@@ -1816,7 +1806,7 @@ export default function AdminDashboardPage() {
                         });
                       } catch (e) {
                         console.error('❌ Error saving schedule:', e);
-                        
+
                         // Check for specific error messages
                         let errorMessage = 'خطأ غير معروف';
                         if (e instanceof Error) {
@@ -1830,7 +1820,7 @@ export default function AdminDashboardPage() {
                             errorMessage = e.message;
                           }
                         }
-                        
+
                         showMessage(`حدث خطأ أثناء حفظ الجدول: ${errorMessage}`, true);
                       } finally {
                         setLoadingSchedule(false);
@@ -1852,9 +1842,9 @@ export default function AdminDashboardPage() {
                       </>
                     )}
                   </button>
-                  <button onClick={() => { 
-                    setShowScheduleModal(false); 
-                    setEditingSchedule(null); 
+                  <button onClick={() => {
+                    setShowScheduleModal(false);
+                    setEditingSchedule(null);
                     setScheduleFile(null);
                     setScheduleForm({
                       title: '',
@@ -1880,7 +1870,7 @@ export default function AdminDashboardPage() {
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-black text-white">إدارة الرسائل والطلبات</h2>
-              <button 
+              <button
                 onClick={() => {
                   const loadMessages = async () => {
                     try {
@@ -1933,31 +1923,29 @@ export default function AdminDashboardPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          message.type === 'contact' 
-                            ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30' 
-                            : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${message.type === 'contact'
+                          ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30'
+                          : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                          }`}>
                           {message.type === 'contact' ? 'رسالة تواصل' : 'طلب انضمام'}
                         </span>
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          message.status === 'new' 
-                            ? 'bg-orange-500/20 text-yellow-300 border border-yellow-500/30'
-                            : message.status === 'read'
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${message.status === 'new'
+                          ? 'bg-orange-500/20 text-yellow-300 border border-yellow-500/30'
+                          : message.status === 'read'
                             ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30'
                             : message.status === 'replied'
-                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
-                            : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
-                        }`}>
-                          {message.status === 'new' ? 'جديدة' : 
-                           message.status === 'read' ? 'مقروءة' :
-                           message.status === 'replied' ? 'مردود عليها' : 'مغلقة'}
+                              ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                              : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
+                          }`}>
+                          {message.status === 'new' ? 'جديدة' :
+                            message.status === 'read' ? 'مقروءة' :
+                              message.status === 'replied' ? 'مردود عليها' : 'مغلقة'}
                         </span>
                       </div>
-                      
+
                       <h3 className="text-xl font-bold text-white mb-2">{message.first_name}</h3>
                       <p className="text-gray-300 text-sm mb-2">{message.email}</p>
-                      
+
                       {message.type === 'contact' ? (
                         <div>
                           <p className="text-white font-medium mb-1">الموضوع: {message.subject}</p>
@@ -1970,14 +1958,14 @@ export default function AdminDashboardPage() {
                           {message.whatsapp && <p className="text-gray-300 text-sm">واتساب: {message.whatsapp}</p>}
                         </div>
                       )}
-                      
+
                       <p className="text-xs text-gray-500 mt-3">
                         {new Date(message.created_at).toLocaleString('ar-SA')}
                       </p>
                     </div>
-                    
+
                     <div className="flex gap-2 ml-4">
-                      <button 
+                      <button
                         onClick={async () => {
                           try {
                             const newStatus = message.status === 'new' ? 'read' : 'new';
@@ -1997,7 +1985,7 @@ export default function AdminDashboardPage() {
                       >
                         <span className="text-blue-400">👁️</span>
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setSelectedMessage(message);
                           setReplySubject(message.type === 'contact' && message.subject ? `Re: ${message.subject}` : 'رد على رسالتك');
@@ -2009,7 +1997,7 @@ export default function AdminDashboardPage() {
                       >
                         <span className="text-purple-400">💌</span>
                       </button>
-                      <button 
+                      <button
                         onClick={async () => {
                           try {
                             await messagesService.updateStatus(message.id, 'replied');
@@ -2028,7 +2016,7 @@ export default function AdminDashboardPage() {
                       >
                         <span className="text-green-400">✅</span>
                       </button>
-                      <button 
+                      <button
                         onClick={async () => {
                           if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
                             try {
@@ -2070,7 +2058,7 @@ export default function AdminDashboardPage() {
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-black text-white">إدارة المواد</h2>
-              <button 
+              <button
                 onClick={() => setShowAddModal(true)}
                 className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl font-bold hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-emerald-500/30"
               >
@@ -2090,13 +2078,13 @@ export default function AdminDashboardPage() {
                       <span className="text-white font-bold text-xl">📚</span>
                     </div>
                     <div className="flex gap-2">
-                      <button 
+                      <button
                         onClick={() => handleEditMaterial(material)}
                         className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
                       >
                         <span className="text-blue-400 text-sm">✏️</span>
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDeleteMaterial(material.id)}
                         className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                       >
@@ -2123,13 +2111,13 @@ export default function AdminDashboardPage() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-black text-white">جداول المحاضرات (PDF)</h2>
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={() => schedulesService.getAll().then(setSchedules)}
                   className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/30"
                 >
                   🔄 تحديث البيانات
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     console.log('🔄 Opening schedule modal, current form:', scheduleForm);
                     console.log('🔄 Current user permissions:', userPermissions);
@@ -2205,62 +2193,62 @@ export default function AdminDashboardPage() {
                     return filteredSchedules;
                   })()
                     .map((sch, index) => (
-                    <tr key={sch.id} className={`hover:bg-white/10 transition-all duration-300 ${index % 2 === 0 ? 'bg-white/5' : 'bg-white/10'}`}>
-                      <td className="px-6 py-4 text-right text-white border-b border-white/10">{sch.title}</td>
-                      <td className="px-6 py-4 text-right text-white border-b border-white/10">
-                        <div className="flex flex-col">
-                          <span className="text-white">{sch.departmentAr}</span>
-                          <span className="text-gray-400 text-sm">{sch.department}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center text-white border-b border-white/10">
-                        <span className="bg-green-500/30 px-3 py-1 rounded-lg text-sm font-semibold">السنة {sch.year}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center text-white border-b border-white/10">
-                        <span className="bg-orange-500/30 px-3 py-1 rounded-lg text-sm font-semibold">{sch.termAr}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center text-white border-b border-white/10">
-                        {sch.fileUrl ? (
-                          <a href={sch.fileUrl} target="_blank" rel="noopener noreferrer" className="text-yellow-300 underline">عرض</a>
-                        ) : (
-                          <span className="text-gray-400">لا يوجد</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-center border-b border-white/10">
-                        <div className="flex gap-2 justify-center">
-                          <button 
-                            onClick={() => {
-                              setEditingSchedule(sch);
-                              setScheduleForm({
-                                title: sch.title,
-                                department: sch.department,
-                                departmentAr: sch.departmentAr,
-                                year: sch.year,
-                                term: sch.term,
-                                termAr: sch.termAr,
-                                size: sch.size || '',
-                                fileName: sch.fileName || ''
-                              });
-                              setShowScheduleModal(true);
-                            }}
-                            className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
-                          >
-                            <span className="text-blue-400">✏️</span>
-                          </button>
-                          <button 
-                            onClick={() => {
-                              if (confirm('هل أنت متأكد من حذف هذا الجدول؟')) {
-                                schedulesService.delete(sch.id).then(() => schedulesService.getAll().then(setSchedules));
-                              }
-                            }}
-                            className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
-                          >
-                            <span className="text-red-400">🗑️</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                      <tr key={sch.id} className={`hover:bg-white/10 transition-all duration-300 ${index % 2 === 0 ? 'bg-white/5' : 'bg-white/10'}`}>
+                        <td className="px-6 py-4 text-right text-white border-b border-white/10">{sch.title}</td>
+                        <td className="px-6 py-4 text-right text-white border-b border-white/10">
+                          <div className="flex flex-col">
+                            <span className="text-white">{sch.departmentAr}</span>
+                            <span className="text-gray-400 text-sm">{sch.department}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center text-white border-b border-white/10">
+                          <span className="bg-green-500/30 px-3 py-1 rounded-lg text-sm font-semibold">السنة {sch.year}</span>
+                        </td>
+                        <td className="px-6 py-4 text-center text-white border-b border-white/10">
+                          <span className="bg-orange-500/30 px-3 py-1 rounded-lg text-sm font-semibold">{sch.termAr}</span>
+                        </td>
+                        <td className="px-6 py-4 text-center text-white border-b border-white/10">
+                          {sch.fileUrl ? (
+                            <a href={sch.fileUrl} target="_blank" rel="noopener noreferrer" className="text-yellow-300 underline">عرض</a>
+                          ) : (
+                            <span className="text-gray-400">لا يوجد</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-center border-b border-white/10">
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() => {
+                                setEditingSchedule(sch);
+                                setScheduleForm({
+                                  title: sch.title,
+                                  department: sch.department,
+                                  departmentAr: sch.departmentAr,
+                                  year: sch.year,
+                                  term: sch.term,
+                                  termAr: sch.termAr,
+                                  size: sch.size || '',
+                                  fileName: sch.fileName || ''
+                                });
+                                setShowScheduleModal(true);
+                              }}
+                              className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
+                            >
+                              <span className="text-blue-400">✏️</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm('هل أنت متأكد من حذف هذا الجدول؟')) {
+                                  schedulesService.delete(sch.id).then(() => schedulesService.getAll().then(setSchedules));
+                                }
+                              }}
+                              className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                            >
+                              <span className="text-red-400">🗑️</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -2270,7 +2258,7 @@ export default function AdminDashboardPage() {
                 <div className="text-8xl mb-8">📅</div>
                 <h3 className="text-3xl font-black text-white mb-4">لا توجد جداول محاضرات</h3>
                 <p className="text-gray-300 mb-8 text-lg">ابدأ بإضافة جدول PDF لكل قسم/سنة/ترم</p>
-                <button 
+                <button
                   onClick={() => {
                     console.log('🔄 Opening schedule modal, current form:', scheduleForm);
                     console.log('🔄 Current user permissions:', userPermissions);
@@ -2293,7 +2281,7 @@ export default function AdminDashboardPage() {
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-black text-white">إدارة الـ Material</h2>
-              <button 
+              <button
                 onClick={() => setShowPdfModal(true)}
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30"
               >
@@ -2309,39 +2297,39 @@ export default function AdminDashboardPage() {
                   return material && canEditItem(material.department, material.year, material.term);
                 })
                 .map(pdf => (
-                <div key={pdf.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-yellow-500/50 transition-all duration-300">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/30">
-                        <span className="text-red-400 font-bold text-2xl">📄</span>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white mb-1">{pdf.title}</h3>
-                        <p className="text-gray-300 text-sm mb-1">المادة: {pdf.material}</p>
-                        <p className="text-xs text-gray-500 mb-2">{pdf.material_ar}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-400">
-                          <span>{pdf.size}</span>
-                          <span>{pdf.uploads} تحميل</span>
+                  <div key={pdf.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-yellow-500/50 transition-all duration-300">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center border border-yellow-500/30">
+                          <span className="text-red-400 font-bold text-2xl">📄</span>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-white mb-1">{pdf.title}</h3>
+                          <p className="text-gray-300 text-sm mb-1">المادة: {pdf.material}</p>
+                          <p className="text-xs text-gray-500 mb-2">{pdf.material_ar}</p>
+                          <div className="flex items-center space-x-4 text-sm text-gray-400">
+                            <span>{pdf.size}</span>
+                            <span>{pdf.uploads} تحميل</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => handleEditPdf(pdf)}
-                        className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
-                      >
-                        <span className="text-blue-400">✏️</span>
-                      </button>
-                      <button 
-                        onClick={() => handleDeletePdf(pdf.id)}
-                        className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
-                      >
-                        <span className="text-red-400">🗑️</span>
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditPdf(pdf)}
+                          className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
+                        >
+                          <span className="text-blue-400">✏️</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeletePdf(pdf.id)}
+                          className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                        >
+                          <span className="text-red-400">🗑️</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         )}
@@ -2351,7 +2339,7 @@ export default function AdminDashboardPage() {
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-black text-white">إدارة الفيديوهات</h2>
-              <button 
+              <button
                 onClick={() => setShowVideoModal(true)}
                 className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/30"
               >
@@ -2367,59 +2355,59 @@ export default function AdminDashboardPage() {
                   return material && canEditItem(material.department, material.year, material.term);
                 })
                 .map(video => (
-                <div key={video.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-all duration-300">
-                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div className="lg:col-span-1">
-                      <div className="relative w-full h-32 rounded-xl overflow-hidden shadow-lg">
-                        <iframe
-                          src={video.is_playlist && video.playlist_id 
-                            ? `https://www.youtube.com/embed/videoseries?list=${video.playlist_id}&autoplay=0&rel=0&modestbranding=1&showinfo=1&controls=1&loop=1&playlist=${video.playlist_id}`
-                            : `https://www.youtube.com/embed/${video.youtube_id}?autoplay=0&rel=0&modestbranding=1&showinfo=1`
-                          }
-                          title={video.title}
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
+                  <div key={video.id} className="bg-gray-700/30 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-all duration-300">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                      <div className="lg:col-span-1">
+                        <div className="relative w-full h-32 rounded-xl overflow-hidden shadow-lg">
+                          <iframe
+                            src={video.is_playlist && video.playlist_id
+                              ? `https://www.youtube.com/embed/videoseries?list=${video.playlist_id}&autoplay=0&rel=0&modestbranding=1&showinfo=1&controls=1&loop=1&playlist=${video.playlist_id}`
+                              : `https://www.youtube.com/embed/${video.youtube_id}?autoplay=0&rel=0&modestbranding=1&showinfo=1`
+                            }
+                            title={video.title}
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="lg:col-span-2">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-xl font-bold text-white">{video.title}</h3>
-                        {video.is_playlist && (
-                          <span className="bg-blue-500/20 text-yellow-300 px-2 py-1 rounded-full text-xs font-medium border border-yellow-500/30">
-                            📺 Playlist
-                          </span>
-                        )}
+
+                      <div className="lg:col-span-2">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-xl font-bold text-white">{video.title}</h3>
+                          {video.is_playlist && (
+                            <span className="bg-blue-500/20 text-yellow-300 px-2 py-1 rounded-full text-xs font-medium border border-yellow-500/30">
+                              📺 Playlist
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-300 text-sm mb-1">المادة: {video.material}</p>
+                        <p className="text-xs text-gray-500 mb-2">{video.material_ar}</p>
+                        <div className="flex items-center space-x-4 text-sm text-gray-400">
+                          <span>المدة: {video.is_playlist ? 'Playlist' : video.duration}</span>
+                          <span>المشاهدات: {video.is_playlist ? 'متعدد' : video.views.toLocaleString()}</span>
+                        </div>
                       </div>
-                      <p className="text-gray-300 text-sm mb-1">المادة: {video.material}</p>
-                      <p className="text-xs text-gray-500 mb-2">{video.material_ar}</p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-400">
-                        <span>المدة: {video.is_playlist ? 'Playlist' : video.duration}</span>
-                        <span>المشاهدات: {video.is_playlist ? 'متعدد' : video.views.toLocaleString()}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="lg:col-span-1 flex items-center justify-end">
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => handleEditVideo(video)}
-                          className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
-                        >
-                          <span className="text-blue-400">✏️</span>
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteVideo(video.id)}
-                          className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
-                        >
-                          <span className="text-red-400">🗑️</span>
-                        </button>
+
+                      <div className="lg:col-span-1 flex items-center justify-end">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEditVideo(video)}
+                            className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
+                          >
+                            <span className="text-blue-400">✏️</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteVideo(video.id)}
+                            className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
+                          >
+                            <span className="text-red-400">🗑️</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         )}
@@ -2440,15 +2428,6 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-<<<<<<< HEAD
-        {activeTab === 'notifications' && superAdmin?.role === 'super_admin' && (
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
-            <SendNotification 
-              onSuccess={() => {
-                showMessage('تم إرسال الإشعار بنجاح!');
-              }}
-            />
-=======
         {/* Notifications Management (Super Admin Only) */}
         {activeTab === 'notifications' && superAdmin?.role === 'super_admin' && (
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
@@ -2514,11 +2493,11 @@ export default function AdminDashboardPage() {
                       return (
                         <div
                           key={notification.id}
-                          className={`p-4 rounded-xl border ${typeColors[notification.type] || typeColors.update}`}
+                          className={`p-4 rounded-xl border ${typeColors[notification.type as keyof typeof typeColors] || typeColors.update}`}
                         >
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex items-start gap-3 flex-1">
-                              <span className="text-2xl">{typeIcons[notification.type] || '📢'}</span>
+                              <span className="text-2xl">{typeIcons[notification.type as keyof typeof typeIcons] || '📢'}</span>
                               <div className="flex-1">
                                 <h4 className="font-bold text-white mb-1">{notification.title}</h4>
                                 <p className="text-sm text-gray-300 mb-2 line-clamp-2">{notification.message}</p>
@@ -2571,7 +2550,6 @@ export default function AdminDashboardPage() {
                 )}
               </div>
             </div>
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
           </div>
         )}
 
@@ -2580,7 +2558,7 @@ export default function AdminDashboardPage() {
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-gray-700/50">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-black text-white">إدارة المستخدمين</h2>
-              <button 
+              <button
                 onClick={() => setShowUserModal(true)}
                 className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/30"
               >
@@ -2600,31 +2578,29 @@ export default function AdminDashboardPage() {
                         <h3 className="text-xl font-bold text-white mb-1">{user.name}</h3>
                         <p className="text-gray-300 text-sm mb-1">{user.email}</p>
                         <div className="flex items-center space-x-4 text-sm">
-                          <span className={`px-2 py-1 rounded-full ${
-                            user.role === 'أستاذ' 
-                              ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30' 
-                              : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full ${user.role === 'أستاذ'
+                            ? 'bg-blue-500/20 text-yellow-300 border border-yellow-500/30'
+                            : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                            }`}>
                             {user.role}
                           </span>
-                          <span className={`px-2 py-1 rounded-full ${
-                            (user as any).status === 'نشط' 
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
-                              : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full ${(user as any).status === 'نشط'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                            }`}>
                             {(user as any).status}
                           </span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button 
+                      <button
                         onClick={() => handleEditUser(user)}
                         className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center hover:bg-blue-500/30 transition-colors"
                       >
                         <span className="text-blue-400">✏️</span>
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/30 transition-colors"
                       >
@@ -2646,7 +2622,7 @@ export default function AdminDashboardPage() {
                 <h3 className="text-2xl font-bold text-white">
                   {editingItem ? 'تعديل المادة' : 'إضافة مادة جديدة'}
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setShowAddModal(false);
                     setEditingItem(null);
@@ -2677,7 +2653,7 @@ export default function AdminDashboardPage() {
                     <input
                       type="text"
                       value={formData.title}
-                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
                       placeholder="Introduction to Programming"
                     />
@@ -2687,7 +2663,7 @@ export default function AdminDashboardPage() {
                     <input
                       type="text"
                       value={formData.titleAr}
-                      onChange={(e) => setFormData({...formData, titleAr: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
                       placeholder="مقدمة في البرمجة"
                     />
@@ -2700,7 +2676,7 @@ export default function AdminDashboardPage() {
                     <input
                       type="text"
                       value={formData.code}
-                      onChange={(e) => setFormData({...formData, code: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
                       placeholder="CS101"
                     />
@@ -2715,10 +2691,9 @@ export default function AdminDashboardPage() {
                     <select
                       value={formData.year}
                       disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.year)}
-                      onChange={(e) => setFormData({...formData, year: parseInt(e.target.value)})}
-                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${
-                        superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.year) ? 'opacity-60 cursor-not-allowed' : ''
-                      }`}
+                      onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.year) ? 'opacity-60 cursor-not-allowed' : ''
+                        }`}
                     >
                       <option value={1}>السنة الأولى</option>
                       <option value={2}>السنة الثانية</option>
@@ -2741,8 +2716,8 @@ export default function AdminDashboardPage() {
                       disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department)}
                       onChange={(e) => {
                         const selectedDept = e.target.value;
-                        setFormData({...formData, department: selectedDept});
-                        const deptMap: {[key: string]: string} = {
+                        setFormData({ ...formData, department: selectedDept });
+                        const deptMap: { [key: string]: string } = {
                           'General Program': 'البرنامج العام',
                           'Cyber Security': 'الأمن السيبراني',
                           'Artificial Intelligence': 'الذكاء الاصطناعي',
@@ -2750,11 +2725,10 @@ export default function AdminDashboardPage() {
                           'Information Technology': 'تكنولوجيا المعلومات',
                           'Data Science': 'علوم البيانات'
                         };
-                        setFormData(prev => ({...prev, departmentAr: deptMap[selectedDept] || selectedDept}));
+                        setFormData(prev => ({ ...prev, departmentAr: deptMap[selectedDept] || selectedDept }));
                       }}
-                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${
-                        superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department) ? 'opacity-60 cursor-not-allowed' : ''
-                      }`}
+                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department) ? 'opacity-60 cursor-not-allowed' : ''
+                        }`}
                     >
                       <option value="">اختر القسم</option>
                       <option value="General Program">General Program</option>
@@ -2776,10 +2750,9 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={formData.departmentAr}
                       disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department)}
-                      onChange={(e) => setFormData({...formData, departmentAr: e.target.value})}
-                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${
-                        superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department) ? 'opacity-60 cursor-not-allowed' : ''
-                      }`}
+                      onChange={(e) => setFormData({ ...formData, departmentAr: e.target.value })}
+                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.department) ? 'opacity-60 cursor-not-allowed' : ''
+                        }`}
                       placeholder="البرنامج العام"
                     />
                   </div>
@@ -2796,10 +2769,9 @@ export default function AdminDashboardPage() {
                     <select
                       value={formData.term}
                       disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term)}
-                      onChange={(e) => setFormData({...formData, term: e.target.value})}
-                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${
-                        superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term) ? 'opacity-60 cursor-not-allowed' : ''
-                      }`}
+                      onChange={(e) => setFormData({ ...formData, term: e.target.value })}
+                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term) ? 'opacity-60 cursor-not-allowed' : ''
+                        }`}
                     >
                       <option value="First Semester">First Semester</option>
                       <option value="Second Semester">Second Semester</option>
@@ -2816,10 +2788,9 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={formData.termAr}
                       disabled={superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term)}
-                      onChange={(e) => setFormData({...formData, termAr: e.target.value})}
-                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${
-                        superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term) ? 'opacity-60 cursor-not-allowed' : ''
-                      }`}
+                      onChange={(e) => setFormData({ ...formData, termAr: e.target.value })}
+                      className={`w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 ${superAdmin?.role === 'admin' && userPermissions?.scopes?.some((s: any) => s.term) ? 'opacity-60 cursor-not-allowed' : ''
+                        }`}
                       placeholder="الترم الأول"
                     />
                   </div>
@@ -2831,52 +2802,52 @@ export default function AdminDashboardPage() {
                     <span>🔗</span>
                     روابط المادة
                   </h3>
-                  
+
                   <div className="space-y-4">
-                <div>
+                    <div>
                       <label className="block text-white font-medium mb-2">رابط كتاب المادة</label>
                       <input
                         type="url"
                         value={formData.bookLink}
-                        onChange={(e) => setFormData({...formData, bookLink: e.target.value})}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
+                        onChange={(e) => setFormData({ ...formData, bookLink: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
                         placeholder="https://drive.google.com/file/d/..."
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-white font-medium mb-2">رابط محاضرات المادة</label>
                       <input
                         type="url"
                         value={formData.lecturesLink}
-                        onChange={(e) => setFormData({...formData, lecturesLink: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, lecturesLink: e.target.value })}
                         className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
                         placeholder="https://drive.google.com/drive/folders/..."
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-white font-medium mb-2">رابط Google Drive</label>
                       <input
                         type="url"
                         value={formData.googleDriveLink}
-                        onChange={(e) => setFormData({...formData, googleDriveLink: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, googleDriveLink: e.target.value })}
                         className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500"
                         placeholder="https://drive.google.com/drive/folders/..."
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-white font-medium mb-2">روابط إضافية (JSON)</label>
                       <textarea
                         value={formData.additionalLinks}
-                        onChange={(e) => setFormData({...formData, additionalLinks: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, additionalLinks: e.target.value })}
                         className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 h-24"
                         placeholder='[{"name": "ملاحظات", "url": "https://..."}, {"name": "تمارين", "url": "https://..."}]'
                       />
                       <p className="text-gray-400 text-sm mt-1">صيغة JSON للروابط الإضافية (اختياري)</p>
                     </div>
-                    
+
                     {/* خيار إظهار Google Drive فقط */}
                     <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
                       <div className="flex items-center gap-3">
@@ -2884,7 +2855,7 @@ export default function AdminDashboardPage() {
                           type="checkbox"
                           id="showGoogleDriveOnly"
                           checked={formData.showGoogleDriveOnly}
-                          onChange={(e) => setFormData({...formData, showGoogleDriveOnly: e.target.checked})}
+                          onChange={(e) => setFormData({ ...formData, showGoogleDriveOnly: e.target.checked })}
                           className="w-5 h-5 text-yellow-500 bg-gray-700 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2"
                         />
                         <label htmlFor="showGoogleDriveOnly" className="text-white font-medium cursor-pointer">
@@ -2902,53 +2873,53 @@ export default function AdminDashboardPage() {
                         <span>👁️</span>
                         التحكم في إظهار الأقسام
                       </h3>
-                      
+
                       <div className="space-y-4">
                         <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
                             id="showMaterialsSection"
                             checked={formData.showMaterialsSection}
-                            onChange={(e) => setFormData({...formData, showMaterialsSection: e.target.checked})}
+                            onChange={(e) => setFormData({ ...formData, showMaterialsSection: e.target.checked })}
                             className="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
                           />
                           <label htmlFor="showMaterialsSection" className="text-white font-medium cursor-pointer">
                             إظهار قسم المواد (Materials)
                           </label>
                         </div>
-                        
+
                         <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
                             id="showMaterialLinksSection"
                             checked={formData.showMaterialLinksSection}
-                            onChange={(e) => setFormData({...formData, showMaterialLinksSection: e.target.checked})}
+                            onChange={(e) => setFormData({ ...formData, showMaterialLinksSection: e.target.checked })}
                             className="w-5 h-5 text-yellow-500 bg-gray-700 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2"
                           />
                           <label htmlFor="showMaterialLinksSection" className="text-white font-medium cursor-pointer">
                             إظهار قسم روابط المواد (Material Links)
                           </label>
                         </div>
-                        
+
                         <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
                             id="showPdfsSection"
                             checked={formData.showPdfsSection}
-                            onChange={(e) => setFormData({...formData, showPdfsSection: e.target.checked})}
+                            onChange={(e) => setFormData({ ...formData, showPdfsSection: e.target.checked })}
                             className="w-5 h-5 text-red-500 bg-gray-700 border-gray-600 rounded focus:ring-red-500 focus:ring-2"
                           />
                           <label htmlFor="showPdfsSection" className="text-white font-medium cursor-pointer">
                             إظهار قسم الـ PDFs
                           </label>
                         </div>
-                        
+
                         <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
                             id="showVideosSection"
                             checked={formData.showVideosSection}
-                            onChange={(e) => setFormData({...formData, showVideosSection: e.target.checked})}
+                            onChange={(e) => setFormData({ ...formData, showVideosSection: e.target.checked })}
                             className="w-5 h-5 text-green-500 bg-gray-700 border-gray-600 rounded focus:ring-green-500 focus:ring-2"
                           />
                           <label htmlFor="showVideosSection" className="text-white font-medium cursor-pointer">
@@ -2956,7 +2927,7 @@ export default function AdminDashboardPage() {
                           </label>
                         </div>
                       </div>
-                      
+
                       <p className="text-gray-400 text-sm mt-3">
                         💡 يمكنك إخفاء أي قسم من الأقسام الثلاثة حسب الحاجة
                       </p>
@@ -3003,7 +2974,7 @@ export default function AdminDashboardPage() {
                 <h3 className="text-2xl font-bold text-white">
                   {editingItem ? 'تعديل ملف PDF' : 'إضافة ملف PDF جديد'}
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setShowPdfModal(false);
                     setEditingItem(null);
@@ -3033,7 +3004,7 @@ export default function AdminDashboardPage() {
                   <input
                     type="text"
                     value={pdfFormData.title}
-                    onChange={(e) => setPdfFormData({...pdfFormData, title: e.target.value})}
+                    onChange={(e) => setPdfFormData({ ...pdfFormData, title: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500"
                     placeholder="كتاب المقرر - الفصل الأول"
                   />
@@ -3043,17 +3014,17 @@ export default function AdminDashboardPage() {
                   <label className="block text-white font-medium mb-2">المادة</label>
                   <select
                     value={pdfFormData.materialId}
-                    onChange={(e) => setPdfFormData({...pdfFormData, materialId: e.target.value})}
+                    onChange={(e) => setPdfFormData({ ...pdfFormData, materialId: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500"
                   >
                     <option value="">اختر المادة</option>
                     {materials
                       .filter(material => canEditItem(material.department, material.year, material.term))
                       .map(material => (
-                      <option key={material.id} value={material.id}>
-                        {material.title} - {material.titleAr}
-                      </option>
-                    ))}
+                        <option key={material.id} value={material.id}>
+                          {material.title} - {material.titleAr}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -3066,7 +3037,7 @@ export default function AdminDashboardPage() {
                       const file = e.target.files?.[0];
                       if (file) {
                         setPdfFile(file);
-                        setPdfFormData({...pdfFormData, size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`});
+                        setPdfFormData({ ...pdfFormData, size: `${(file.size / (1024 * 1024)).toFixed(2)} MB` });
                       }
                     }}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-500 file:text-white hover:file:bg-red-600"
@@ -3082,7 +3053,7 @@ export default function AdminDashboardPage() {
                   <label className="block text-white font-medium mb-2">الوصف</label>
                   <textarea
                     value={pdfFormData.description}
-                    onChange={(e) => setPdfFormData({...pdfFormData, description: e.target.value})}
+                    onChange={(e) => setPdfFormData({ ...pdfFormData, description: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-yellow-500"
                     placeholder="وصف الملف..."
@@ -3128,7 +3099,7 @@ export default function AdminDashboardPage() {
                 <h3 className="text-2xl font-bold text-white">
                   {editingItem ? 'تعديل فيديو' : 'إضافة فيديو جديد'}
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setShowVideoModal(false);
                     setEditingItem(null);
@@ -3160,11 +3131,10 @@ export default function AdminDashboardPage() {
                       type="url"
                       value={videoFormData.youtubeUrl}
                       onChange={(e) => handleYouTubeUrlChange(e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-xl text-white focus:outline-none focus:border-blue-500 ${
-                        videoFormData.isPlaylist 
-                          ? 'bg-gray-600 border-gray-500 cursor-not-allowed' 
-                          : 'bg-gray-700 border-gray-600'
-                      }`}
+                      className={`w-full px-4 py-3 border rounded-xl text-white focus:outline-none focus:border-blue-500 ${videoFormData.isPlaylist
+                        ? 'bg-gray-600 border-gray-500 cursor-not-allowed'
+                        : 'bg-gray-700 border-gray-600'
+                        }`}
                       placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
                       disabled={videoFormData.isPlaylist}
                     />
@@ -3175,8 +3145,8 @@ export default function AdminDashboardPage() {
                     )}
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    {videoFormData.isPlaylist 
-                      ? 'معطل عند استخدام Playlist' 
+                    {videoFormData.isPlaylist
+                      ? 'معطل عند استخدام Playlist'
                       : 'سيتم استخراج العنوان والمدة والمشاهدات تلقائياً من YouTube'
                     }
                   </p>
@@ -3185,13 +3155,13 @@ export default function AdminDashboardPage() {
                 <div>
                   <label className="block text-white font-medium mb-2">عنوان الفيديو</label>
                   <div className="relative">
-                  <input
-                    type="text"
-                    value={videoFormData.title}
-                    onChange={(e) => setVideoFormData({...videoFormData, title: e.target.value})}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500"
-                    placeholder="سيتم ملؤه تلقائياً من YouTube"
-                  />
+                    <input
+                      type="text"
+                      value={videoFormData.title}
+                      onChange={(e) => setVideoFormData({ ...videoFormData, title: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500"
+                      placeholder="سيتم ملؤه تلقائياً من YouTube"
+                    />
                     {loadingVideo && (
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
@@ -3204,17 +3174,17 @@ export default function AdminDashboardPage() {
                   <label className="block text-white font-medium mb-2">المادة</label>
                   <select
                     value={videoFormData.materialId}
-                    onChange={(e) => setVideoFormData({...videoFormData, materialId: e.target.value})}
+                    onChange={(e) => setVideoFormData({ ...videoFormData, materialId: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500"
                   >
                     <option value="">اختر المادة</option>
                     {materials
                       .filter(material => canEditItem(material.department, material.year, material.term))
                       .map(material => (
-                      <option key={material.id} value={material.id}>
-                        {material.title} - {material.titleAr}
-                      </option>
-                    ))}
+                        <option key={material.id} value={material.id}>
+                          {material.title} - {material.titleAr}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -3224,7 +3194,7 @@ export default function AdminDashboardPage() {
                     <input
                       type="text"
                       value={videoFormData.duration}
-                      onChange={(e) => setVideoFormData({...videoFormData, duration: e.target.value})}
+                      onChange={(e) => setVideoFormData({ ...videoFormData, duration: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500"
                       placeholder="مثال: 45:30 أو 1:23:45"
                     />
@@ -3247,7 +3217,7 @@ export default function AdminDashboardPage() {
                   <label className="block text-white font-medium mb-2">الوصف</label>
                   <textarea
                     value={videoFormData.description}
-                    onChange={(e) => setVideoFormData({...videoFormData, description: e.target.value})}
+                    onChange={(e) => setVideoFormData({ ...videoFormData, description: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-blue-500"
                     placeholder="وصف الفيديو..."
@@ -3260,7 +3230,7 @@ export default function AdminDashboardPage() {
                     <span>📺</span>
                     YouTube Playlist (اختياري)
                   </h3>
-                  
+
                   <div>
                     <label className="block text-white font-medium mb-2">رابط Playlist</label>
                     <div className="relative">
@@ -3284,7 +3254,7 @@ export default function AdminDashboardPage() {
                       )}
                     </p>
                   </div>
-                  
+
                   {videoFormData.playlistId && (
                     <div className="mt-4">
                       <label className="block text-white font-medium mb-2">Playlist ID</label>
@@ -3298,7 +3268,7 @@ export default function AdminDashboardPage() {
                       <p className="text-xs text-gray-400 mt-1">يتم استخراجه تلقائياً من الرابط</p>
                     </div>
                   )}
-                  
+
                   <div className="mt-4 flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -3307,7 +3277,7 @@ export default function AdminDashboardPage() {
                       onChange={(e) => {
                         const isPlaylist = e.target.checked;
                         setVideoFormData({
-                          ...videoFormData, 
+                          ...videoFormData,
                           isPlaylist: isPlaylist,
                           // إذا تم إلغاء تحديد playlist، امسح بيانات playlist
                           ...(isPlaylist ? {} : {
@@ -3355,7 +3325,7 @@ export default function AdminDashboardPage() {
                 <h3 className="text-2xl font-bold text-white">
                   {editingItem ? 'تعديل المستخدم' : 'إضافة مستخدم جديد'}
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setShowUserModal(false);
                     setEditingItem(null);
@@ -3369,7 +3339,7 @@ export default function AdminDashboardPage() {
 
               {/* Success/Error Messages */}
               {successMessage && (
-                <div className="mb-6 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 px-6 py-3 rounded-xl">
+                <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
                 </div>
               )}
@@ -3386,7 +3356,7 @@ export default function AdminDashboardPage() {
                     <input
                       type="text"
                       value={userFormData.name}
-                      onChange={(e) => setUserFormData({...userFormData, name: e.target.value})}
+                      onChange={(e) => setUserFormData({ ...userFormData, name: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
                       placeholder="اسم المستخدم"
                     />
@@ -3396,7 +3366,7 @@ export default function AdminDashboardPage() {
                     <input
                       type="email"
                       value={userFormData.email}
-                      onChange={(e) => setUserFormData({...userFormData, email: e.target.value})}
+                      onChange={(e) => setUserFormData({ ...userFormData, email: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
                       placeholder="user@example.com"
                     />
@@ -3408,7 +3378,7 @@ export default function AdminDashboardPage() {
                   <input
                     type="password"
                     value={userFormData.password}
-                    onChange={(e) => setUserFormData({...userFormData, password: e.target.value})}
+                    onChange={(e) => setUserFormData({ ...userFormData, password: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
                     placeholder={editingItem ? "اترك فارغاً للحفاظ على كلمة المرور الحالية" : "كلمة المرور"}
                   />
@@ -3422,7 +3392,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-white font-medium mb-2">الدور</label>
                     <select
                       value={userFormData.role}
-                      onChange={(e) => setUserFormData({...userFormData, role: e.target.value})}
+                      onChange={(e) => setUserFormData({ ...userFormData, role: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
                     >
                       <option value="طالب">طالب</option>
@@ -3433,7 +3403,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-white font-medium mb-2">الحالة</label>
                     <select
                       value={userFormData.status}
-                      onChange={(e) => setUserFormData({...userFormData, status: e.target.value})}
+                      onChange={(e) => setUserFormData({ ...userFormData, status: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
                     >
                       <option value="نشط">نشط</option>
@@ -3465,7 +3435,6 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-<<<<<<< HEAD
         {/* Reply to Message Modal */}
         {showReplyModal && selectedMessage && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -3480,11 +3449,136 @@ export default function AdminDashboardPage() {
                     setReplyBody('');
                   }}
                   className="text-gray-400 hover:text-white transition-colors text-3xl"
-=======
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* معلومات المرسل */}
+                <div className="bg-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+                  <h3 className="text-xl font-bold text-white mb-4">معلومات المرسل</h3>
+                  <div className="space-y-2 text-gray-300">
+                    <p><span className="font-semibold text-white">الاسم:</span> {selectedMessage.first_name}</p>
+                    <p><span className="font-semibold text-white">البريد الإلكتروني:</span> {selectedMessage.email}</p>
+                    {selectedMessage.type === 'contact' && selectedMessage.subject && (
+                      <p><span className="font-semibold text-white">الموضوع:</span> {selectedMessage.subject}</p>
+                    )}
+                    {selectedMessage.type === 'contact' && selectedMessage.message && (
+                      <div>
+                        <p className="font-semibold text-white mb-2">الرسالة الأصلية:</p>
+                        <div className="bg-gray-700/50 rounded-lg p-4 text-gray-300 text-sm">
+                          {selectedMessage.message}
+                        </div>
+                      </div>
+                    )}
+                    {selectedMessage.type === 'join' && (
+                      <>
+                        <p><span className="font-semibold text-white">القسم:</span> {selectedMessage.department}</p>
+                        <p><span className="font-semibold text-white">السنة:</span> {selectedMessage.year}</p>
+                        <p><span className="font-semibold text-white">الترم:</span> {selectedMessage.term}</p>
+                        {selectedMessage.whatsapp && (
+                          <p><span className="font-semibold text-white">واتساب:</span> {selectedMessage.whatsapp}</p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* نموذج الرد */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-white font-medium mb-2">موضوع الرد</label>
+                    <input
+                      type="text"
+                      value={replySubject}
+                      onChange={(e) => setReplySubject(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                      placeholder="موضوع الرسالة"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-medium mb-2">نص الرد</label>
+                    <textarea
+                      value={replyBody}
+                      onChange={(e) => setReplyBody(e.target.value)}
+                      rows={10}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                      placeholder="اكتب ردك هنا..."
+                    />
+                  </div>
+                </div>
+
+                {/* أزرار الإجراءات */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      // إنشاء رابط mailto للرد
+                      const mailtoLink = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
+                      window.open(mailtoLink, '_blank');
+
+                      // تحديث حالة الرسالة إلى "مردود عليها"
+                      messagesService.updateStatus(selectedMessage.id, 'replied').then(() => {
+                        messagesService.getAll().then(setMessages);
+                        messagesService.getStats().then(setMessageStats);
+                        showMessage('تم فتح برنامج البريد الإلكتروني للرد!');
+                      });
+
+                      setShowReplyModal(false);
+                      setSelectedMessage(null);
+                      setReplySubject('');
+                      setReplyBody('');
+                    }}
+                    disabled={!replySubject.trim() || !replyBody.trim()}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    📧 إرسال الرد عبر البريد الإلكتروني
+                  </button>
+                  <button
+                    onClick={() => {
+                      // نسخ البريد الإلكتروني والرد
+                      const emailText = `To: ${selectedMessage.email}\nSubject: ${replySubject}\n\n${replyBody}`;
+                      navigator.clipboard.writeText(emailText).then(() => {
+                        showMessage('تم نسخ الرد! يمكنك لصقه في أي برنامج بريد إلكتروني');
+                      }).catch(() => {
+                        showMessage('فشل نسخ الرد', true);
+                      });
+                    }}
+                    disabled={!replySubject.trim() || !replyBody.trim()}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    📋 نسخ الرد
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowReplyModal(false);
+                      setSelectedMessage(null);
+                      setReplySubject('');
+                      setReplyBody('');
+                    }}
+                    className="bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+
+                {/* ملاحظة للمستخدم */}
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                  <p className="text-blue-300 text-sm">
+                    💡 <span className="font-semibold">ملاحظة:</span> عند النقر على "إرسال الرد"، سيتم فتح برنامج البريد الإلكتروني الافتراضي في جهازك مع الرسالة جاهزة للإرسال.
+                    يمكنك أيضاً استخدام زر "نسخ الرد" لنسخ النص وإرساله عبر أي برنامج بريد إلكتروني آخر.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Notification Password Modal */}
         {showNotificationPasswordModal && (
           <>
-            <div 
+            <div
               className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
               onClick={() => {
                 setShowNotificationPasswordModal(false);
@@ -3579,41 +3673,11 @@ export default function AdminDashboardPage() {
                     });
                   }}
                   className="text-gray-400 hover:text-white text-2xl"
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
                 >
                   ×
                 </button>
               </div>
 
-<<<<<<< HEAD
-              <div className="space-y-6">
-                {/* معلومات المرسل */}
-                <div className="bg-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
-                  <h3 className="text-xl font-bold text-white mb-4">معلومات المرسل</h3>
-                  <div className="space-y-2 text-gray-300">
-                    <p><span className="font-semibold text-white">الاسم:</span> {selectedMessage.first_name}</p>
-                    <p><span className="font-semibold text-white">البريد الإلكتروني:</span> {selectedMessage.email}</p>
-                    {selectedMessage.type === 'contact' && selectedMessage.subject && (
-                      <p><span className="font-semibold text-white">الموضوع:</span> {selectedMessage.subject}</p>
-                    )}
-                    {selectedMessage.type === 'contact' && selectedMessage.message && (
-                      <div>
-                        <p className="font-semibold text-white mb-2">الرسالة الأصلية:</p>
-                        <div className="bg-gray-700/50 rounded-lg p-4 text-gray-300 text-sm">
-                          {selectedMessage.message}
-                        </div>
-                      </div>
-                    )}
-                    {selectedMessage.type === 'join' && (
-                      <>
-                        <p><span className="font-semibold text-white">القسم:</span> {selectedMessage.department}</p>
-                        <p><span className="font-semibold text-white">السنة:</span> {selectedMessage.year}</p>
-                        <p><span className="font-semibold text-white">الترم:</span> {selectedMessage.term}</p>
-                        {selectedMessage.whatsapp && (
-                          <p><span className="font-semibold text-white">واتساب:</span> {selectedMessage.whatsapp}</p>
-                        )}
-                      </>
-=======
               {successMessage && (
                 <div className="mb-6 bg-green-500/20 border border-green-500/30 text-green-300 px-6 py-3 rounded-xl">
                   ✅ {successMessage}
@@ -3708,12 +3772,12 @@ export default function AdminDashboardPage() {
                     </div>
                     {notificationForm.scheduledDate && notificationForm.scheduledTime && (
                       <p className="text-xs text-gray-400 mt-2">
-                        📅 Will be sent: {new Date(`${notificationForm.scheduledDate}T${notificationForm.scheduledTime}`).toLocaleString('en-US', { 
+                        📅 Will be sent: {new Date(`${notificationForm.scheduledDate}T${notificationForm.scheduledTime}`).toLocaleString('en-US', {
                           weekday: 'short',
-                          year: 'numeric', 
-                          month: 'short', 
-                          day: 'numeric', 
-                          hour: '2-digit', 
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
                           minute: '2-digit',
                           hour12: true
                         })}
@@ -3751,96 +3815,20 @@ export default function AdminDashboardPage() {
                     </div>
                     {notificationForm.expireDate && notificationForm.expireTime && (
                       <p className="text-xs text-gray-400 mt-2">
-                        ⏰ Expires: {new Date(`${notificationForm.expireDate}T${notificationForm.expireTime}`).toLocaleString('en-US', { 
+                        ⏰ Expires: {new Date(`${notificationForm.expireDate}T${notificationForm.expireTime}`).toLocaleString('en-US', {
                           weekday: 'short',
-                          year: 'numeric', 
-                          month: 'short', 
-                          day: 'numeric', 
-                          hour: '2-digit', 
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
                           minute: '2-digit',
                           hour12: true
                         })}
                       </p>
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
                     )}
                   </div>
                 </div>
 
-<<<<<<< HEAD
-                {/* نموذج الرد */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-white font-medium mb-2">موضوع الرد</label>
-                    <input
-                      type="text"
-                      value={replySubject}
-                      onChange={(e) => setReplySubject(e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
-                      placeholder="موضوع الرسالة"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white font-medium mb-2">نص الرد</label>
-                    <textarea
-                      value={replyBody}
-                      onChange={(e) => setReplyBody(e.target.value)}
-                      rows={10}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500"
-                      placeholder="اكتب ردك هنا..."
-                    />
-                  </div>
-                </div>
-
-                {/* أزرار الإجراءات */}
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => {
-                      // إنشاء رابط mailto للرد
-                      const mailtoLink = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
-                      window.open(mailtoLink, '_blank');
-                      
-                      // تحديث حالة الرسالة إلى "مردود عليها"
-                      messagesService.updateStatus(selectedMessage.id, 'replied').then(() => {
-                        messagesService.getAll().then(setMessages);
-                        messagesService.getStats().then(setMessageStats);
-                        showMessage('تم فتح برنامج البريد الإلكتروني للرد!');
-                      });
-                      
-                      setShowReplyModal(false);
-                      setSelectedMessage(null);
-                      setReplySubject('');
-                      setReplyBody('');
-                    }}
-                    disabled={!replySubject.trim() || !replyBody.trim()}
-                    className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    📧 إرسال الرد عبر البريد الإلكتروني
-                  </button>
-                  <button
-                    onClick={() => {
-                      // نسخ البريد الإلكتروني والرد
-                      const emailText = `To: ${selectedMessage.email}\nSubject: ${replySubject}\n\n${replyBody}`;
-                      navigator.clipboard.writeText(emailText).then(() => {
-                        showMessage('تم نسخ الرد! يمكنك لصقه في أي برنامج بريد إلكتروني');
-                      }).catch(() => {
-                        showMessage('فشل نسخ الرد', true);
-                      });
-                    }}
-                    disabled={!replySubject.trim() || !replyBody.trim()}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    📋 نسخ الرد
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowReplyModal(false);
-                      setSelectedMessage(null);
-                      setReplySubject('');
-                      setReplyBody('');
-                    }}
-                    className="bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
-=======
                 <div className="flex gap-4 pt-4">
                   <button
                     onClick={async () => {
@@ -3928,22 +3916,10 @@ export default function AdminDashboardPage() {
                       });
                     }}
                     className="flex-1 bg-gray-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300"
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
                   >
                     إلغاء
                   </button>
                 </div>
-<<<<<<< HEAD
-
-                {/* ملاحظة للمستخدم */}
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-                  <p className="text-blue-300 text-sm">
-                    💡 <span className="font-semibold">ملاحظة:</span> عند النقر على "إرسال الرد"، سيتم فتح برنامج البريد الإلكتروني الافتراضي في جهازك مع الرسالة جاهزة للإرسال. 
-                    يمكنك أيضاً استخدام زر "نسخ الرد" لنسخ النص وإرساله عبر أي برنامج بريد إلكتروني آخر.
-                  </p>
-                </div>
-=======
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
               </div>
             </div>
           </div>

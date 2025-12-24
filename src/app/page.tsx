@@ -19,7 +19,7 @@ const QuickLoadingSkeleton = () => (
         <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mx-auto mb-4 animate-pulse"></div>
         <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/2 mx-auto mb-6 animate-pulse"></div>
       </div>
-      
+
       {/* Program Cards Skeleton */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto px-2">
         {[1, 2, 3].map(i => (
@@ -59,11 +59,11 @@ export default function HomePage() {
 
     if (user && user.isActive && user.department && user.year && user.term) {
       const emailPrefix = user.email?.split('@')[0] || '';
-      const isNewUser = !user.name || 
-                       user.name === emailPrefix || 
-                       user.name === user.email ||
-                       user.name.length < 3;
-      
+      const isNewUser = !user.name ||
+        user.name === emailPrefix ||
+        user.name === user.email ||
+        user.name.length < 3;
+
       if (isNewUser) {
         console.log('New user detected, redirecting to welcome page...');
         // استخدام router.push بدلاً من window.location لتجنب إعادة تحميل كاملة
@@ -71,23 +71,12 @@ export default function HomePage() {
         return;
       }
     } else if (user && (!user.isActive || !user.department || !user.year || !user.term)) {
-<<<<<<< HEAD
-      console.log('Invalid user detected, redirecting to register page...');
-      // توجيه المستخدم غير النشط أو بدون بيانات أكاديمية لصفحة إنشاء الحساب
-      setTimeout(() => {
-        window.location.href = '/auth/register?step=1';
-      }, 500);
-    } else if (user && user.isActive && user.department && user.year && user.term) {
-      console.log('Valid user with academic data detected, staying on home page...');
-      // المستخدم صالح وله بيانات أكاديمية، يبقى في الصفحة الرئيسية
-=======
       const currentPath2 = window.location.pathname;
       // فقط إذا لم نكن بالفعل في صفحة التسجيل أو Welcome
       if (currentPath2 !== '/auth/register' && currentPath2 !== '/welcome') {
         console.log('Invalid user detected, redirecting to register page...');
         router.push('/auth/register');
       }
->>>>>>> ad2b2d5 (Update various files including notifications, admin dashboard, and UI components)
     }
   }, [user?.id, user?.isActive, user?.name, router]); // فقط التغييرات المهمة
 
@@ -99,15 +88,15 @@ export default function HomePage() {
       'Cyber Security': { title: 'Cyber Security', subtitle: 'الأمن السيبراني', icon: '🛡️' },
       'Artificial Intelligence': { title: 'AI', subtitle: 'الذكاء الاصطناعي', icon: '🤖' }
     };
-    
+
     // عرض الأقسام المعروفة فقط (إخفاء أي قسم غريب)
     const allowedDepartments = Object.keys(departmentMap);
-    
+
     return allowedDepartments.map((dept, index) => {
       const deptInfo = departmentMap[dept];
       const gradients = [
         'from-slate-600 via-slate-700 to-slate-800',
-        'from-blue-600 via-blue-700 to-blue-800', 
+        'from-blue-600 via-blue-700 to-blue-800',
         'from-indigo-600 via-indigo-700 to-indigo-800',
         'from-green-600 via-green-700 to-green-800',
         'from-red-600 via-red-700 to-red-800',
@@ -129,7 +118,7 @@ export default function HomePage() {
         'border-red-600/50',
         'border-yellow-600/50'
       ];
-      
+
       return {
         key: dept as ProgramKey,
         title: deptInfo.title,
@@ -153,12 +142,12 @@ export default function HomePage() {
         setLoading(true);
         setError(null);
         console.log('🔄 Loading materials...');
-        
+
         const materialsData = await materialsService.getAll();
         console.log('✅ Loaded materials:', materialsData);
-        
+
         setMaterials(materialsData);
-        
+
       } catch (error) {
         console.error('❌ Error loading materials:', error);
         setError('خطأ في تحميل البيانات. تأكد من إعداد Supabase بشكل صحيح.');
@@ -166,7 +155,7 @@ export default function HomePage() {
         setLoading(false);
       }
     };
-    
+
     loadMaterials();
   }, []);
 
@@ -217,7 +206,7 @@ export default function HomePage() {
         setProgram(urlProgram);
         setYear(parseInt(urlYear));
         setTerm(urlTerm);
-        
+
         // Save to localStorage for backup
         localStorage.setItem('lastMaterialSelection', JSON.stringify({
           program: urlProgram,
@@ -226,11 +215,11 @@ export default function HomePage() {
         }));
         return; // Don't continue to user data if URL params exist
       }
-      
+
       // Check if this is a fresh home page visit (no URL params and no referrer from materials)
       const isFromMaterials = document.referrer && document.referrer.includes('/materials/');
       const isFreshHome = !urlProgram && !urlYear && !urlTerm && !isFromMaterials;
-      
+
       if (!isFreshHome) {
         const savedSelection = localStorage.getItem('lastMaterialSelection');
         if (savedSelection) {
@@ -251,27 +240,27 @@ export default function HomePage() {
         localStorage.removeItem('lastMaterialSelection');
       }
     }
-    
+
     if (user && user.department && user.year && user.term) {
       console.log('👤 User data:', {
         department: user.department,
         year: user.year,
         term: user.term
       });
-      
+
       // Map user department to program key
       const departmentToProgram: { [key: string]: ProgramKey } = {
         'General Program': 'General',
         'Cyber Security': 'Cyber Security',
         'Artificial Intelligence': 'Artificial Intelligence'
       };
-      
+
       const userProgram = departmentToProgram[user.department];
       console.log('🔄 Mapping department to program:', {
         userDepartment: user.department,
         mappedProgram: userProgram
       });
-      
+
       if (userProgram) {
         setProgram(userProgram);
         setYear(user.year);
@@ -298,43 +287,43 @@ export default function HomePage() {
 
   const filtered = isReady
     ? materials.filter(c => {
-        // Map program selection to department
-        const programToDepartment: { [key: string]: string } = {
-          'General': 'General Program',
-          'Cyber Security': 'Cyber Security', 
-          'Artificial Intelligence': 'Artificial Intelligence'
-        };
-        
-        const expectedDepartment = programToDepartment[program as string];
-        const matchesDepartment = c.department === expectedDepartment;
-        const matchesYear = c.year === year;
-        const matchesTerm = c.term === term || (term === 'FIRST' && c.term === 'First Semester') || (term === 'SECOND' && c.term === 'Second Semester');
-        
-        const result = matchesDepartment && matchesYear && matchesTerm &&
+      // Map program selection to department
+      const programToDepartment: { [key: string]: string } = {
+        'General': 'General Program',
+        'Cyber Security': 'Cyber Security',
+        'Artificial Intelligence': 'Artificial Intelligence'
+      };
+
+      const expectedDepartment = programToDepartment[program as string];
+      const matchesDepartment = c.department === expectedDepartment;
+      const matchesYear = c.year === year;
+      const matchesTerm = c.term === term || (term === 'FIRST' && c.term === 'First Semester') || (term === 'SECOND' && c.term === 'Second Semester');
+
+      const result = matchesDepartment && matchesYear && matchesTerm &&
         (
           !searchQuery ||
           c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.description.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        
-        if (isReady) {
-          console.log('Filtering material:', c.title, {
-            expectedDepartment,
-            actualDepartment: c.department,
-            matchesDepartment,
-            expectedYear: year,
-            actualYear: c.year,
-            matchesYear,
-            expectedTerm: term,
-            actualTerm: c.term,
-            matchesTerm,
-            result
-          });
-        }
-        
-        return result;
-      })
+
+      if (isReady) {
+        console.log('Filtering material:', c.title, {
+          expectedDepartment,
+          actualDepartment: c.department,
+          matchesDepartment,
+          expectedYear: year,
+          actualYear: c.year,
+          matchesYear,
+          expectedTerm: term,
+          actualTerm: c.term,
+          matchesTerm,
+          result
+        });
+      }
+
+      return result;
+    })
     : [];
 
   console.log('📊 Filtering results:', {
@@ -378,7 +367,7 @@ export default function HomePage() {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl pointer-events-none animate-pulse dark:hidden"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none animate-pulse dark:hidden"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-400/15 rounded-full blur-2xl pointer-events-none animate-pulse dark:hidden"></div>
-      
+
       {/* Dark Mode Effects - Original */}
       <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 via-transparent to-yellow-500/5 pointer-events-none hidden dark:block"></div>
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none hidden dark:block"></div>
@@ -386,28 +375,28 @@ export default function HomePage() {
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-10 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-6 sm:mb-8">
-               <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-yellow-500/25">
-                 <img 
-                   src="/assets/icons/main-icon.png" 
-                   alt="University Materials" 
-                   className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
-                 />
-               </div>
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-2xl shadow-yellow-500/25">
+            <img
+              src="/assets/icons/main-icon.png"
+              alt="University Materials"
+              className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
+            />
+          </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-gray-900 dark:text-white mb-2 sm:mb-4 px-2 drop-shadow-2xl tracking-wide">
             University Materials
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-800 dark:text-gray-200 max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2 font-bold">
             منصة المواد الدراسية لطلاب كلية الحاسبات والمعلومات - جامعة الزقازيق
           </p>
-          
-          
+
+
           {/* User Welcome */}
           {user && (
             <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-cyan-50/90 dark:from-gray-800/80 dark:via-gray-900/80 dark:to-black/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto border border-blue-300/50 dark:border-yellow-500/30 shadow-2xl shadow-blue-500/20 dark:shadow-yellow-500/20 mb-4 sm:mb-6">
               <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">👋</div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600 dark:text-yellow-400 mb-3 sm:mb-4">مرحباً {user.name}</h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base md:text-lg font-medium">
-                {user.department && user.year && user.term 
+                {user.department && user.year && user.term
                   ? `${user.department} - السنة ${user.year} - ${user.term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}`
                   : 'اختر برنامجك الدراسي للبدء'
                 }
@@ -451,21 +440,18 @@ export default function HomePage() {
         {/* Progress Indicator */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center space-x-6">
-            <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${
-              program ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500 text-white dark:text-white shadow-lg shadow-blue-500/30 dark:shadow-emerald-500/30' : 'bg-blue-300 dark:bg-gray-700 text-slate-900 dark:text-white'
-            }`}>
+            <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${program ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500 text-white dark:text-white shadow-lg shadow-blue-500/30 dark:shadow-emerald-500/30' : 'bg-blue-300 dark:bg-gray-700 text-slate-900 dark:text-white'
+              }`}>
               1
             </div>
             <div className={`w-20 h-1 rounded-full transition-all duration-500 ${program ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500' : 'bg-blue-300 dark:bg-gray-700'}`}></div>
-            <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${
-              year && term ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500 text-white dark:text-white shadow-lg shadow-blue-500/30 dark:shadow-emerald-500/30' : program ? 'bg-gradient-to-r from-blue-500 to-blue-600 dark:from-cyan-500 dark:to-blue-500 text-white dark:text-white shadow-lg shadow-blue-400/30 dark:shadow-cyan-500/30' : 'bg-blue-300 dark:bg-gray-700 text-slate-900 dark:text-white'
-            }`}>
+            <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${year && term ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500 text-white dark:text-white shadow-lg shadow-blue-500/30 dark:shadow-emerald-500/30' : program ? 'bg-gradient-to-r from-blue-500 to-blue-600 dark:from-cyan-500 dark:to-blue-500 text-white dark:text-white shadow-lg shadow-blue-400/30 dark:shadow-cyan-500/30' : 'bg-blue-300 dark:bg-gray-700 text-slate-900 dark:text-white'
+              }`}>
               2
             </div>
             <div className={`w-20 h-1 rounded-full transition-all duration-500 ${isReady ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500' : 'bg-blue-300 dark:bg-gray-700'}`}></div>
-            <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${
-              isReady ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500 text-white dark:text-white shadow-lg shadow-blue-500/30 dark:shadow-emerald-500/30' : 'bg-blue-300 dark:bg-gray-700 text-slate-900 dark:text-white'
-            }`}>
+            <div className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg transition-all duration-500 ${isReady ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-emerald-500 dark:to-teal-500 text-white dark:text-white shadow-lg shadow-blue-500/30 dark:shadow-emerald-500/30' : 'bg-blue-300 dark:bg-gray-700 text-slate-900 dark:text-white'
+              }`}>
               3
             </div>
           </div>
@@ -484,11 +470,10 @@ export default function HomePage() {
                   key={card.key}
                   onClick={() => !card.disabled && setProgram(card.key)}
                   disabled={card.disabled}
-                  className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center transition-all duration-500 ${
-                    card.disabled 
-                      ? 'opacity-60 cursor-not-allowed bg-gray-200 dark:bg-gray-800 border-gray-400 dark:border-gray-600' 
+                  className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center transition-all duration-500 ${card.disabled
+                      ? 'opacity-60 cursor-not-allowed bg-gray-200 dark:bg-gray-800 border-gray-400 dark:border-gray-600'
                       : 'transform hover:scale-105 hover:shadow-2xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-gray-800 dark:to-black border-2 border-blue-400/60 dark:border-yellow-500/30 hover:border-blue-500 dark:hover:border-yellow-400 hover:shadow-blue-500/40 dark:hover:shadow-yellow-500/30 hover:bg-gradient-to-br hover:from-blue-200 hover:to-blue-300 dark:hover:from-gray-700 dark:hover:to-gray-800 transition-all duration-500'
-                  } backdrop-blur-sm`}
+                    } backdrop-blur-sm`}
                 >
                   {/* Coming Soon Badge */}
                   {card.disabled && (
@@ -498,25 +483,21 @@ export default function HomePage() {
                       </div>
                     </div>
                   )}
-                  
-                  <div className={`absolute inset-0 bg-gradient-to-br from-blue-200/30 to-transparent ${
-                    card.disabled ? '' : 'group-hover:from-blue-300/40'
-                  } transition-all duration-500`}></div>
+
+                  <div className={`absolute inset-0 bg-gradient-to-br from-blue-200/30 to-transparent ${card.disabled ? '' : 'group-hover:from-blue-300/40'
+                    } transition-all duration-500`}></div>
                   <div className="relative z-10">
-                    <div className={`text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6 ${
-                      card.disabled ? '' : 'group-hover:scale-110'
-                    } transition-transform duration-500`}>{card.icon}</div>
-                    <h3 className={`text-lg sm:text-xl md:text-2xl font-black mb-2 sm:mb-3 text-slate-900 dark:text-white ${
-                      card.disabled ? '' : 'group-hover:text-blue-700 dark:group-hover:text-yellow-400'
-                    } transition-colors duration-300 tracking-wide`}>{card.title}</h3>
+                    <div className={`text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6 ${card.disabled ? '' : 'group-hover:scale-110'
+                      } transition-transform duration-500`}>{card.icon}</div>
+                    <h3 className={`text-lg sm:text-xl md:text-2xl font-black mb-2 sm:mb-3 text-slate-900 dark:text-white ${card.disabled ? '' : 'group-hover:text-blue-700 dark:group-hover:text-yellow-400'
+                      } transition-colors duration-300 tracking-wide`}>{card.title}</h3>
                     <p className="text-sm sm:text-base md:text-lg text-slate-800 dark:text-gray-200 mb-3 sm:mb-4 font-bold">{card.subtitle}</p>
                     <p className="text-xs sm:text-sm text-slate-700 dark:text-gray-300 leading-relaxed font-semibold">{card.desc}</p>
                     <div className="mt-6 flex justify-center">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        card.disabled 
-                          ? 'bg-gray-400 text-slate-900' 
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${card.disabled
+                          ? 'bg-gray-400 text-slate-900'
                           : 'bg-blue-600 dark:bg-yellow-400 text-white dark:text-black group-hover:bg-blue-700 dark:group-hover:bg-yellow-500 group-hover:scale-110 shadow-lg shadow-blue-500/40 dark:shadow-yellow-500/30'
-                      }`}>
+                        }`}>
                         <span className="text-xl">{card.disabled ? '⏳' : '→'}</span>
                       </div>
                     </div>
@@ -536,22 +517,21 @@ export default function HomePage() {
                 {programCards.find(p => p.key === program)?.title}
               </span></p>
             </div>
-            
+
             <div className="max-w-6xl mx-auto px-2">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
                 {/* Year Selection */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800/80 dark:to-black/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border-2 border-blue-300 dark:border-yellow-500/30 hover:shadow-2xl hover:shadow-blue-500/30 dark:hover:shadow-yellow-500/20 transition-all duration-500">
                   <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-700 dark:text-yellow-400 mb-6 sm:mb-8 text-center">السنة الدراسية</h3>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
-                    {[1,2,3,4].map(y => (
+                    {[1, 2, 3, 4].map(y => (
                       <button
                         key={y}
                         onClick={() => setYear(y)}
-                        className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center transition-all duration-500 ${
-                          year === y 
-                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/30 scale-105 hover:shadow-2xl hover:shadow-blue-500/40 dark:hover:shadow-yellow-500/40' 
+                        className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 text-center transition-all duration-500 ${year === y
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/30 scale-105 hover:shadow-2xl hover:shadow-blue-500/40 dark:hover:shadow-yellow-500/40'
                             : 'bg-blue-100/50 dark:bg-gray-700/50 hover:bg-blue-200/50 dark:hover:bg-gray-600/50 text-slate-900 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:shadow-lg border border-blue-300/50 dark:border-yellow-500/30 hover:border-blue-400 dark:hover:border-yellow-400 hover:shadow-xl hover:shadow-blue-500/20 dark:hover:shadow-yellow-500/20'
-                        }`}
+                          }`}
                       >
                         <div className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">السنة {y}</div>
                         <div className="text-xs sm:text-sm opacity-80 font-medium">Year {y}</div>
@@ -571,11 +551,10 @@ export default function HomePage() {
                   <div className="space-y-4 sm:space-y-6">
                     <button
                       onClick={() => setTerm('FIRST')}
-                      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 w-full text-center transition-all duration-500 ${
-                        term === 'FIRST' 
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/30 scale-105' 
+                      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 w-full text-center transition-all duration-500 ${term === 'FIRST'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/30 scale-105'
                           : 'bg-blue-100/50 dark:bg-gray-700/50 hover:bg-blue-200/50 dark:hover:bg-gray-600/50 text-slate-900 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:shadow-lg border border-blue-300/50 dark:border-yellow-500/30 hover:border-blue-400 dark:hover:border-yellow-400 light-button-hover'
-                      }`}
+                        }`}
                     >
                       <div className="text-xl sm:text-2xl md:text-3xl font-black mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">الترم الأول</div>
                       <div className="text-xs sm:text-sm opacity-80 font-medium">First Semester</div>
@@ -587,11 +566,10 @@ export default function HomePage() {
                     </button>
                     <button
                       onClick={() => setTerm('SECOND')}
-                      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 w-full text-center transition-all duration-500 ${
-                        term === 'SECOND' 
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/30 scale-105' 
+                      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 w-full text-center transition-all duration-500 ${term === 'SECOND'
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-700 dark:from-yellow-500 dark:to-yellow-600 text-white dark:text-black shadow-2xl shadow-blue-500/40 dark:shadow-yellow-500/30 scale-105'
                           : 'bg-blue-100/50 dark:bg-gray-700/50 hover:bg-blue-200/50 dark:hover:bg-gray-600/50 text-slate-900 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:shadow-lg border border-blue-300/50 dark:border-yellow-500/30 hover:border-blue-400 dark:hover:border-yellow-400 light-button-hover'
-                      }`}
+                        }`}
                     >
                       <div className="text-xl sm:text-2xl md:text-3xl font-black mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">الترم الثاني</div>
                       <div className="text-xs sm:text-sm opacity-80 font-medium">Second Semester</div>
@@ -623,23 +601,23 @@ export default function HomePage() {
         {/* Step 3: Results */}
         {isReady && (
           <section>
-             <div className="text-center mb-8">
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 px-2 drop-shadow-2xl light-text-gradient">المواد المتاحة</h2>
-               <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base md:text-lg px-2 font-semibold">
-                 {programCards.find(p => p.key === program)?.title} - السنة {year} - {term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
-               </p>
-             </div>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 px-2 drop-shadow-2xl light-text-gradient">المواد المتاحة</h2>
+              <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base md:text-lg px-2 font-semibold">
+                {programCards.find(p => p.key === program)?.title} - السنة {year} - {term === 'FIRST' ? 'الترم الأول' : 'الترم الثاني'}
+              </p>
+            </div>
 
             {/* Search Bar */}
             <div className="max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
               <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="ابحث عن مادة أو كود المادة..."
-                    className="w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl bg-blue-50 dark:bg-gray-800/50 backdrop-blur-sm border-2 border-blue-300 dark:border-yellow-500/30 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-600 dark:focus:border-yellow-400 transition-all duration-300 text-slate-900 dark:text-white placeholder-slate-600 dark:placeholder-gray-400 shadow-lg shadow-blue-500/10 dark:shadow-yellow-500/10"
-                  />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="ابحث عن مادة أو كود المادة..."
+                  className="w-full px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl bg-blue-50 dark:bg-gray-800/50 backdrop-blur-sm border-2 border-blue-300 dark:border-yellow-500/30 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-600 dark:focus:border-yellow-400 transition-all duration-300 text-slate-900 dark:text-white placeholder-slate-600 dark:placeholder-gray-400 shadow-lg shadow-blue-500/10 dark:shadow-yellow-500/10"
+                />
                 <div className="absolute right-3 sm:right-4 md:right-6 top-1/2 transform -translate-y-1/2 text-blue-500 dark:text-yellow-400 text-lg sm:text-xl md:text-2xl">
                   🔍
                 </div>
@@ -682,7 +660,7 @@ export default function HomePage() {
                       {material.title}
                     </h3>
                     <p className="text-base sm:text-lg md:text-xl text-slate-700 dark:text-cyan-300 mb-4 sm:mb-6 font-bold">{material.titleAr}</p>
-                    <Link 
+                    <Link
                       href={`/materials/${material.id}?program=${program}&year=${year}&term=${term}`}
                       className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 dark:from-cyan-500 dark:to-blue-600 text-white text-center py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base md:text-lg hover:from-blue-700 hover:to-blue-800 dark:hover:from-cyan-600 dark:hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/40 dark:shadow-cyan-500/30 hover:shadow-xl hover:shadow-blue-500/50 dark:hover:shadow-cyan-500/40 hover:shadow-2xl"
                     >
