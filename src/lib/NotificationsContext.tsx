@@ -1,12 +1,12 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Notification } from './notificationsService';
+import { UserNotification } from './notificationsService';
 import { notificationsService } from './notificationsService';
 import { useUser } from './UserContext';
 
 interface NotificationsContextType {
-  notifications: Notification[];
+  notifications: UserNotification[];
   unreadCount: number;
   loading: boolean;
   refreshNotifications: () => Promise<void>;
@@ -18,7 +18,7 @@ const NotificationsContext = createContext<NotificationsContextType | undefined>
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const { user } = useUser();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -59,11 +59,10 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   const markAllAsRead = async () => {
     if (!user) return;
 
-    const count = await notificationsService.markAllAsRead(user.id);
-    if (count > 0) {
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-      setUnreadCount(0);
-    }
+    await notificationsService.markAllAsRead(user.id);
+
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setUnreadCount(0);
   };
 
   // تحديث الإشعارات عند تغيير المستخدم

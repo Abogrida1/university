@@ -3844,13 +3844,13 @@ export default function AdminDashboardPage() {
                         // بناء التاريخ والوقت للإرسال
                         let scheduled_at = null;
                         if (notificationForm.scheduledDate && notificationForm.scheduledTime) {
-                          scheduled_at = `${notificationForm.scheduledDate}T${notificationForm.scheduledTime}:00`;
+                          scheduled_at = new Date(`${notificationForm.scheduledDate}T${notificationForm.scheduledTime}`).toISOString();
                         }
 
                         // بناء التاريخ والوقت للانتهاء
                         let expires_at = null;
                         if (notificationForm.expireDate && notificationForm.expireTime) {
-                          expires_at = `${notificationForm.expireDate}T${notificationForm.expireTime}:00`;
+                          expires_at = new Date(`${notificationForm.expireDate}T${notificationForm.expireTime}`).toISOString();
                         }
 
                         const response = await fetch('/api/notifications', {

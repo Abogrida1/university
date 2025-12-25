@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@/lib/UserContext';
-import { notificationsService, Notification } from '@/lib/notificationsService';
+import { notificationsService, UserNotification } from '@/lib/notificationsService';
 
 interface NotificationBellProps {
   className?: string;
@@ -10,32 +10,36 @@ interface NotificationBellProps {
 
 export default function NotificationBell({ className = '' }: NotificationBellProps) {
   const { user } = useUser();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // جلب الإشعارات عند تحميل المكون أو عند فتح القائمة
+  // جلب الإشعارات عند تغير المستخدم أو فتح القائمة
   useEffect(() => {
-    if (user && isOpen) {
+    if (user) {
       loadNotifications();
+
+      // الاشتراك في التحديثات الحية
+      const unsubscribe = notificationsService.subscribe(user.id, (newNotification) => {
+        // عند وصول إشعار جديد
+        // 1. تحديث العدد
+        setUnreadCount(prev => prev + 1);
+
+        // 2. إذا كانت القائمة مفتوحة، نضيف الإشعار للقائمة
+        // أو يمكن ببساطة إعادة تحميل القائمة
+        setNotifications(prev => [newNotification, ...prev]);
+
+        // تشغيل صوت تنبيه بسيط (اختياري)
+        // const audio = new Audio('/notification.mp3');
+        // audio.play().catch(e => console.log('Audio play failed', e));
+      });
+
+      return () => {
+        unsubscribe();
+      };
     }
-  }, [user, isOpen]);
-
-  // جلب عدد الإشعارات غير المقروءة بشكل دوري
-  useEffect(() => {
-    if (!user) return;
-
-    const loadUnreadCount = async () => {
-      const count = await notificationsService.getUnreadCount(user.id);
-      setUnreadCount(count);
-    };
-
-    loadUnreadCount();
-    const interval = setInterval(loadUnreadCount, 30000); // تحديث كل 30 ثانية
-
-    return () => clearInterval(interval);
   }, [user]);
 
   // إغلاق القائمة عند النقر خارجها
@@ -55,14 +59,21 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
     };
   }, [isOpen]);
 
+  const getIgnoredIds = () => {
+    if (!user) return [];
+    const stored = localStorage.getItem(`dismissed_notifications_${user.id}`);
+    return stored ? JSON.parse(stored) : [];
+  };
+
   const loadNotifications = async () => {
     if (!user) return;
 
     setLoading(true);
     try {
-      const data = await notificationsService.getUserNotifications(user.id, 20);
+      const ignoredIds = getIgnoredIds();
+      const data = await notificationsService.getUserNotifications(user.id, 20, ignoredIds);
       setNotifications(data);
-      
+
       // تحديث عدد غير المقروء
       const count = await notificationsService.getUnreadCount(user.id);
       setUnreadCount(count);
@@ -70,6 +81,35 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
       console.error('Error loading notifications:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent, notification: UserNotification) => {
+    e.stopPropagation(); // منع فتح الإشعار عند النقر على الحذف
+    if (!user) return;
+
+    // تحديث الواجهة فوراً (Optimistic UI)
+    setNotifications(prev => prev.filter(n => n.id !== notification.id));
+    if (!notification.is_read) {
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    }
+
+    try {
+      if (notification.target_user_id === user.id) {
+        // إشعار شخصي - حذف من قاعدة البيانات
+        await notificationsService.deletePersonal(notification.id, user.id);
+      } else {
+        // إشعار عام - تجاهل محلياً
+        const ignoredIds = getIgnoredIds();
+        if (!ignoredIds.includes(notification.id)) {
+          ignoredIds.push(notification.id);
+          localStorage.setItem(`dismissed_notifications_${user.id}`, JSON.stringify(ignoredIds));
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+      // إعادة تحميل القائمة في حالة الخطأ
+      loadNotifications();
     }
   };
 
@@ -88,11 +128,10 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
   const handleMarkAllAsRead = async () => {
     if (!user) return;
 
-    const count = await notificationsService.markAllAsRead(user.id);
-    if (count > 0) {
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-      setUnreadCount(0);
-    }
+    await notificationsService.markAllAsRead(user.id);
+
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setUnreadCount(0);
   };
 
   const getNotificationIcon = (type: string) => {
@@ -209,9 +248,8 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors ${
-                      !notification.is_read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                    }`}
+                    className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group relative ${!notification.is_read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                      }`}
                     onClick={() => {
                       if (!notification.is_read) {
                         handleMarkAsRead(notification.id);
@@ -225,17 +263,27 @@ export default function NotificationBell({ className = '' }: NotificationBellPro
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <h4
-                            className={`text-sm font-semibold ${
-                              !notification.is_read
-                                ? 'text-gray-900 dark:text-white'
-                                : 'text-gray-700 dark:text-gray-300'
-                            }`}
+                            className={`text-sm font-semibold ${!notification.is_read
+                              ? 'text-gray-900 dark:text-white'
+                              : 'text-gray-700 dark:text-gray-300'
+                              }`}
                           >
                             {notification.title}
                           </h4>
-                          {!notification.is_read && (
-                            <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></span>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {!notification.is_read && (
+                              <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></span>
+                            )}
+                            <button
+                              onClick={(e) => handleDelete(e, notification)}
+                              className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100"
+                              title="حذف الإشعار"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                           {notification.message}

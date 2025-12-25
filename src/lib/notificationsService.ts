@@ -12,6 +12,7 @@ export interface UserNotification {
   created_at: string;
   read_at: string | null;
   expires_at: string | null;
+  created_by_name?: string;
 }
 
 export interface CreateNotificationData {
@@ -56,14 +57,21 @@ class NotificationsService {
   }
 
   // جلب إشعارات المستخدم
-  async getUserNotifications(userId: string): Promise<UserNotification[]> {
+  // جلب إشعارات المستخدم
+  async getUserNotifications(userId: string, limit?: number, ignoredIds: string[] = []): Promise<UserNotification[]> {
     try {
       // جلب الإشعارات الموجهة للمستخدم أو للجميع
-      const { data: notifications, error } = await supabase
+      let query = supabase
         .from('user_notifications')
         .select('*')
         .or(`target_user_id.eq.${userId},target_user_id.is.null`)
         .order('created_at', { ascending: false });
+
+      if (limit) {
+        query = query.limit(limit);
+      }
+
+      const { data: notifications, error } = await query;
 
       if (error) {
         console.error('Error fetching user notifications:', error);
@@ -73,18 +81,24 @@ class NotificationsService {
       // تصفية الإشعارات:
       // 1. المنتهية الصلاحية
       // 2. التي لم يحن وقت إرسالها بعد (scheduled_at في المستقبل)
+      // 3. التي تم تجاهلها محلياً (ignoredIds)
       const now = new Date();
       const validNotifications = notifications?.filter(notif => {
+        // تصفية الإشعارات المحذوفة محلياً (broadcasts)
+        if (ignoredIds.includes(notif.id)) {
+          return false;
+        }
+
         // تصفية الإشعارات المجدولة (التي لم يحن وقتها بعد)
         if (notif.scheduled_at && new Date(notif.scheduled_at) > now) {
           return false;
         }
-        
+
         // تصفية الإشعارات المنتهية الصلاحية
         if (notif.expires_at && new Date(notif.expires_at) < now) {
           return false;
         }
-        
+
         return true;
       }) || [];
 
@@ -221,7 +235,7 @@ class NotificationsService {
   }> {
     try {
       const notifications = await this.getAll();
-      
+
       const stats = {
         total: notifications.length,
         unread: notifications.filter(n => !n.is_read).length,
@@ -241,6 +255,77 @@ class NotificationsService {
     }
   }
 
+  // حذف إشعار شخصي (للمستخدم العادي)
+  async deletePersonal(notificationId: string, userId: string): Promise<boolean> {
+    try {
+      // 1. التحقق من أن الإشعار يخص المستخدم فعلاً
+      const { data: notification, error: fetchError } = await supabase
+        .from('user_notifications')
+        .select('target_user_id')
+        .eq('id', notificationId)
+        .single();
+
+      if (fetchError || !notification) {
+        throw new Error('الإشعار غير موجود');
+      }
+
+      if (notification.target_user_id !== userId) {
+        // إذا لم يكن موجهاً للمستخدم (أي أنه عام/للجميع)، لا يمكن حذفه من قاعدة البيانات
+        return false;
+      }
+
+      // 2. حذف الإشعار
+      const { error: deleteError } = await supabase
+        .from('user_notifications')
+        .delete()
+        .eq('id', notificationId)
+        .eq('target_user_id', userId);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error in deletePersonal method:', error);
+      throw error;
+    }
+  }
+
+  // الاشتراك في التحديثات الحية
+  subscribe(userId: string, onNotification: (payload: any) => void) {
+    const subscription = supabase
+      .channel('public:user_notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_notifications',
+        },
+        (payload) => {
+          const newNotification = payload.new as UserNotification;
+          // تصفية الإشعارات: هل هي للمستخدم أو للجميع؟
+          if (!newNotification.target_user_id || newNotification.target_user_id === userId) {
+            // التحقق من تاريخ النشر (للمجدولة)
+            if (newNotification.scheduled_at) {
+              const scheduledTime = new Date(newNotification.scheduled_at).getTime();
+              const now = new Date().getTime();
+              // إذا كان الوقت في المستقبل، لا نعرضه الآن (سيتم جلبه لاحقاً أو يمكن عمل آلية أخرى، 
+              // لكن للتنبيه الفوري يفضل أن نعتمد على الفلترة في الواجهة أيضاً أو تجاهله هنا)
+              if (scheduledTime > now) return;
+            }
+            onNotification(newNotification);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }
+
   // جلب عدد الإشعارات غير المقروءة للمستخدم
   async getUnreadCount(userId: string): Promise<number> {
     try {
@@ -249,6 +334,24 @@ class NotificationsService {
     } catch (error) {
       console.error('Error in getUnreadCount method:', error);
       return 0;
+    }
+  }
+  // جلب جميع المستخدمين للإشعارات
+  async getAllUsersForNotifications(adminId: string): Promise<{ success: boolean; users?: any[]; error?: string }> {
+    try {
+      const { data: users, error } = await supabase
+        .from('users')
+        .select('id, name, email, department, role')
+        .order('name');
+
+      if (error) {
+        throw error;
+      }
+
+      return { success: true, users };
+    } catch (error: any) {
+      console.error('Error fetching users:', error);
+      return { success: false, error: error.message };
     }
   }
 }

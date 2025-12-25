@@ -17,7 +17,7 @@ export default function SendNotification({ onSuccess }: SendNotificationProps) {
     title: '',
     message: '',
     type: 'info',
-    scheduled_for: null
+    scheduled_at: null
   });
   const [sendTo, setSendTo] = useState<'all' | 'specific'>('all');
   const [selectedUserId, setSelectedUserId] = useState<string>('');
@@ -42,7 +42,7 @@ export default function SendNotification({ onSuccess }: SendNotificationProps) {
 
   const loadUsers = async () => {
     if (!user) return;
-    
+
     setLoadingUsers(true);
     try {
       const result = await notificationsService.getAllUsersForNotifications(user.id);
@@ -61,7 +61,7 @@ export default function SendNotification({ onSuccess }: SendNotificationProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user || user.role !== 'super_admin') {
       setErrorMessage('فقط المدير الرئيسي يمكنه إرسال الإشعارات');
       return;
@@ -91,37 +91,33 @@ export default function SendNotification({ onSuccess }: SendNotificationProps) {
         title: formData.title.trim(),
         message: formData.message.trim(),
         type: formData.type,
-        user_id: sendTo === 'specific' ? selectedUserId : undefined,
-        scheduled_for: scheduleType === 'scheduled' ? new Date(scheduledDateTime).toISOString() : null
+        target_user_id: sendTo === 'specific' ? selectedUserId : undefined,
+        scheduled_at: scheduleType === 'scheduled' ? new Date(scheduledDateTime).toISOString() : null
       };
 
-      const result = await notificationsService.createNotification(notificationData, user.id);
+      const result = await notificationsService.create(notificationData, user.id);
 
-      if (result.success) {
-        setSuccessMessage(
-          scheduleType === 'scheduled'
-            ? 'تم جدولة الإشعار بنجاح'
-            : sendTo === 'all'
+      setSuccessMessage(
+        scheduleType === 'scheduled'
+          ? 'تم جدولة الإشعار بنجاح'
+          : sendTo === 'all'
             ? 'تم إرسال الإشعار لجميع المستخدمين بنجاح'
             : 'تم إرسال الإشعار بنجاح'
-        );
-        
-        // إعادة تعيين النموذج
-        setFormData({
-          title: '',
-          message: '',
-          type: 'info',
-          scheduled_for: null
-        });
-        setSelectedUserId('');
-        setScheduleType('now');
-        setScheduledDateTime('');
+      );
 
-        if (onSuccess) {
-          onSuccess();
-        }
-      } else {
-        setErrorMessage(result.error || 'فشل في إرسال الإشعار');
+      // إعادة تعيين النموذج
+      setFormData({
+        title: '',
+        message: '',
+        type: 'info',
+        scheduled_at: null
+      });
+      setSelectedUserId('');
+      setScheduleType('now');
+      setScheduledDateTime('');
+
+      if (onSuccess) {
+        onSuccess();
       }
     } catch (error: any) {
       console.error('Error sending notification:', error);
